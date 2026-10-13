@@ -1,0 +1,99 @@
+# 独立本地服务与家庭共享同步
+
+Web、Windows 桌面、Android TV 都可独立获取内容和播放。每个一体包保存自己的 SQLite 资料库；不配置远程地址时仅使用本地数据，配置后双向同步收藏、观看历史、搜索历史、默认画质和倍速。设备设置、地址、密钥和临时媒体 URL 不共享。
+
+## 一体包
+
+产物目录为 `outputs/bundles`。
+
+| 产物 | 启动 |
+| --- | --- |
+| `hongguotv-web-win-x64.zip` | 解压后双击 `start.cmd`，停止使用 `stop.cmd` |
+| `hongguotv-web-linux-x64.tar.gz`／`linux-arm64` | 解压后 `sh start.sh`，停止使用 `sh stop.sh` |
+| `hongguotv-web-darwin-x64.tar.gz`／`darwin-arm64` | 解压后 `sh start.sh`，停止使用 `sh stop.sh` |
+| `hongguotv-desktop-win-x64.zip` | 解压后启动 `红果短剧.exe`，关闭程序同时关闭内置后端 |
+| `hongguotv-sync-linux-x64.tar.gz`／`linux-arm64` | 解压后 `sh start.sh`，用于独立远程共享服务 |
+
+Web 包内置 Node 22.20.0 和运行依赖，不调用系统 Node/npm；默认监听 8788，脚本显示访问地址及日志。Windows 需 Windows 10+，Linux 需 glibc 2.28+／内核 4.18+，macOS 运行环境最低 11；操作系统本身的支持状态仍以其厂商为准。Linux 不包含 Alpine/musl 包。[Node 22 平台要求](https://github.com/nodejs/node/blob/v22.20.0/BUILDING.md)
+
+Web 服务数据分别保存在用户资料目录：Windows `%APPDATA%\HongguoTV\web-service`，Linux `${XDG_DATA_HOME:-~/.local/share}/HongguoTV/web-service`，macOS `~/Library/Application Support/HongguoTV/web-service`。`HG_DATA_DIR` 可指定其他位置，`HG_PORT` 可指定端口。端口占用时不复用陌生服务，停止脚本通过自己的控制令牌关闭所属进程。升级替换程序目录不会覆盖用户数据库。
+
+Windows 桌面数据位于 Electron 用户资料目录的 `local-service` 子目录。内置后端只监听本机的动态端口；前端使用稳定的 `hongguotv://app/` 地址，浏览器待写事件不会随端口变化丢失。旧 file 来源数据和可达的旧 Bridge 历史首次成功导入后不再重复导入。
+
+TV 数据位于应用私有 SQLite，保留 Android 5.1.1。QuickJS/JNI 执行共享的内容签名与解析，网络、加密及媒体字节处理使用原生实现，视频不经过其他设备。后台暂停／释放播放器，未同步数据仍保存在数据库，返回前台继续同步。
+
+## 远程共享服务
+
+远程只存共享数据，不负责视频内容。首次运行生成家庭共享密钥，位于远程用户资料目录 `HongguoTV/remote-service/shared-key.txt`；也可以通过 `HG_SYNC_KEY` 指定。默认端口 8791。在各端设置里填写 URL 与同一密钥，验证成功后才启用，首次连接合并本地和远程记录。关闭同步不会删除本地数据。更换服务使用新的实例身份和游标，旧服务确认不会影响新服务。
+
+Docker 部署：
+
+```sh
+docker compose -f apps/sync-server/compose.yaml up -d --build
+cat apps/sync-server/data/shared-key.txt
+```
+
+Compose 将 8791 绑定在服务器本机，由现有 HTTPS 反向代理转发。例如 Caddy 站点内容：
+
+```text
+sync.example.com {
+    reverse_proxy 127.0.0.1:8791
+}
+```
+
+独立 Linux 包不需要 Docker；公网同样使用 HTTPS 反向代理。真实远程主机、域名和连接信息尚未提供，本轮交付服务代码、部署包与说明，不代表已部署到公网。
+
+## 数据和协议
+
+本地修改与待同步事件在同一 SQLite 事务内落盘，WAL 与 FULL 同步提交启用。观看每秒记录；暂停、跳转、切剧、结束和离开立即记录。浏览器还保留写入本地服务之前的不可变事件，收到本地确认才移除。不能承诺尚未采样的毫秒级进度在断电时保留。
+
+事件字段为 `id/deviceId/seq/kind/key/op/at/value`；`kind` 支持 history、favorite、search、preference，`op` 支持 set、delete、clear。ID 使用字符串，进度使用毫秒。历史按校时后的实际观看时间、设备身份和事件序号确定最近进度，允许重看和快退。删除／清空标记参与同一排序，迟到旧事件不能复活数据。首次播种保留原事件身份，避免改变相同时间事件的顺序。
+
+| 接口 | 用途 |
+| --- | --- |
+| `GET /api/library` | 本地完整资料和同步状态 |
+| `POST /api/library/operations` | 幂等写入本地操作 |
+| `POST /api/library/import` | 幂等迁移旧资料 |
+| `GET/POST /api/library/sync` | 查询、验证或关闭同步配置；响应不返回密钥 |
+| `GET /api/sync/handshake` | 远程实例、协议版本和时间 |
+| `POST /api/sync/push` | 远程接收事件，验证预期实例身份后写入并确认 |
+| `GET /api/sync/pull?cursor=N` | 按服务器游标增量读取 |
+
+远程同步接口要求 `Authorization: Bearer <家庭密钥>`。上传确认不推进下载游标，以免漏掉其他设备的修改。失败采用退避重试；取消或更换配置会隔离迟到响应。
+
+## 迁移和历史页面
+
+历史页面不再按端分类，每部剧一张海报续播卡，展示集数、进度和观看时间。Web／电脑保留删除与清空确认；TV 仅查看和续播。搜索历史最多显示最近十条。远程播放偏好在下一次播放时采用，自动画质降级不回写全局偏好。
+
+已有后端目录迁移到新的独立数据目录：
+
+```sh
+node scripts/migrate-library.mjs --from <旧数据目录> --to <新数据目录>
+```
+
+可使用包内 `runtime/node`（Windows 为 `runtime/node.exe`）。先停止旧服务以取得最终数据。迁移保留事件和删除标记，源目录不会删除，目标重复执行幂等；不搬运旧服务的远程密钥。当前开发机已将原 `custom-server/data` 的八条历史迁入 Windows Web 服务用户目录。
+
+构建一体包：`node scripts/build-bundles.mjs`，可用 `--platforms=win-x64` 单独构建。Windows 构建使用 Python 标准库制作带 Unix 执行权限的 tar 包；使用端无需 Python。Node 下载校验官方 SHA256，包内保留运行环境与项目许可证。
+
+scripts/check-bundle.mjs 使用包内运行环境检查首页内容、重复启动、进度持久化及所属进程停止。旧仓库工作流已移除，重新建仓后可按新仓库需要配置跨平台检查。
+
+## 远程管理平台
+
+远程共享服务首页同时提供浏览器管理平台，例如 http://服务器地址:8791/。使用与客户端相同的家庭共享密钥登录，支持共享概览、设备事件活动、收藏与历史海报卡、完整搜索记录、默认画质与倍速设置。
+
+管理平台的密钥只保留在页面内存，刷新或退出后需要重新登录。所有资料接口使用 Bearer 验证；静态登录页不包含家庭数据。管理接口为 GET /api/admin/library 和 POST /api/admin/operations。
+
+单条删除／清空需要确认，通过现有事件流同步给所有端，保留删除标记。TV 本身仍无删除历史入口。设备列表显示已提交过事件的设备和事件时间，不表示实时在线。
+
+Docker 与 Linux 部署包已包含管理页面，无需独立构建前端。默认 Compose 只暴露本机端口，公网仍由 HTTPS 反向代理转发。家庭密钥文件路径保持不变。平台“密钥设置”可显示／复制当前登录密钥，并更换文件管理的密钥。
+
+
+## 密钥设置
+
+管理平台的密钥设置提供自定义、随机生成、显示／隐藏、复制和二次确认。新密钥需16–128位英文字母、数字、横线或下划线。保存成功后旧密钥立即失效，当前管理页面切换到新密钥；其他管理页面及 Web／电脑／电视需更新密钥并重新验证，原有资料和待同步事件保留。
+
+先以临时文件写入，再原子替换 shared-key.txt，成功后才更新认证状态；重启继续使用新密钥。保存失败时原密钥有效。密钥不通过资料／同步接口返回，也不写入启动日志。
+
+HG_SYNC_KEY 环境变量托管时，页面仅提供显示／复制，需修改部署环境并重启；避免网页更换后被环境变量覆盖。忘记密钥可在服务主机读取密钥文件，或由部署环境管理员处理。
+
+GET /api/admin/key 返回管理方式和更换能力，POST /api/admin/key 验证并更换密钥。更新期间已开始但未读完请求体的旧密钥写请求也会被拒绝。

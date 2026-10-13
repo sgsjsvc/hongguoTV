@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.22.1)
+project(hongguo_quickjs C)
+add_library(hongguo_quickjs SHARED bridge.c quickjs/quickjs.c quickjs/dtoa.c quickjs/libregexp.c quickjs/libunicode.c quickjs/cutils.c)
+target_include_directories(hongguo_quickjs PRIVATE quickjs)
+target_compile_definitions(hongguo_quickjs PRIVATE _GNU_SOURCE CONFIG_VERSION="2025-09-13")
+target_compile_options(hongguo_quickjs PRIVATE -O2)
+target_link_libraries(hongguo_quickjs m log)

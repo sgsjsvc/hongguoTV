@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>红果 · 远程共享管理</title><link rel="stylesheet" href="/admin.css"><script type="module" src="/admin.js"></script></head>
+<body>
+<section id="login" class="login-wrap"><div class="login-card"><div class="brandmark">▶</div><p class="eyebrow">HONGGUO · FAMILY SYNC</p><h1>一家人的追剧记忆</h1><p class="muted">远程共享管理平台</p><form id="login-form"><label for="family-key">家庭共享密钥</label><input id="family-key" type="password" autocomplete="current-password" required placeholder="输入该服务的家庭共享密钥"><button class="primary" type="submit">进入管理平台 <span>→</span></button></form><p id="login-error" role="alert"></p><p class="small muted">与各端同步设置使用同一密钥。本页刷新后需重新登录。</p></div></section>
+<div id="workspace" hidden>
+ <aside><a class="brand" href="/">红果<span>共享管理</span></a><nav aria-label="管理导航"><button data-tab="overview">概览</button><button data-tab="favorites">追剧收藏</button><button data-tab="history">观看历史</button><button data-tab="search">搜索记录</button><button data-tab="devices">设备活动</button><button data-tab="preferences">播放偏好</button><button data-tab="keys">密钥设置</button></nav><div class="aside-bottom"><span class="status-dot"></span> 家庭共享服务<span class="small">资料通过同步传到各端</span></div></aside>
+ <main><header><div><p class="eyebrow">FAMILY LIBRARY</p><h1 id="page-title">共享概览</h1></div><div class="header-actions"><span id="updated" class="small muted"></span><button id="refresh">刷新</button><button id="logout" class="quiet">退出</button></div></header>
+ <p id="notice" role="status" hidden></p><section id="content" aria-live="polite"></section>
+ </main>
+</div>
+<dialog id="confirm-dialog"><form method="dialog"><p class="eyebrow">确认管理操作</p><h2 id="confirm-title"></h2><p class="muted">此操作会同步影响连接该家庭的所有设备。旧离线记录不会因重新连接而恢复。</p><div class="dialog-actions"><button value="cancel">取消</button><button id="confirm-submit" class="danger" value="confirm">确认删除</button></div></form></dialog>
+</body></html>

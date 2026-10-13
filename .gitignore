@@ -1,0 +1,60 @@
+# Local machine and IDE files
+.DS_Store
+.idea/
+*.iml
+local.properties
+.vscode/
+.workbuddy-ai/
+*.swp
+*.tmp
+
+# Build and dependency output
+.gradle/
+.kotlin/
+build/
+dist/
+node_modules/
+/dist-win/
+.venv/
+__pycache__/
+*.py[cod]
+*.apk
+*.aab
+
+# Local credentials and signing material
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+keystore.properties
+shared-key.txt
+*.pem
+*.p12
+*.pfx
+
+# Local captures and downloaded media
+/captures/
+/downloads/
+/tmp/
+*.log
+*.pid
+*.db
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite3-wal
+*.sqlite3-shm
+
+# Delivery artifacts, native intermediates, local runtime
+/outputs/
+/server/.local/
+/custom-server/data/
+/apps/sync-server/data/
+.cxx/
+.externalNativeBuild/
+/ios/Pods/
+/ios/build/

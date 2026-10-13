@@ -1,0 +1,8 @@
+<resources>
+    <style name="TvTheme" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowBackground">#090D16</item>
+        <item name="android:colorAccent">#F43F5E</item>
+    </style>
+</resources>

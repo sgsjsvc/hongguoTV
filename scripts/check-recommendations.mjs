@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import crypto from 'node:crypto';
+import {RecommendationService} from '../custom-server/recommendation-service.mjs';
+import {provider} from '../server/provider.mjs';
+const service=new RecommendationService({fetchPool:async({type,tag,page})=>provider.category(type,tag,page),readProfile:()=>({})});
+const session=crypto.randomUUID();
+const first=await service.page(session,1);
+assert.equal(first.items.length,24);
+assert.equal(new Set(first.items.map(row=>row.contentType)).size,3,'live mixed candidates must cover all three types');
+assert.deepEqual(await service.page(session,1),first,'retry must preserve first page');
+const second=await service.page(session,2);
+assert.ok(!second.items.some(row=>first.items.some(old=>old.id===row.id)),'next page cannot repeat');
+const fresh=await service.page(crypto.randomUUID(),1);
+assert.notDeepEqual(fresh.items.map(row=>row.id),first.items.map(row=>row.id),'fresh sessions must change order');
+console.log(JSON.stringify({first:first.items.reduce((counts,row)=>(counts[row.contentType]=(counts[row.contentType]||0)+1,counts),{}),second:second.items.length,retryStable:true,freshChanged:true}));
