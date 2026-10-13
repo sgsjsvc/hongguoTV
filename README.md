@@ -18,7 +18,7 @@ Web 解压后运行 start.cmd 或 sh start.sh，停止使用对应 stop 脚本�
 
 各端填写同一远程地址与家庭密钥即可同步；未配置时正常本地使用。历史统一海报网格，无端分类，TV 仅允许查看和续播。
 
-部署、平台要求、数据路径和迁移见 [本地服务与远程同步](docs/LOCAL_REMOTE_SERVICES.md)。Linux / macOS 宿主与 Docker 运行验收待完成；公网部署等待主机信息。
+部署、平台要求、数据路径和迁移见 [本地服务与远程同步](docs/LOCAL_REMOTE_SERVICES.md) 和 [脚本部署说明](docs/DEPLOYMENT.md)。Linux / macOS 宿主运行验收待完成；公网部署等待主机信息。
 
 ## 开发
 

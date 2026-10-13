@@ -6,6 +6,8 @@ Web、Windows 桌面、Android TV 都可独立获取内容和播放。每个一�
 
 产物目录为 `outputs/bundles`。
 
+当前视频源状态与公开视频可用范围见 [播放状态](PLAYBACK_STATUS.md)；健康检查通过不表示所有剧集可播放。本机运行选择为 Web，电脑包构建后不自动启动。
+
 | 产物 | 启动 |
 | --- | --- |
 | `hongguotv-web-win-x64.zip` | 解压后双击 `start.cmd`，停止使用 `stop.cmd` |
@@ -26,14 +28,14 @@ TV 数据位于应用私有 SQLite，保留 Android 5.1.1。QuickJS/JNI 执行�
 
 远程只存共享数据，不负责视频内容。首次运行生成家庭共享密钥，位于远程用户资料目录 `HongguoTV/remote-service/shared-key.txt`；也可以通过 `HG_SYNC_KEY` 指定。默认端口 8791。在各端设置里填写 URL 与同一密钥，验证成功后才启用，首次连接合并本地和远程记录。关闭同步不会删除本地数据。更换服务使用新的实例身份和游标，旧服务确认不会影响新服务。
 
-Docker 部署：
+使用独立 Linux 服务包部署，解压后执行：
 
 ```sh
-docker compose -f apps/sync-server/compose.yaml up -d --build
-cat apps/sync-server/data/shared-key.txt
+sh start.sh
+# 停止同一实例：sh stop.sh
 ```
 
-Compose 将 8791 绑定在服务器本机，由现有 HTTPS 反向代理转发。例如 Caddy 站点内容：
+启动脚本显示地址、日志目录及密钥文件位置。公网部署时设置 `HG_HOST=127.0.0.1` 并由现有 HTTPS 反向代理转发。例如 Caddy 站点内容：
 
 ```text
 sync.example.com {
@@ -41,7 +43,7 @@ sync.example.com {
 }
 ```
 
-独立 Linux 包不需要 Docker；公网同样使用 HTTPS 反向代理。真实远程主机、域名和连接信息尚未提供，本轮交付服务代码、部署包与说明，不代表已部署到公网。
+独立 Linux 包自带运行环境；公网使用 HTTPS 反向代理。真实远程主机、域名和连接信息尚未提供，本轮交付服务代码、部署包与说明，不代表已部署到公网。操作说明见 [脚本部署](DEPLOYMENT.md)。
 
 ## 数据和协议
 
@@ -85,7 +87,7 @@ scripts/check-bundle.mjs 使用包内运行环境检查首页内容、重复启�
 
 单条删除／清空需要确认，通过现有事件流同步给所有端，保留删除标记。TV 本身仍无删除历史入口。设备列表显示已提交过事件的设备和事件时间，不表示实时在线。
 
-Docker 与 Linux 部署包已包含管理页面，无需独立构建前端。默认 Compose 只暴露本机端口，公网仍由 HTTPS 反向代理转发。家庭密钥文件路径保持不变。平台“密钥设置”可显示／复制当前登录密钥，并更换文件管理的密钥。
+Linux 部署包已包含管理页面，无需独立构建前端。公网由 HTTPS 反向代理转发，家庭密钥文件路径保持不变。平台“密钥设置”可显示／复制当前登录密钥，并更换文件管理的密钥。
 
 
 ## 密钥设置

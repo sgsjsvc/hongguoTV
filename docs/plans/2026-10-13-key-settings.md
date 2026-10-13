@@ -8,4 +8,4 @@ Architecture: SharedKey authority owns authentication and atomic file persistenc
 1. Add tests/sync-key.test.mjs covering revocation, persistence, validation, persistence failure and environment-managed state; confirm failures before implementation.
 2. Add apps/sync-server/shared-key.mjs; wire index.mjs and server.mjs key metadata/rotation routes. Persist before swapping the live authentication digest; never return or log a key.
 3. Add key settings tab with current-key display/copy, secure random generation, two matching inputs and an explicit replacement dialog; preserve data and handle errors.
-4. Browser isolated-key rotation checks and full Node regression; review, package module into Docker/Linux bundles, update docs. Restart actual service keeping existing key unchanged.
+4. Browser isolated-key rotation checks and full Node regression; review, package module into Linux bundles, update docs. Restart actual service keeping existing key unchanged.

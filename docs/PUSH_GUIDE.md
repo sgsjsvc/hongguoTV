@@ -23,13 +23,13 @@ git push origin HEAD:main
 | --- | --- |
 | `apps/web-pc/` | Web 源码、Electron 主进程、依赖锁文件与配置 |
 | `apps/tv-android/` | TV 源码、资源、测试、QuickJS 源码与许可证、Gradle Wrapper |
-| `apps/sync-server/` | 共享服务、管理平台、Docker 配置 |
+| `apps/sync-server/` | 共享服务、管理平台 |
 | `server/` | 本地资料、推荐及播放后端 |
 | `shared/` | 共用内容引擎与适配器、推荐算法、分类契约、资料模型、第三方来源说明 |
 | `assets/branding/` | 图标原始素材与设计说明 |
 | `scripts/`、`tests/` | 构建、迁移、启动、验证脚本及自动化测试 |
 | `docs/`、`HANDOVER.md`、`README.md` | 当前说明、交接、验收及历史设计记录 |
-| 根目录配置 | `package.json`、`package-lock.json`、`compose.yaml`、`.env.example`、`.gitignore`、`.gitattributes`、`.dockerignore`、`LICENSE` |
+| 根目录配置 | `package.json`、`package-lock.json`、`.env.example`、`.gitignore`、`.gitattributes`、`LICENSE` |
 
 `vendor/`、QuickJS 的 C 源码、Android 图片资源以及 `gradle/wrapper/gradle-wrapper.jar` 是构建所需材料，必须保留。第三方 GitHub 来源链接是许可证追溯资料，继续保留。
 

@@ -10,7 +10,7 @@ const platforms=(process.argv.find(arg=>arg.startsWith('--platforms='))?.split('
 const cache=path.join(root,'outputs','runtime-cache');fs.mkdirSync(cache,{recursive:true});
 function pruneLegacyLayout(directory){
  const allowed=[output,path.join(root,'dist-win')].map(value=>path.resolve(value)+path.sep);
- for(const relative of ['custom-server','server/provider.mjs','server/http.mjs','server/vendor']){
+ for(const relative of ['custom-server','server/provider.mjs','server/http.mjs','server/vendor','server/healthcheck.mjs']){
   const target=path.resolve(directory,relative);
   if(!allowed.some(prefix=>target.startsWith(prefix)))throw Error('legacy build path outside artifact directories');
   fs.rmSync(target,{recursive:true,force:true});
@@ -50,7 +50,7 @@ async function stage(platform,remote=false){
  copy(path.join(root,'scripts','service-launcher.mjs'),path.join(directory,'scripts','service-launcher.mjs'));
  copy(path.join(root,'scripts','migrate-library.mjs'),path.join(directory,'scripts','migrate-library.mjs'));
  copy(path.join(root,'server','history-store.mjs'),path.join(directory,'server','history-store.mjs'));
- if(remote){for(const name of ['index.mjs','server.mjs','admin.mjs','shared-key.mjs','public','Dockerfile','compose.yaml'])copy(path.join(root,'apps','sync-server',name),path.join(directory,'apps','sync-server',name));}
+ if(remote){for(const name of ['index.mjs','server.mjs','admin.mjs','shared-key.mjs','public'])copy(path.join(root,'apps','sync-server',name),path.join(directory,'apps','sync-server',name));}
  else{
   const notices=['react','react-dom','scheduler','lucide-react','axios'].map(name=>`${name}\n${fs.readFileSync(path.join(root,'apps','web-pc','node_modules',name,'LICENSE'),'utf8')}`).join('\n\n');
   fs.writeFileSync(path.join(directory,'THIRD_PARTY_NOTICES.txt'),notices);
@@ -63,7 +63,9 @@ async function stage(platform,remote=false){
   run(process.execPath,[process.env.npm_execpath||path.join(path.dirname(process.execPath),'node_modules','npm','bin','npm-cli.js'),'install','--omit=dev','--no-audit','--no-fund'],{cwd:directory});
  }
  scripts(directory,remote);
- copy(path.join(root,'docs','LOCAL_REMOTE_SERVICES.md'),path.join(directory,'DEPLOYMENT.md'));
+ copy(path.join(root,'docs','DEPLOYMENT.md'),path.join(directory,'DEPLOYMENT.md'));
+ copy(path.join(root,'docs','LOCAL_REMOTE_SERVICES.md'),path.join(directory,'LOCAL_REMOTE_SERVICES.md'));
+ copy(path.join(root,'docs','PLAYBACK_STATUS.md'),path.join(directory,'PLAYBACK_STATUS.md'));
  const archive=directory+(platform.startsWith('win-')?'.zip':'.tar.gz');
  if(platform.startsWith('win-'))run('powershell.exe',['-NoProfile','-Command',`Compress-Archive -LiteralPath '${directory.replaceAll("'","''")}' -DestinationPath '${archive.replaceAll("'","''")}' -Force`]);
  else if(process.platform==='win32')run('python',['-c',"import tarfile,sys,os\ndef mode(info):\n if info.issym() or info.islnk(): return None\n if info.name.endswith('/runtime/node') or info.name.endswith('.sh'): info.mode=0o755\n return info\nwith tarfile.open(sys.argv[2],'w:gz',compresslevel=6) as archive: archive.add(sys.argv[1],arcname=os.path.basename(sys.argv[1]),filter=mode)",directory,archive]);

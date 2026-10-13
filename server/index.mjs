@@ -223,6 +223,7 @@ async function getOfficialWeb720pStream(seriesId, vid) {
           webStreamCache.set(cacheKey, { time: Date.now(), url: mainUrl });
           return mainUrl;
         }
+        if (p?.protectedPlayback || p?.publicVideoSeo) return null;
       }
     } catch (err) {
       // 尝试下一个 URL
@@ -719,6 +720,7 @@ const server = http.createServer(async (req, res) => {
       const seriesId = u.searchParams.get("seriesId") || u.searchParams.get("series_id") || vidToSeriesMap.get(episodeId);
       const list = [];
       const seenKeys = new Set();
+      let qualityFailure = null;
 
       const labelMap = {
         2160: "4K 超高清",
@@ -760,6 +762,7 @@ const server = http.createServer(async (req, res) => {
             }
           }
         } catch (e) {
+          qualityFailure = e;
           console.warn("[Official Qualities Fetch Error]:", e.message);
         }
       }
@@ -782,15 +785,9 @@ const server = http.createServer(async (req, res) => {
         } catch (_) {}
       }
 
-      // 兜底保障
+      // 只返回真实获取的画质；请求失败不能伪造 1080P。
       if (list.length === 0) {
-        list.push({
-          key: "1080P",
-          label: "1080P 超清",
-          qualityNum: 1080,
-          codec: "HEVC",
-          isDefault: true,
-        });
+        return json(res, { error: qualityFailure?.message || "没有可用的视频画质" }, 502);
       } else {
         // 按分辨率从高到低排序，最高清晰度设为默认
         list.sort((a, b) => b.qualityNum - a.qualityNum);

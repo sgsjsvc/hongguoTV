@@ -68,7 +68,8 @@ class StandaloneEngine(context: Context) : Closeable {
         return output
     }
     private fun remoteRange(url:String,start:Long,end:Long):Pair<ByteArray,Long>{
-        val request=Request.Builder().url(url).header("Range","bytes=$start-$end").header("Referer","https://novel.snssdk.com/").header("User-Agent","com.phoenix.read/71332 (Linux; U; Android 16; zh_CN)").build()
+        val referer=if(url.startsWith("https://hongguoduanju.com/video/public/"))"https://hongguoduanju.com/" else "https://novel.snssdk.com/"
+        val request=Request.Builder().url(url).header("Range","bytes=$start-$end").header("Referer",referer).header("User-Agent","com.phoenix.read/71332 (Linux; U; Android 16; zh_CN)").build()
         return client.newCall(request).execute().use{response->
             check(response.isSuccessful){"媒体请求失败 ${response.code}"};require((response.body?.contentLength()?:0)<=16*1024*1024){"媒体响应过大"}
             val bytes=response.body?.bytes()?:error("视频响应为空")

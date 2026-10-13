@@ -14,9 +14,10 @@ const run=action=>{
 };
 const state=()=>JSON.parse(readFileSync(path.join(profile,'service-state.json'),'utf8'));
 const stopped=async old=>{
- for(let i=0;i<100;i++){
-  try{await fetch(`http://127.0.0.1:${old.controlPort}/health`,{headers:{Authorization:`Bearer ${old.token}`},signal:AbortSignal.timeout(100)});}
-  catch{return;}
+ const deadline=Date.now()+15000;
+ const alive=pid=>{try{process.kill(pid,0);return true;}catch(error){if(error.code==='ESRCH')return false;throw error;}};
+ while(Date.now()<deadline){
+  if(!alive(old.backendPid)&&!alive(old.pid))return;
   await new Promise(resolve=>setTimeout(resolve,50));
  }
  throw Error('owned service did not stop');

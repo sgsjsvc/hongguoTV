@@ -1,3 +1,13 @@
+# 当前交付与运行状态（2026-10-13）
+
+所有服务使用独立包和 Node 启动脚本部署。已重建五平台 Web 包、Windows 桌面包、Linux x64/arm64 共享服务包和 Android 5.1.1 TV APK；当前仅启动 Web（3000 开发页面／8788 本地服务），电脑端按用户要求保持关闭，共享管理平台 8791 保持运行。新版 TV APK 已覆盖安装并启动，保留本机资料和家庭共享配置。
+
+本轮 Node 79 项通过，Android JVM 26 项、lint、APK 构建通过，Web 构建通过。Windows Web 包的首页、重复启动、持久化及所属停止检查通过。原 App 视频模型接口当前返回 110001，整理前引擎同环境对照也失败，已排除目录移动导致的加载错误。公开视频兜底返回真实 360P；实际 Web 媒体接口返回 206／65536 字节有效 MP4，API22 TV 的 H.264 解码与《猎户家的美娘子》第1集约66秒历史进度已复查，用户确认电视画面和声音正常。最新APK SHA256为 0fde6edb5f1abdc44a889203758b4663d6d95fba6c20e9171acd79a222e73656。
+
+公开视频仅覆盖官网实际提供的分集，高清／全集接口尚未恢复，详见 docs/PLAYBACK_STATUS.md。Linux/macOS 宿主启动、API35 TV及长期连播仍待相应环境验收。启动与部署见 docs/DEPLOYMENT.md，旧历史记录在下方供追溯。
+
+---
+
 # 红果短剧项目交接
 
 更新日期：2026-10-13。Web、Windows 桌面、Android TV 均可独立获取内容、处理播放和保存资料，不需要其他设备开机。完整说明见 [本地服务与家庭同步](docs/LOCAL_REMOTE_SERVICES.md)。
@@ -8,7 +18,7 @@
 - custom-server：Node 本地后端直接调用 server/provider.mjs 和 shared/content-core/hongguo.js，不依赖固定 192.168.1.21:8787。
 - shared/library-store.mjs：SQLite 完整资料库、事务事件队列、删除标记与幂等接收。
 - custom-server/library-sync.mjs：远程校时、上传、增量下载、重试和实例隔离。
-- apps/sync-server：仅存家庭资料的远程服务，包含 Dockerfile / Compose。
+- apps/sync-server：仅存家庭资料的远程服务，包含 脚本启动与独立部署包。
 - apps/tv-android：Kotlin / Views / Media3，minSdk 22；QuickJS 2025-09-13 自编译 JNI 执行共享内容引擎，网络、加密、Range 媒体及 SQLite 使用原生实现，不再要求首次填写本地后端地址。
 - scripts/service-launcher.mjs：启动、所属进程管理、重复启动和端口占用检查。
 - scripts/build-bundles.mjs：校验并打包各平台运行环境、Web / 远程 / Windows 桌面。
@@ -29,7 +39,7 @@ npm run build
 npm run build:bundles
 ```
 
-本地服务默认 8788，开发页面 3000。npm run bridge 保留兼容基础服务入口，独立包无需运行它。
+本地服务默认 8788，开发页面 3000。本地后端统一为 server/，旧独立桥接入口已移除。
 
 ## 数据规则
 
@@ -47,7 +57,7 @@ outputs/bundles 提供五平台 Web 包、Windows 桌面 ZIP、Linux x64 / arm64
 
 Node 39 项、Web 类型检查和构建通过；Windows Web / 桌面生命周期与实际远程跨端资料同步通过。Android JVM 19 项、lint、构建、模拟器最终 14 项通过；API 22 电视独立内容签名／解密／播放／seek 和真实 Node 远程同步通过。详见 [TV 验证](docs/TV_ANDROID_VERIFICATION.md)。
 
-Linux / macOS 包已生成并校验归档权限，尚未在对应宿主启动。Docker daemon 未运行，容器验收待做。API 35 TV、长时间连播和更多厂商遥控器仍待验收。未提供公网主机，远程尚未部署公网。
+Linux / macOS 包已生成并校验归档权限，尚未在对应宿主启动。API 35 TV、长时间连播和更多厂商遥控器仍待验收。未提供公网主机，远程尚未部署公网。
 
 保留此前大量未提交迁移及旧端删除，避免重置工作区或恢复 RN / iOS / kotlin-tv。首版不含账号、离线下载、自动更新、正式签名或应用商店发布。
 
@@ -116,15 +126,15 @@ Linux / macOS 包已生成并校验归档权限，尚未在对应宿主启动。
 
 已按用户要求移除旧 Git 远程 `origin` 和全部 GitHub 工作流文件。旧 GHCR 镜像引用改为本地源码构建，第三方来源链接和许可证保留。早期根目录 `plan.md` 已归档为 `docs/plans/legacy-feature-plan.md`。
 
-推送清单和步骤见 `docs/PUSH_GUIDE.md`；`.gitignore` 排除依赖、`dist-win`、`outputs`、缓存、数据库、日志、密钥及本机助手记录，`.dockerignore` 排除 Docker 构建中的本地资料。实际源码清单位于 `outputs/source-files-to-push.txt`。旧远端仓库未操作；自动审批审查拒绝删除 `.git` 和空工作流目录，故旧本地历史仍保留，目录已没有远程推送地址。如需全新历史，按推送说明手动删除 `.git` 后重新初始化。
+推送清单和步骤见 `docs/PUSH_GUIDE.md`；`.gitignore` 排除依赖、`dist-win`、`outputs`、缓存、数据库、日志、密钥及本机助手记录。实际源码清单位于 `outputs/source-files-to-push.txt`。旧远端仓库未操作；自动审批审查拒绝删除 `.git` 和空工作流目录，故旧本地历史仍保留，目录已没有远程推送地址。如需全新历史，按推送说明手动删除 `.git` 后重新初始化。
 
 # 2026-10-13 公开仓库提交
 
-用户指定使用 sgsjsvc 账号，并明确要求公开。已创建 `https://github.com/sgsjsvc/hongguoTV`，默认分支 `main`；首次源码提交包含 230 个文件，是全新根提交，不包含旧仓库历史、安装包、本地资料或密钥。本机 `origin` 已改为新仓库，当前 `codex/public-source-import` 跟踪远端 `main`，后续推送使用 `git push origin HEAD:main`。旧本地分支仍保留，不向新仓库推送；本次整理的测试记录为 75 项 Node 测试通过、Web 构建通过、Compose 配置检查通过。
+用户指定使用 sgsjsvc 账号，并明确要求公开。已创建 `https://github.com/sgsjsvc/hongguoTV`，默认分支 `main`；首次源码提交包含 230 个文件，是全新根提交，不包含旧仓库历史、安装包、本地资料或密钥。本机 `origin` 已改为新仓库，当前 `codex/public-source-import` 跟踪远端 `main`，后续推送使用 `git push origin HEAD:main`。旧本地分支仍保留，不向新仓库推送；本次整理的测试记录为 75 项 Node 测试通过、Web 构建通过通过。
 
 # 2026-10-13 后端目录统一
 
-`custom-server/` 已统一为 `server/`，本地服务仍为 8788，`npm run server` 和 `npm start` 指向新路径。内容适配器为 `shared/content-provider.mjs`；第三方来源与许可证统一保存在 `shared/content-core/vendor/`。旧 8787 独立入口和 `npm run bridge` 已移除，兼容 HTTP 处理器与媒体安全测试保留为 `shared/content-http.mjs`。本次 76 项 Node 测试、Web 构建、Compose 配置检查通过；Windows Web/桌面包已重建，Web 包首页、重复启动、持久化及停止检查通过。其他平台已有产物仍是重构前版本，需要重新构建。
+`custom-server/` 已统一为 `server/`，本地服务仍为 8788，`npm run server` 和 `npm start` 指向新路径。内容适配器为 `shared/content-provider.mjs`；第三方来源与许可证统一保存在 `shared/content-core/vendor/`。旧 8787 独立入口和 `npm run bridge` 已移除，兼容 HTTP 处理器与媒体安全测试保留为 `shared/content-http.mjs`。本次 76 项 Node 测试、Web 构建通过；Windows Web/桌面包已重建，Web 包首页、重复启动、持久化及停止检查通过。其他平台已有产物仍是重构前版本，需要重新构建。
 
-Electron、资料迁移、服务启动和打包脚本已同步调整；旧目录原件保留于忽略的 `outputs/layout-backup-*`。原 `custom-server/data` 随主后端移动到 `server/data`，现有用户目录资料不变。根目录 Docker Compose 改为当前 8788 本地一体服务，远程 8791 配置不变。Docker 引擎未运行，只能完成 Compose 配置检查，容器构建及运行仍待验收。
+Electron、资料迁移、服务启动和打包脚本已同步调整；旧目录原件保留于忽略的 `outputs/layout-backup-*`。原 `custom-server/data` 随主后端移动到 `server/data`，现有用户目录资料不变。本地服务使用启动脚本运行，远程 8791 配置不变。
 
