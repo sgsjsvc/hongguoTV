@@ -118,3 +118,7 @@ Linux / macOS 包已生成并校验归档权限，尚未在对应宿主启动。
 
 推送清单和步骤见 `docs/PUSH_GUIDE.md`；`.gitignore` 排除依赖、`dist-win`、`outputs`、缓存、数据库、日志、密钥及本机助手记录，`.dockerignore` 排除 Docker 构建中的本地资料。实际源码清单位于 `outputs/source-files-to-push.txt`。旧远端仓库未操作；自动审批审查拒绝删除 `.git` 和空工作流目录，故旧本地历史仍保留，目录已没有远程推送地址。如需全新历史，按推送说明手动删除 `.git` 后重新初始化。
 
+# 2026-10-13 公开仓库提交
+
+用户指定使用 sgsjsvc 账号，并明确要求公开。已创建 `https://github.com/sgsjsvc/hongguoTV`，默认分支 `main`；首次源码提交包含 230 个文件，是全新根提交，不包含旧仓库历史、安装包、本地资料或密钥。本机 `origin` 已改为新仓库，当前 `codex/public-source-import` 跟踪远端 `main`，后续推送使用 `git push origin HEAD:main`。旧本地分支仍保留，不向新仓库推送；本次整理的测试记录为 75 项 Node 测试通过、Web 构建通过、Compose 配置检查通过。
+

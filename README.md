@@ -1,5 +1,7 @@
 # 红果短剧
 
+源码仓库：[sgsjsvc/hongguoTV](https://github.com/sgsjsvc/hongguoTV)。
+
 非官方短剧客户端，提供独立 Web、Windows 桌面和 Android 5.1.1+ TV 应用。各端内置内容获取与播放处理，本地保存收藏、历史、搜索和偏好，可选连接家庭共享服务双向同步。
 
 ## 项目目录与重新建仓
