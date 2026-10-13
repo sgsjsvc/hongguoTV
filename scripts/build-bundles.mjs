@@ -8,6 +8,14 @@ const output=path.join(root,'outputs','bundles');fs.mkdirSync(output,{recursive:
 const version='22.20.0';
 const platforms=(process.argv.find(arg=>arg.startsWith('--platforms='))?.split('=')[1]||'win-x64,linux-x64,linux-arm64,darwin-x64,darwin-arm64').split(',');
 const cache=path.join(root,'outputs','runtime-cache');fs.mkdirSync(cache,{recursive:true});
+function pruneLegacyLayout(directory){
+ const allowed=[output,path.join(root,'dist-win')].map(value=>path.resolve(value)+path.sep);
+ for(const relative of ['custom-server','server/provider.mjs','server/http.mjs','server/vendor']){
+  const target=path.resolve(directory,relative);
+  if(!allowed.some(prefix=>target.startsWith(prefix)))throw Error('legacy build path outside artifact directories');
+  fs.rmSync(target,{recursive:true,force:true});
+ }
+}
 function run(binary,args,options={}){const result=spawnSync(binary,args,{cwd:root,stdio:'inherit',windowsHide:true,...options});if(result.status!==0)throw Error(`${binary} failed: ${result.error?.message||result.status}`);}
 async function download(url,destination){const response=await fetch(url,{signal:AbortSignal.timeout(120000)});if(!response.ok)throw Error(`download failed ${response.status}: ${url}`);fs.writeFileSync(destination,Buffer.from(await response.arrayBuffer()));}
 const checksumFile=path.join(cache,`node-v${version}-SHASUMS256.txt`);if(!fs.existsSync(checksumFile))await download(`https://nodejs.org/dist/v${version}/SHASUMS256.txt`,checksumFile);
@@ -34,20 +42,20 @@ function scripts(directory,remote=false){
  fs.writeFileSync(path.join(directory,'README.txt'),`HongguoTV ${remote?'远程共享服务':'独立 Web 服务'}\nWindows: 双击 start.cmd / stop.cmd\nLinux/macOS: sh start.sh / sh stop.sh\n无需安装 Node/npm；运行环境随包提供。\n数据位于用户资料目录 HongguoTV/${remote?'remote-service':'web-service'}，更新程序不会覆盖数据。\n端口默认 ${remote?'8791':'8788'}，可通过 HG_PORT 设置；HG_DATA_DIR 可指定数据位置。\n${remote?'首次启动生成 shared-key.txt；各端填写地址和该密钥。公网部署使用 HTTPS 反向代理。':'启动脚本会显示浏览器访问地址，端口被其他程序占用时启动失败并保留日志。'}\n`);
 }
 async function stage(platform,remote=false){
- const directory=path.join(output,`hongguotv-${remote?'sync':'web'}-${platform}`);fs.mkdirSync(directory,{recursive:true});
+ const directory=path.join(output,`hongguotv-${remote?'sync':'web'}-${platform}`);fs.mkdirSync(directory,{recursive:true});pruneLegacyLayout(directory);
  const node=await runtime(platform);copy(node,path.join(directory,'runtime',platform.startsWith('win-')?'node.exe':'node'));
  const runtimeDirectory=platform.startsWith('win-')?path.dirname(node):path.dirname(path.dirname(node));copy(path.join(runtimeDirectory,'LICENSE'),path.join(directory,'runtime','LICENSE-node.txt'));
  copy(path.join(root,'LICENSE'),path.join(directory,'LICENSE'));
  for(const name of ['library-store.mjs','http-json.mjs','legacy-migration.mjs'])copy(path.join(root,'shared',name),path.join(directory,'shared',name));
  copy(path.join(root,'scripts','service-launcher.mjs'),path.join(directory,'scripts','service-launcher.mjs'));
  copy(path.join(root,'scripts','migrate-library.mjs'),path.join(directory,'scripts','migrate-library.mjs'));
- copy(path.join(root,'custom-server','history-store.mjs'),path.join(directory,'custom-server','history-store.mjs'));
+ copy(path.join(root,'server','history-store.mjs'),path.join(directory,'server','history-store.mjs'));
  if(remote){for(const name of ['index.mjs','server.mjs','admin.mjs','shared-key.mjs','public','Dockerfile','compose.yaml'])copy(path.join(root,'apps','sync-server',name),path.join(directory,'apps','sync-server',name));}
  else{
   const notices=['react','react-dom','scheduler','lucide-react','axios'].map(name=>`${name}\n${fs.readFileSync(path.join(root,'apps','web-pc','node_modules',name,'LICENSE'),'utf8')}`).join('\n\n');
   fs.writeFileSync(path.join(directory,'THIRD_PARTY_NOTICES.txt'),notices);
-  for(const name of fs.readdirSync(path.join(root,'custom-server')).filter(name=>name.endsWith('.mjs')))copy(path.join(root,'custom-server',name),path.join(directory,'custom-server',name));
-  copy(path.join(root,'custom-server','vendor'),path.join(directory,'custom-server','vendor'));copy(path.join(root,'server','provider.mjs'),path.join(directory,'server','provider.mjs'));copy(path.join(root,'server','vendor'),path.join(directory,'server','vendor'));
+  for(const name of fs.readdirSync(path.join(root,'server')).filter(name=>name.endsWith('.mjs')))copy(path.join(root,'server',name),path.join(directory,'server',name));
+  copy(path.join(root,'shared','content-provider.mjs'),path.join(directory,'shared','content-provider.mjs'));
   copy(path.join(root,'shared','content-core'),path.join(directory,'shared','content-core'));for(const name of ['recommendation-core.cjs','category-contract.cjs'])copy(path.join(root,'shared',name),path.join(directory,'shared',name));copy(path.join(root,'apps','web-pc','dist'),path.join(directory,'apps','web-pc','dist'));
   fs.writeFileSync(path.join(directory,'package.json'),JSON.stringify({private:true,type:'module',dependencies:{axios:'1.13.6'}},null,2));
   const accidentalLink=path.join(directory,'node_modules','hongguotv');
@@ -65,6 +73,7 @@ async function stage(platform,remote=false){
 for(const platform of platforms){await stage(platform);if(platform.startsWith('linux-'))await stage(platform,true);}
 if(platforms.includes('win-x64')&&!process.argv.includes('--web-only')){
  const desktop=path.join(root,'dist-win','hongguoTV-win32-x64');
+ pruneLegacyLayout(path.join(desktop,'resources','hongguotv'));
  copy(path.join(output,'hongguotv-web-win-x64'),path.join(desktop,'resources','hongguotv'));
  copy(path.join(root,'apps','web-pc','dist'),path.join(desktop,'resources','app','dist'));
  copy(path.join(root,'apps','web-pc','electron','main.cjs'),path.join(desktop,'resources','app','electron','main.cjs'));

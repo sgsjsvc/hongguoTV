@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import crypto from 'node:crypto';
-import {RecommendationService} from '../custom-server/recommendation-service.mjs';
-import {provider} from '../server/provider.mjs';
+import {RecommendationService} from '../server/recommendation-service.mjs';
+import {provider} from '../shared/content-provider.mjs';
 const service=new RecommendationService({fetchPool:async({type,tag,page})=>provider.category(type,tag,page),readProfile:()=>({})});
 const session=crypto.randomUUID();
 const first=await service.page(session,1);

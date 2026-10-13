@@ -10,10 +10,10 @@ function bootlog(stage){fs.appendFileSync(path.join(app.getPath('userData'),'sta
 async function startBackend(){
  bootlog('starting-backend');
  const packaged=path.join(process.resourcesPath,'hongguotv');
- const serviceRoot=fs.existsSync(path.join(packaged,'custom-server','index.mjs'))?packaged:path.resolve(__dirname,'../../..');
+ const serviceRoot=fs.existsSync(path.join(packaged,'server','index.mjs'))?packaged:path.resolve(__dirname,'../../..');
  const bundledNode=path.join(serviceRoot,'runtime',process.platform==='win32'?'node.exe':'node');
  const runtime=fs.existsSync(bundledNode)?bundledNode:process.env.HG_NODE_RUNTIME||'node';
- backend=fork(path.join(serviceRoot,'custom-server','index.mjs'),[],{execPath:runtime,execArgv:[],cwd:serviceRoot,windowsHide:true,env:{...process.env,HG_MANAGED:'1',PORT:'0',HG_HOST:'127.0.0.1',HG_DATA_DIR:path.join(app.getPath('userData'),'local-service'),HG_WEB_DIR:path.join(__dirname,'../dist')},stdio:['ignore','pipe','pipe','ipc']});
+ backend=fork(path.join(serviceRoot,'server','index.mjs'),[],{execPath:runtime,execArgv:[],cwd:serviceRoot,windowsHide:true,env:{...process.env,HG_MANAGED:'1',PORT:'0',HG_HOST:'127.0.0.1',HG_DATA_DIR:path.join(app.getPath('userData'),'local-service'),HG_WEB_DIR:path.join(__dirname,'../dist')},stdio:['ignore','pipe','pipe','ipc']});
  const logs=fs.createWriteStream(path.join(app.getPath('userData'),'local-service.log'),{flags:'a'});backend.stdout.pipe(logs,{end:false});backend.stderr.pipe(logs,{end:false});backend.once('exit',()=>logs.end());
  const port=await new Promise((resolve,reject)=>{const timeout=setTimeout(()=>reject(Error('内置后端启动超时')),15000);backend.once('error',error=>{clearTimeout(timeout);reject(error);});backend.once('exit',code=>{clearTimeout(timeout);reject(Error(`内置后端退出：${code}`));});backend.on('message',message=>{if(message?.type==='ready'){clearTimeout(timeout);resolve(message.port);}});});
  bootlog('backend-ready');

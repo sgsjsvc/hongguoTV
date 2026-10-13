@@ -11,9 +11,9 @@ docker compose -f apps/sync-server/compose.yaml logs --tail=100
 
 默认发布到宿主机 `127.0.0.1:8791`。资料与首次生成的家庭共享密钥存放在 `apps/sync-server/data/`，此目录不能推送。局域网访问可调整端口绑定，公网访问使用 HTTPS 反向代理。配置与迁移见 [本地服务与远程同步](LOCAL_REMOTE_SERVICES.md)。
 
-## 保留的旧内容桥接服务
+## 当前本地一体服务
 
-`server/` 的 8787 桥接服务为兼容工具；当前 Web、电脑和 TV 一体包均不要求独立启动它。根目录 `compose.yaml` 与 `server/compose.yaml` 都从本地源码构建，不依赖旧镜像仓库。
+根目录 `compose.yaml` 从 `server/Dockerfile` 构建本地服务，同时构建并托管 Web 页面，默认访问 `http://localhost:8788`。数据库保存在命名卷 `local-data`，更新镜像保留数据。旧 8787 入口已移除。
 
 ```sh
 docker compose up -d --build
@@ -21,6 +21,6 @@ docker compose logs --tail=100
 docker compose down
 ```
 
-环境变量 `BRIDGE_BIND_IP`、`BRIDGE_PORT` 和 `BRIDGE_TOKEN` 的示例见根目录 `.env.example`。Node 不自动加载 `.env`；Compose 按其环境文件规则加载。
+环境变量 `HG_BIND_IP`、`HG_PORT` 的示例见根目录 `.env.example`。默认仅绑定本机，局域网访问可修改绑定地址。Node 不自动加载 `.env`；Compose 按其环境文件规则加载。不要使用 `down -v` 删除保存资料的卷。
 
 `.dockerignore` 排除本地密钥、数据库、依赖和构建产物。Docker 和 Linux 宿主验收以 [交付验证](DELIVERY_VERIFICATION.md) 为准。

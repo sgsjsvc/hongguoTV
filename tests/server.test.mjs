@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createServer, byteRange } from "../server/http.mjs";
+import { createServer, byteRange } from "../shared/content-http.mjs";
 async function fixture(t, provider, token = "") {
   const server = createServer(provider, token);
   await new Promise((resolve) => server.listen(0, "127.0.0.1", resolve));

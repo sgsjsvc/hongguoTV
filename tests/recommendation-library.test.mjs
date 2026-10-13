@@ -3,8 +3,8 @@ import assert from 'node:assert/strict';
 import { LibraryStore, validateEvent } from '../shared/library-store.mjs';
 import { adminOperation, adminSnapshot } from '../apps/sync-server/admin.mjs';
 import { createSyncServer } from '../apps/sync-server/server.mjs';
-import { LibrarySync } from '../custom-server/library-sync.mjs';
-import { createLibraryHandler } from '../custom-server/library-routes.mjs';
+import { LibrarySync } from '../server/library-sync.mjs';
+import { createLibraryHandler } from '../server/library-routes.mjs';
 import http from 'node:http';
 
 const signal = (seriesId = '90071992547409999') => ({ seriesId, title: '测试剧', tags: '甜宠', contentType: 'comic-drama', watchMs: 12345, exposures: 2, skips: 1, completed: false });

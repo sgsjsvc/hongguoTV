@@ -1,14 +1,16 @@
 services:
-  bridge:
+  local:
     build:
       context: .
       dockerfile: server/Dockerfile
     ports:
-      - "${BRIDGE_BIND_IP:-0.0.0.0}:${BRIDGE_PORT:-8787}:8787"
+      - "${HG_BIND_IP:-127.0.0.1}:${HG_PORT:-8788}:8788"
     environment:
-      BRIDGE_HOST: 0.0.0.0
-      PORT: 8787
-      BRIDGE_TOKEN: ${BRIDGE_TOKEN:-}
+      HG_HOST: 0.0.0.0
+      PORT: 8788
+      HG_DATA_DIR: /data
+    volumes:
+      - local-data:/data
     restart: unless-stopped
     init: true
     read_only: true
@@ -19,3 +21,5 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
+volumes:
+  local-data:

@@ -1,1 +1,13 @@
-{"name":"hongguotv-bridge","version":"0.1.1","private":true,"type":"module","license":"GPL-3.0-only","dependencies":{"axios":"1.13.6"},"engines":{"node":">=22"}}
+{
+  "name": "hongguotv-custom-server",
+  "version": "1.0.0",
+  "description": "Full-featured Hongguo Shortplay Bridge Server",
+  "main": "index.mjs",
+  "type": "module",
+  "scripts": {
+    "start": "node index.mjs"
+  },
+  "dependencies": {
+    "axios": "^1.7.9"
+  }
+}

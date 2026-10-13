@@ -1,5 +1,5 @@
 import fs from 'node:fs';import path from 'node:path';import { createHash } from 'node:crypto';
-import { LibraryStore } from '../shared/library-store.mjs';import { HistoryStore } from '../custom-server/history-store.mjs';
+import { LibraryStore } from '../shared/library-store.mjs';import { HistoryStore } from '../server/history-store.mjs';
 const get=name=>process.argv[process.argv.indexOf(name)+1];const source=get('--from'),destination=get('--to');
 if(!process.argv.includes('--from')||!process.argv.includes('--to')||!source||!destination)throw Error('usage: node scripts/migrate-library.mjs --from <old data directory> --to <new data directory>');
 const oldDirectory=path.resolve(source),newDirectory=path.resolve(destination);if(oldDirectory===newDirectory)throw Error('source and destination must differ');

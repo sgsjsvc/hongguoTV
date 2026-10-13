@@ -14,7 +14,7 @@ captures
 downloads
 tmp
 server/.local
-custom-server/data
+server/data
 apps/sync-server/data
 **/.env
 **/.env.*

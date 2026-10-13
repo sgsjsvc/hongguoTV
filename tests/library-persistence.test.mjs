@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';import { mkdtempSync } from 'node:fs';import { tmpdir } from 'node:os';import path from 'node:path';
 import { LibraryStore } from '../shared/library-store.mjs';
-import { LibrarySync } from '../custom-server/library-sync.mjs';
+import { LibrarySync } from '../server/library-sync.mjs';
 test('local snapshot and unacknowledged operation survive database reopening',()=>{
  const file=path.join(mkdtempSync(path.join(tmpdir(),'hongguotv-library-')),'library.sqlite');let store=new LibraryStore(file);const event=store.write({kind:'search',key:'续播',op:'set',value:{query:'续播'}});store.close();store=new LibraryStore(file);try{assert.deepEqual(store.snapshot().searchHistory,['续播']);assert.equal(store.pending('remote')[0].id,event.id);store.acknowledge('remote',[event.id]);}finally{store.close();}store=new LibraryStore(file);try{assert.equal(store.pending('remote').length,0);assert.deepEqual(store.snapshot().searchHistory,['续播']);}finally{store.close();}
 });

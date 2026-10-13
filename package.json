@@ -3,9 +3,8 @@
   "version": "0.1.1",
   "private": true,
   "scripts": {
-    "start": "node custom-server/index.mjs",
-    "server": "node custom-server/index.mjs",
-    "bridge": "node server/index.mjs",
+    "start": "node server/index.mjs",
+    "server": "node server/index.mjs",
     "dev": "npm --prefix apps/web-pc run dev",
     "build": "npm --prefix apps/web-pc run build",
     "typecheck": "npm --prefix apps/web-pc exec -- tsc --noEmit -p apps/web-pc/tsconfig.json",

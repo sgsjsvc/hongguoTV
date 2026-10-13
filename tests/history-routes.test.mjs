@@ -1,8 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
-import { HistoryStore } from '../custom-server/history-store.mjs';
-import { createHistoryHandler } from '../custom-server/history-routes.mjs';
+import { HistoryStore } from '../server/history-store.mjs';
+import { createHistoryHandler } from '../server/history-routes.mjs';
 
 async function fixture(t) {
   const store = new HistoryStore(':memory:');

@@ -6,7 +6,7 @@
 
 ## 项目目录与重新建仓
 
-源码位于 `apps/`、`custom-server/`、`server/`、`shared/`；`assets/` 保存品牌素材，`scripts/` 保存构建与检查工具，`tests/` 保存测试，`docs/` 保存说明和设计记录。
+源码位于 `apps/`、`server/`、`shared/`；`server/` 是唯一的本地后端，`shared/` 保存内容适配器及共用核心。`assets/` 保存品牌素材，`scripts/` 保存构建与检查工具，`tests/` 保存测试，`docs/` 保存说明和设计记录。
 
 旧远程关联与工作流已清理。重新建仓时推送源码、依赖锁文件、构建配置和许可证；依赖、构建包、日志、数据库与密钥由 `.gitignore` 排除。旧 Git 历史的处理及首次推送步骤见 [推送说明](docs/PUSH_GUIDE.md)。
 

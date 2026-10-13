@@ -122,3 +122,9 @@ Linux / macOS 包已生成并校验归档权限，尚未在对应宿主启动。
 
 用户指定使用 sgsjsvc 账号，并明确要求公开。已创建 `https://github.com/sgsjsvc/hongguoTV`，默认分支 `main`；首次源码提交包含 230 个文件，是全新根提交，不包含旧仓库历史、安装包、本地资料或密钥。本机 `origin` 已改为新仓库，当前 `codex/public-source-import` 跟踪远端 `main`，后续推送使用 `git push origin HEAD:main`。旧本地分支仍保留，不向新仓库推送；本次整理的测试记录为 75 项 Node 测试通过、Web 构建通过、Compose 配置检查通过。
 
+# 2026-10-13 后端目录统一
+
+`custom-server/` 已统一为 `server/`，本地服务仍为 8788，`npm run server` 和 `npm start` 指向新路径。内容适配器为 `shared/content-provider.mjs`；第三方来源与许可证统一保存在 `shared/content-core/vendor/`。旧 8787 独立入口和 `npm run bridge` 已移除，兼容 HTTP 处理器与媒体安全测试保留为 `shared/content-http.mjs`。本次 76 项 Node 测试、Web 构建、Compose 配置检查通过；Windows Web/桌面包已重建，Web 包首页、重复启动、持久化及停止检查通过。其他平台已有产物仍是重构前版本，需要重新构建。
+
+Electron、资料迁移、服务启动和打包脚本已同步调整；旧目录原件保留于忽略的 `outputs/layout-backup-*`。原 `custom-server/data` 随主后端移动到 `server/data`，现有用户目录资料不变。根目录 Docker Compose 改为当前 8788 本地一体服务，远程 8791 配置不变。Docker 引擎未运行，只能完成 Compose 配置检查，容器构建及运行仍待验收。
+
