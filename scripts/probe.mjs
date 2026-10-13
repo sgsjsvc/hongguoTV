@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-const base = process.env.HG_URL || process.env.BRIDGE_URL || "http://127.0.0.1:8788";
+const base = process.env.BRIDGE_URL || "http://127.0.0.1:8787";
 const headers = process.env.BRIDGE_TOKEN
   ? { Authorization: `Bearer ${process.env.BRIDGE_TOKEN}` }
   : {};

@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { LibraryStore } from '../shared/library-store.mjs';
-import { LibrarySync } from '../server/library-sync.mjs';
+import { LibrarySync } from '../custom-server/library-sync.mjs';
 import { createSyncServer } from '../apps/sync-server/server.mjs';
 
 const key='test-family-shared-key-12345';

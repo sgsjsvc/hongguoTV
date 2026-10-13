@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { HistoryOutbox } from '../apps/web-pc/src/history-outbox.mjs';
-import { HistoryStore } from '../server/history-store.mjs';
+import { HistoryStore } from '../custom-server/history-store.mjs';
 const storage = () => { const map=new Map(); return {get length(){return map.size},key:i=>[...map.keys()][i]||null,getItem:k=>map.get(k)||null,setItem:(k,v)=>map.set(k,v),removeItem:k=>map.delete(k)}; };
 test('durable queued progress survives restart and retains newest sequence during acknowledgement', async () => {
  const disk=storage(); let release; const sent=[];

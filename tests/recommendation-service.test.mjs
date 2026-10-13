@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {RecommendationService} from '../server/recommendation-service.mjs';
+import {RecommendationService} from '../custom-server/recommendation-service.mjs';
 const row=(type,page,i)=>({id:`${type}-${page}-${i}`,title:'剧',tags:'爱情',contentType:type});
 test('session pages are stable, concurrent retries do not duplicate, sessions vary',async()=>{
  const service=new RecommendationService({fetchPool:async({type,page})=>Array.from({length:24},(_,i)=>row(type,page,i)),readProfile:()=>({}),settleMs:5});

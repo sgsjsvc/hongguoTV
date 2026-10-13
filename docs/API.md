@@ -1,9 +1,25 @@
-# 当前服务接口
+# 内容服务 API v1
 
-`server/index.mjs` 是唯一的本地 Node 服务入口，默认端口 8788，通过 `npm run server` 启动。它直接调用 `shared/content-provider.mjs` 和共享内容引擎，不请求旧 8787 服务。
+本文描述 server/ 的 8787 基础内容服务，供 8788 定制后端使用。Web / Windows 使用的完整接口见 custom-server/API.md。所有成功 JSON 响应均使用 UTF-8；失败返回非 2xx 和 `{ "error": "可显示的信息" }`。上游失败不会返回空列表伪装成成功。
 
-- 内容、推荐、分类、详情、画质与播放接口见 [本地后端接口](../server/API.md)。
-- 本地资料、历史兼容、迁移和可选同步见 [本地服务与远程同步](LOCAL_REMOTE_SERVICES.md)。
-- 远程家庭资料服务独立位于 `apps/sync-server/`，默认 8791；鉴权使用家庭共享密钥。
+| 请求 | 返回 |
+| --- | --- |
+| `GET /health` | `service: hongguotv`、`version`、`apiVersion: 1`、`upstream: unverified`；只检查进程 |
+| `GET /api/home?page=1` | `{ items: Series[], page }` |
+| `GET /api/search?q=关键词&page=1` | `{ items: Series[], page }` |
+| `GET /api/series/:id` | `Series` 加 `episodes: Episode[]` |
+| `GET /api/episodes/:id/play?fresh=1` | `{ path, contentType: video/mp4 }`，媒体路径相对当前服务地址；`fresh=1` 强制重新解析 |
+| `GET /api/episodes/:id/stream` | MP4 媒体流，支持单区间 Range、后缀区间、HEAD、Content-Length / Content-Range |
 
-旧内容 HTTP 契约归档在 [旧内容协议](LEGACY_CONTENT_API.md)，对应 `shared/content-http.mjs` 的兼容处理器和回归测试，不再提供独立启动命令。不要按旧文档另行启动 8787。
+`Series` 字段：`id`、`title`、`cover`、`description`、`badge`、`tags`。
+`Episode` 字段：`id`、`number`、`title`。ID 始终保留为字符串。
+
+客户端按 `剧集ID + 分集ID + 播放秒数` 保存续播记录，不保存临时媒体 URL。一次播放错误会重新解析一次；仍失败时显示重试入口。
+
+服务开启 `BRIDGE_TOKEN` 时，JSON 和视频请求均要求 `Authorization: Bearer <口令>`，播放器也必须携带该请求头。此基础服务没有浏览器跨域白名单配置；当前 Web / Windows 经 8788 定制服务访问内容。
+
+输入错误使用 400，口令错误使用 401，不存在的路径使用 404，无效媒体范围使用 416，源站失败使用 502。同时媒体请求限制为 4 个，超出使用 503。服务不接受用户指定的任意代理 URL。
+
+媒体代理按 1 MiB 分块处理并遵守客户端背压；对开放区间返回完整请求范围，而不是只返回首个 1 MiB。元数据 / 视频缓存定时清理并限制数量。源站 URL 和签名材料不输出到客户端错误和服务日志。
+
+服务为首版家庭使用实现。进程内存、长时间稳定性、不同编码的设备兼容性、源站自然过期后的行为及公网环境均需另行验证。

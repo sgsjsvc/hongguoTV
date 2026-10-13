@@ -15,7 +15,7 @@ git push origin HEAD:main
 
 旧本地分支仍保留，不能把它们作为新仓库的初次推送来源。以下初始化说明仅适用于另建仓库，不需要在当前项目重复执行。
 
-2026-10-13 初次整理移除旧 `origin` 和全部工作流，随后按用户要求关联上述公开仓库。后端目录已统一为 `server/`，内容适配器移入 `shared/`；旧本地历史仍保留在原有分支，没有上传到新仓库。
+2026-10-13 整理：已移除旧 `origin` 和全部 GitHub 工作流文件，清除旧仓库镜像地址和发布配置；远端仓库不做操作。源码保持现有结构，避免破坏导入路径及打包脚本。自动审批审查拒绝删除 `.git` 与空工作流目录，所以旧本地历史仍在，但已没有远程推送地址。
 
 ## 应推送内容
 
@@ -23,9 +23,10 @@ git push origin HEAD:main
 | --- | --- |
 | `apps/web-pc/` | Web 源码、Electron 主进程、依赖锁文件与配置 |
 | `apps/tv-android/` | TV 源码、资源、测试、QuickJS 源码与许可证、Gradle Wrapper |
-| `apps/sync-server/` | 共享服务、管理平台 |
-| `server/` | 本地资料、推荐及播放后端 |
-| `shared/` | 共用内容引擎与适配器、推荐算法、分类契约、资料模型、第三方来源说明 |
+| `apps/sync-server/` | 共享服务、管理平台、启动配置 |
+| `custom-server/` | 本地资料、推荐及播放后端 |
+| `server/` | 内容适配器、兼容桥接与第三方来源说明 |
+| `shared/` | 共用内容引擎、推荐算法、分类契约、资料模型 |
 | `assets/branding/` | 图标原始素材与设计说明 |
 | `scripts/`、`tests/` | 构建、迁移、启动、验证脚本及自动化测试 |
 | `docs/`、`HANDOVER.md`、`README.md` | 当前说明、交接、验收及历史设计记录 |
@@ -44,7 +45,7 @@ git push origin HEAD:main
 | `dist-win/`、所有 `dist/` 和 `build/` | 桌面程序目录及 Web/Android 构建产物 |
 | `.gradle/`、`.kotlin/`、`.cxx/` | 构建缓存与中间文件 |
 | `.workbuddy-ai/`、IDE 配置 | 本机助手记录与编辑器设置 |
-| `server/data/`、`apps/sync-server/data/`、`server/.local/` | 本地业务资料、配置、运行日志和密钥 |
+| `custom-server/data/`、`apps/sync-server/data/`、`server/.local/` | 本地业务资料、配置、运行日志和密钥 |
 | `.env`、`local.properties`、数据库、日志、签名文件和 `shared-key.txt` | 机器路径、运行数据及凭据 |
 
 本机用户目录中的应用资料也不属于源码仓库。可安装包以后单独作为 Release 附件分发，不提交到源码历史。不要使用强制添加绕过忽略规则。

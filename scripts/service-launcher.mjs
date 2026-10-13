@@ -35,7 +35,7 @@ if(command==='stop'){
 }else if(command==='run'){
  const token=process.argv[3];if(!token)throw Error('managed startup token required');
  let stopped=false,backendReady=false;
- const child=fork(path.join(root,remote?'apps/sync-server/index.mjs':'server/index.mjs'),[],{execPath:process.execPath,cwd:root,env:{...process.env,HG_MANAGED:'1',HG_DATA_DIR:profile,PORT:process.env.HG_PORT||(remote?'8791':'8788')},windowsHide:true,stdio:['ignore','inherit','inherit','ipc']});
+ const child=fork(path.join(root,remote?'apps/sync-server/index.mjs':'custom-server/index.mjs'),[],{execPath:process.execPath,cwd:root,env:{...process.env,HG_MANAGED:'1',HG_DATA_DIR:profile,PORT:process.env.HG_PORT||(remote?'8791':'8788')},windowsHide:true,stdio:['ignore','inherit','inherit','ipc']});
  const controller=http.createServer((req,res)=>{
   if(req.headers.authorization!==`Bearer ${token}`){res.writeHead(403);res.end();return;}
   res.setHeader('Content-Type','application/json');

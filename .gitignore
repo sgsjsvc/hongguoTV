@@ -52,7 +52,7 @@ shared-key.txt
 # Delivery artifacts, native intermediates, local runtime
 /outputs/
 /server/.local/
-/server/data/
+/custom-server/data/
 /apps/sync-server/data/
 .cxx/
 .externalNativeBuild/

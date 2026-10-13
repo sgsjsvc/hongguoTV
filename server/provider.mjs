@@ -2,11 +2,11 @@ import fs from "node:fs";
 import vm from "node:vm";
 import crypto from "node:crypto";
 import axios from "axios";
-import categoryContract from './category-contract.cjs';
+import categoryContract from '../shared/category-contract.cjs';
 
 // Trusted, pinned GPL source. This is a compatibility wrapper, not a sandbox for user scripts.
 const source = fs.readFileSync(
-  fs.existsSync(new URL("./content-core/hongguo.js", import.meta.url)) ? new URL("./content-core/hongguo.js", import.meta.url) : new URL("./content-core/vendor/hongguo.cjs", import.meta.url),
+  fs.existsSync(new URL("../shared/content-core/hongguo.js", import.meta.url)) ? new URL("../shared/content-core/hongguo.js", import.meta.url) : new URL("./vendor/hongguo.cjs", import.meta.url),
   "utf8"
 );
 const context = vm.createContext({

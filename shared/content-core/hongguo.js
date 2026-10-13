@@ -444,7 +444,7 @@ async function requestVideoModel(vid) {
     const signed = signedVideoRequest(payload);
     const resp = await axios.post(signed.url, signed.body, { headers: signed.headers, timeout: 20000, responseType: 'text' });
     const data = jsonBody(resp.data);
-    if (resp.status !== 200 || !data || Number(data.Code || data.code || 0) !== 0) throw new Error(`video_model failed (${data?.Code ?? data?.code ?? resp.status}): ${data?.Message || data?.message || '响应无效'}`);
+    if (resp.status !== 200 || !data || Number(data.Code || data.code || 0) !== 0) throw new Error(`video_model failed: ${data?.Message || data?.message || resp.status}`);
     return data;
 }
 
@@ -484,35 +484,15 @@ function qualityRows(videoList) {
     return rows.sort((a, b) => qualityNumber(b.quality || b.key) - qualityNumber(a.quality || a.key));
 }
 
-async function fetchPublicVideoInfo(vid) {
-    const url = `${SITE}/video/public/${encodeURIComponent(str(vid))}/360p.mp4`;
-    const response = await axios(url, {
-        headers: { 'User-Agent': VIDEO_UA, Referer: `${SITE}/`, Range: 'bytes=0-31' },
-        timeout: 10000, responseType: 'arraybuffer', validateStatus: () => true,
-    });
-    const bytes = Buffer.from(response.data || []);
-    if (response.status !== 206 || bytes.length !== 32 || bytes.toString('ascii', 4, 8) !== 'ftyp') throw new Error('官方公开视频不可用');
-    const item = { main_url: url, height: 360, codec_type: 'avc1' };
-    return { source: 'official-public', model: {}, info: { video_list: { public_360p: item } }, rows: [{ key: 'public_360p', quality: '360', item }] };
-}
-
 async function fetchVideoInfo(vid) {
     const cached = videoInfoCache.get(str(vid));
-    if (cached && Date.now() - cached.time < (cached.value.source === 'official-public' ? 60000 : 300000)) return cached.value;
-    let value;
-    try {
-        const model = modelForVideo(await requestVideoModel(vid), vid);
-        const fallback = parseFallback(model.fallback_api);
-        if (!fallback) throw new Error('fallback_api 为空');
-        const outer = jsonBody(await getText(fallback));
-        const info = outer?.video_info?.data || {};
-        const rows = qualityRows(info.video_list);
-        if (!rows.length) throw new Error('没有可用的视频画质');
-        value = { model, info, rows };
-    } catch (error) {
-        try { value = await fetchPublicVideoInfo(vid); }
-        catch (_) { throw new Error(`${error.message}；官方公开视频也不可用`); }
-    }
+    if (cached && Date.now() - cached.time < 300000) return cached.value;
+    const model = modelForVideo(await requestVideoModel(vid), vid);
+    const fallback = parseFallback(model.fallback_api);
+    if (!fallback) throw new Error('fallback_api 为空');
+    const outer = jsonBody(await getText(fallback));
+    const info = outer?.video_info?.data || {};
+    const value = { model, info, rows: qualityRows(info.video_list) };
     videoInfoCache.set(str(vid), { time: Date.now(), value });
     return value;
 }
@@ -705,7 +685,7 @@ async function resolveStream(vid, quality) {
 
 async function remoteRange(stream, start, end) {
     const resp = await axios(stream.url, {
-        headers: { 'User-Agent': VIDEO_UA, Referer: stream.url.startsWith(`${SITE}/video/public/`) ? `${SITE}/` : 'https://novel.snssdk.com/', Range: `bytes=${start}-${end}` },
+        headers: { 'User-Agent': VIDEO_UA, Referer: 'https://novel.snssdk.com/', Range: `bytes=${start}-${end}` },
         timeout: 30000, responseType: 'arraybuffer',
     });
     let data = Buffer.from(resp.data);
