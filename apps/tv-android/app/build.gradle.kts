@@ -1,4 +1,17 @@
+import java.util.Properties
+
 plugins { id("com.android.application"); id("org.jetbrains.kotlin.android") }
+
+// 发布签名：凭据来自 apps/tv-android/keystore.properties（已被 .gitignore 排除）。
+// 该文件缺失时（如 CI 或新克隆）不影响 debug 构建，仅跳过 release 签名。
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+if (keystorePropertiesFile.exists()) {
+    keystorePropertiesFile.inputStream().use { keystoreProperties.load(it) }
+}
+val releaseStorePath = keystoreProperties.getProperty("storeFile")
+val hasReleaseSigning = releaseStorePath != null && rootProject.file(releaseStorePath).exists()
+
 android {
     namespace = "com.hongguotv.tv"
     compileSdk = 35
@@ -13,6 +26,25 @@ android {
         ndk { abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64") }
         externalNativeBuild { cmake { arguments += "-DANDROID_STL=c++_static" } }
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+                // 同时启用 v1 与 v2 签名：v1 兼容 Android 5.1/6.0（API 22/23）
+                enableV1Signing = true
+                enableV2Signing = true
+            }
+        }
+    }
+    buildTypes {
+        release {
+            isMinifyEnabled = false
+            if (hasReleaseSigning) signingConfig = signingConfigs.getByName("release")
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
