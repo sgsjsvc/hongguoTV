@@ -74,3 +74,7 @@
 {"at":"2026-10-14T08:38:08.946Z","kind":"task-updated","id":"t-r13-cleanup","by":"codex","status":"claimed","note":"claimed"}
 {"at":"2026-10-14T08:46:53.701Z","kind":"task-updated","id":"t-r12-engine-opt","by":"codex","status":"done","note":""}
 {"at":"2026-10-14T08:46:53.792Z","kind":"task-updated","id":"t-r13-cleanup","by":"codex","status":"done","note":""}
+{"at":"2026-10-14T10:21:26.258Z","kind":"task-created","id":"t-s1-switch-hint","assignee":"antigravity","title":"S1 TV 端切剧轻量提示与加载动画"}
+{"at":"2026-10-14T10:21:26.259Z","kind":"task-updated","id":"t-s1-switch-hint","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T10:21:26.263Z","kind":"task-created","id":"t-s2-verify-hint","assignee":"workbuddy","title":"S2 TV 端切剧轻量提示 — 独立复核"}
+{"at":"2026-10-14T10:21:26.264Z","kind":"task-updated","id":"t-s2-verify-hint","by":"dsh","status":"pending","note":"brief ok"}
