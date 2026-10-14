@@ -81,9 +81,16 @@ class MainActivity : ComponentActivity() {
     private val hideSeekHud = Runnable {
         seekHud.visibility = View.GONE
         accumulatedSeekDelta = 0L
-        if (player?.isPlaying == false && !overlayVisible && dialog == null && (screen == Screen.FEED || screen == Screen.FULL)) {
+        val isSwitching = ::switchHintView.isInitialized && switchHintView.visibility == View.VISIBLE
+        if (player?.isPlaying == false && !overlayVisible && !isSwitching && dialog == null && (screen == Screen.FEED || screen == Screen.FULL)) {
             pauseIndicator.visibility = View.VISIBLE
         }
+    }
+
+    // Lightweight Switch Hint HUD
+    private lateinit var switchHintView: SwitchHintView
+    private val hideSwitchHintRunnable = Runnable {
+        hideSwitchHint()
     }
 
     // In-Player Bottom Episode Drawer
@@ -233,6 +240,9 @@ class MainActivity : ComponentActivity() {
 
         // 7. Center Seek HUD
         buildSeekHud()
+
+        // 7.5 Lightweight Switch Hint HUD
+        buildSwitchHintView()
 
         // 8. In-Player Bottom Episode Drawer
         buildEpisodeDrawer()
@@ -397,6 +407,36 @@ class MainActivity : ComponentActivity() {
         root.addView(seekHud, FrameLayout.LayoutParams(-2, -2, Gravity.CENTER))
     }
 
+    private fun buildSwitchHintView() {
+        switchHintView = SwitchHintView(this)
+        val lp = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+        ).apply {
+            bottomMargin = TvUi.dimen(this@MainActivity, R.dimen.switch_hint_margin_bottom)
+        }
+        root.addView(switchHintView, lp)
+    }
+
+    private fun showSwitchHint(title: String, subtitle: String? = null, badge: String? = null, loadingHint: String? = null) {
+        handler.removeCallbacks(hideSwitchHintRunnable)
+        if (::pauseIndicator.isInitialized) {
+            pauseIndicator.visibility = View.GONE
+        }
+        if (::switchHintView.isInitialized) {
+            switchHintView.show(title, subtitle, badge, loadingHint)
+            handler.postDelayed(hideSwitchHintRunnable, 8000)
+        }
+    }
+
+    private fun hideSwitchHint() {
+        handler.removeCallbacks(hideSwitchHintRunnable)
+        if (::switchHintView.isInitialized) {
+            switchHintView.hide()
+        }
+    }
+
     private fun buildEpisodeDrawer() {
         val drawerView = EpisodeDrawerView(
             context = this,
@@ -555,6 +595,7 @@ class MainActivity : ComponentActivity() {
         if (screen == Screen.CATALOG && catalog.rows.isEmpty() && navigationJob?.isActive != true && catalog.source !in listOf("favorites", "history")) loadCatalog(false)
     }
     override fun onStop() {
+        hideSwitchHint()
         foreground=false
         updateRecommendationPlaying(false);flushRecommendation()
         foreground = false; history.foreground(false); resumePaused = true; saveProgress()
@@ -564,6 +605,7 @@ class MainActivity : ComponentActivity() {
         super.onStop()
     }
     override fun onDestroy() {
+        hideSwitchHint()
         this@MainActivity.handler.removeCallbacksAndMessages(null); dialog?.dismiss(); artwork.close(); scope.cancel()
         Thread({ localContent.close() }, "TV-content-close").apply { isDaemon=true; start() }
         super.onDestroy()
@@ -678,6 +720,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun stopForNavigation(next: Screen) {
+        hideSwitchHint()
         saveProgress(); player?.pause(); playbackJob?.cancel(); playbackGeneration.next()
         feedJob?.cancel()
         pendingFeedIndex = null; pendingDetail = null; pendingSeries = null
@@ -709,12 +752,16 @@ class MainActivity : ComponentActivity() {
                         if (feedOverlay.visibility == View.VISIBLE) revealChrome()
                     } else {
                         saveProgress()
-                        if ((screen == Screen.FEED || screen == Screen.FULL) && !overlayVisible && dialog == null) {
+                        val isSwitching = ::switchHintView.isInitialized && switchHintView.visibility == View.VISIBLE
+                        if ((screen == Screen.FEED || screen == Screen.FULL) && !overlayVisible && !isSwitching && dialog == null) {
                             pauseIndicator.visibility = View.VISIBLE
                         }
                     }
                 }
                 override fun onPlaybackStateChanged(playbackState: Int) {
+                    if (playbackState == Player.STATE_READY) {
+                        hideSwitchHint()
+                    }
                     if (playbackState == Player.STATE_ENDED) {
                         // Clearing/replacing a playlist also emits ENDED. Only the active media may complete.
                         val episode=activeDetail?.episodes?.getOrNull(activeIndex) ?: return
@@ -724,6 +771,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 override fun onPlayerError(error: PlaybackException) {
+                    hideSwitchHint()
                     pauseIndicator.visibility = View.GONE
                     if (!retryUsed) { retryUsed = true; loadEpisode(activeIndex, current.currentPosition, true, false) }
                     else playbackError("视频播放失败，可能是网络或设备解码不支持。")
@@ -732,7 +780,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun loadEpisode(index: Int, position: Long = 0, autoplay: Boolean = true, resetRetry: Boolean = true, afterPrepare: (() -> Unit)? = null) {
+    private fun loadEpisode(index: Int, position: Long = 0, autoplay: Boolean = true, resetRetry: Boolean = true, afterPrepare: (() -> Unit)? = null, showSwitchHint: Boolean = false) {
         val detail = activeDetail ?: return
         val episode = detail.episodes.getOrNull(index) ?: return
         playbackJob?.cancel(); val generation = playbackGeneration.next()
@@ -752,7 +800,16 @@ class MainActivity : ComponentActivity() {
         updateFavState()
 
         navigation.removeAllViews()
-        revealChrome()
+        if (showSwitchHint) {
+            hideChromeNow()
+            showSwitchHint(
+                title = detail.series.title,
+                subtitle = "第 ${episode.number} 集 · 《${detail.series.title}》",
+                badge = detail.series.badge.ifBlank { "全${detail.episodes.size}集" }
+            )
+        } else {
+            revealChrome()
+        }
         if (!overlayVisible) focusPlayback()
         artwork.load(detail.series.cover, backdrop)
 
@@ -769,7 +826,9 @@ class MainActivity : ComponentActivity() {
                 current.setMediaItem(MediaItem.Builder().setMediaId(episode.id).setUri(api.streamUrl(episode.id, detail.series.id, quality)).build())
                 current.seekTo(position); current.setPlaybackSpeed(store.speed)
                 current.prepare(); current.playWhenReady = autoplay && !resumePaused && foreground && dialog == null && (screen == Screen.FEED || screen == Screen.FULL)
-                revealChrome()
+                if (!showSwitchHint) {
+                    revealChrome()
+                }
                 afterPrepare?.invoke()
             } catch (cancelled: CancellationException) { throw cancelled }
             catch (error: Exception) { if (playbackGeneration.isCurrent(generation)) playbackError(error.message ?: "内容加载失败") }
@@ -777,6 +836,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun playbackError(message: String) {
+        hideSwitchHint()
         if (!foreground) return
         player?.pause(); overlayVisible = true; revealChrome()
         infoSubtitle.text = message
@@ -791,7 +851,7 @@ class MainActivity : ComponentActivity() {
         val detail = activeDetail ?: return
         if(activeIndex==detail.episodes.lastIndex){activeRecommendation?.completed=true;flushRecommendation()}
         saveProgress(true)
-        if (activeIndex + 1 < detail.episodes.size) loadEpisode(activeIndex + 1)
+        if (activeIndex + 1 < detail.episodes.size) loadEpisode(activeIndex + 1, showSwitchHint = true)
         else if (feedMode) switchFeed(1) else showRelated(detail.series)
     }
 
@@ -829,15 +889,17 @@ class MainActivity : ComponentActivity() {
         pendingSeries = series
         saveProgress(); player?.pause(); screen = Screen.FEED; feedMode = true; feedIndex = index
         navigation.removeAllViews()
+        pauseIndicator.visibility = View.GONE
         playbackJob?.cancel(); val generation = playbackGeneration.next()
-        revealChrome(); infoTitle.text = "@${series.title} · 加载中"
+        hideChromeNow()
+        showSwitchHint(title = series.title, subtitle = "内容加载中...", badge = series.badge)
         playbackJob = scope.launch {
             try {
                 val detail = repository().detail(series.id)
                 ensureActive(); if (!playbackGeneration.isCurrent(generation)) return@launch
                 val typed=detail.copy(series=detail.series.copy(contentType=series.contentType))
                 pendingSeries = null; history.begin(store.baseUrl, typed.series); lastRecord = null; activeDetail = typed;activateRecommendation(typed.series)
-                val previous=feedPositions[typed.series.id];loadEpisode(previous?.first?:0,previous?.second?:0)
+                val previous=feedPositions[typed.series.id];loadEpisode(previous?.first?:0,previous?.second?:0,showSwitchHint = true)
             } catch (cancelled: CancellationException) { throw cancelled }
             catch (error: Exception) { if (playbackGeneration.isCurrent(generation)) feedError(error.message ?: "剧集加载失败") }
         }
@@ -876,6 +938,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun feedError(message: String) {
+        hideSwitchHint()
+        if (!foreground) return
         overlayVisible = true; revealChrome()
         infoTitle.text = "@红果短剧"
         infoSubtitle.text = message
@@ -1371,6 +1435,7 @@ class MainActivity : ComponentActivity() {
                     hideChromeNow()
                     true
                 } else {
+                    hideSwitchHint()
                     revealChrome()
                     collectionButton.post {
                         collectionButton.requestFocus()

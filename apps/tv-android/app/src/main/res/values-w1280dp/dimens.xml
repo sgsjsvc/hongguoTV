@@ -134,4 +134,12 @@
     <dimen name="common_button_min_height">44dp</dimen>
     <dimen name="common_pill_button_min_height">36dp</dimen>
     <dimen name="common_circle_button_size">42dp</dimen>
+
+    <!-- Switch Hint HUD -->
+    <dimen name="switch_hint_pad_h">28dp</dimen>
+    <dimen name="switch_hint_pad_v">16dp</dimen>
+    <dimen name="switch_hint_margin_bottom">64dp</dimen>
+    <dimen name="switch_hint_min_width">300dp</dimen>
+    <dimen name="switch_hint_badge_pad_h">10dp</dimen>
+    <dimen name="switch_hint_badge_pad_v">3dp</dimen>
 </resources>
