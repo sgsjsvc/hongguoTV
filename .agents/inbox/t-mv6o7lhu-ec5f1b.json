@@ -1,0 +1,86 @@
+{
+  "id": "t-mv6o7lhu-ec5f1b",
+  "createdAt": "2026-10-13T12:42:04.819Z",
+  "updatedAt": "2026-10-13T12:58:56.796Z",
+  "assignee": "antigravity",
+  "title": "T1 屏幕自适应：尺寸资源化",
+  "brief": "把 TV 端从「1080p 硬编码」改为「多分辨率自适应」。\n\n要做的事：\n1. 新建 res/values/dimens.xml，定义全部 UI 尺寸为语义化名称（如 nav_height、action_button_height、content_padding_h、scrim_top_height、episode_drawer_max_height 等）。\n2. 新建 res/values-sw600dp/dimens.xml 与 res/values-w1280dp/dimens.xml，按屏幕尺寸覆盖。基准档按 720p 电视取值，w1280dp 档放大到 1080p 观感。\n3. 改造 TvUi.kt：新增读取 dimens 的辅助方法（如 TvUi.dimen(context, R.dimen.x)），保留现有 dp() 供非布局用途。\n4. 逐处替换 MainActivity.kt 中的硬编码 dp() 字面量为 dimens 取值。共 108 处。\n\n硬性约束：\n- 不改变任何现有功能行为（抽屉、Seek HUD、分组 Tab、播放控制）。\n- 不修改 shared/content-core/hongguo.js。\n- 替换必须逐段进行，完成后用 git diff 自查。\n- 保持 API 22 兼容（minSdk=22）。",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "协作规范: .agents/README.md 与 .agents/QUICKSTART.md",
+    "本轮规划: .agents/shared/tv-ui-plan.md",
+    "范围仅 apps/tv-android/ 的 Kotlin UI 层，禁止修改 shared/content-core/hongguo.js",
+    "当前 git 分支 codex/first-github-push-20261013，工作区已有未提交改动（播放修复），不得回退或清理",
+    "Antigravity 此前已落地：底部选集抽屉(episodeDrawer)、居中 Seek HUD(seekHud)、集数分组 Tab。这些行为必须保持不变。",
+    "现状证据：res/values/dimens.xml 不存在；无 values-sw600dp / values-w1280dp；dp() 硬编码 108 处；无 XML 布局文件（UI 全代码构建）。",
+    "TvUi.kt 现为 150 行，提供 surface/pillBackground/focusBackground/button/pillButton 等构建器。",
+    "MainActivity.kt 现为 1835 行。"
+  ],
+  "acceptance": [
+    "res/values/dimens.xml、values-sw600dp/dimens.xml、values-w1280dp/dimens.xml 三个文件均存在且内容有效",
+    "MainActivity.kt 中硬编码字面量 dp(数字) 调用归零（全部经 dimens 或 TvUi 取值）",
+    "./gradlew :app:assembleDebug 通过",
+    "./gradlew :app:lintDebug 通过（项目 abortOnError=true）",
+    "报告写入 .agents/shared/<任务ID>-antigravity.md，含实际改动、验证命令、实际结果、剩余风险"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-13T12:48:58.490Z",
+  "result": {
+    "summary": ".agents/shared/t-mv6o7lhu-ec5f1b-antigravity.md"
+  },
+  "history": [
+    {
+      "at": "2026-10-13T12:42:04.820Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-13T12:43:35.032Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-13T12:43:53.777Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": "dispatched and completed"
+    },
+    {
+      "at": "2026-10-13T12:44:24.655Z",
+      "status": "pending",
+      "by": "antigravity",
+      "note": "reopened: not actually executed"
+    },
+    {
+      "at": "2026-10-13T12:48:58.490Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-13T12:58:56.797Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-mv6o7lhu-ec5f1b.brief.md",
+  "supersedes": [
+    "antigravity-ready.md 第 61 行『TV 范围排除』—— 已被用户最新指令覆盖",
+    "QUICKSTART.md 第 11 行『TV 不改动、不构建、不安装』—— 仅约束该文件撰写时的后续动作，不约束本次新任务"
+  ],
+  "userDirective": "优化 TV 端的 UI 界面，采用自适应方便适配各种屏幕分辨率，再优化一下布局和遥控器控制",
+  "userConfirmedScope": [
+    "屏幕自适应（尺寸资源化）",
+    "布局结构重组（拆分 1835 行单文件）",
+    "统一各页面布局风格"
+  ],
+  "verifyDevice": "emulator-5554 (API 32, x86_64, 支持 wm size 改分辨率)",
+  "order": 1,
+  "label": "T1 尺寸资源化"
+}

@@ -1,5 +1,6 @@
 package com.hongguotv.tv
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -33,15 +34,16 @@ internal class SeriesAdapter(
     override fun getItemCount() = rows.size
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
         val context = parent.context
+        val cardMargin = TvUi.dimen(context, R.dimen.series_card_margin)
         val card = TvUi.column(context).apply {
             isFocusable = true; isClickable = true
             background = TvUi.focusBackground(radius = 12f)
-            setPadding(TvUi.dp(context, 8), TvUi.dp(context, 8), TvUi.dp(context, 8), TvUi.dp(context, 8))
+            setPadding(cardMargin, cardMargin, cardMargin, cardMargin)
             layoutParams = RecyclerView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                TvUi.dp(context, 345)
+                TvUi.dimen(context, R.dimen.series_card_width)
             ).apply {
-                setMargins(TvUi.dp(context, 8), TvUi.dp(context, 8), TvUi.dp(context, 8), TvUi.dp(context, 8))
+                setMargins(cardMargin, cardMargin, cardMargin, cardMargin)
             }
         }
 
@@ -49,7 +51,7 @@ internal class SeriesAdapter(
         val imageContainer = FrameLayout(context).apply {
             background = GradientDrawable().apply {
                 setColor(0xff1e293b.toInt())
-                cornerRadius = TvUi.dp(context, 8).toFloat()
+                cornerRadius = cardMargin.toFloat()
             }
         }
         val image = ImageView(context).apply {
@@ -60,26 +62,44 @@ internal class SeriesAdapter(
         // Rank Badge (for Top rankings)
         val rankBadge = TextView(context).apply {
             textSize = 11f; setTextColor(Color.WHITE); setTypeface(typeface, Typeface.BOLD)
-            setPadding(TvUi.dp(context, 6), TvUi.dp(context, 2), TvUi.dp(context, 6), TvUi.dp(context, 2))
+            val rankPadH = TvUi.dimen(context, R.dimen.seek_hud_delta_pad_h)
+            val rankPadV = TvUi.dimen(context, R.dimen.seek_hud_delta_pad_v)
+            setPadding(rankPadH, rankPadV, rankPadH, rankPadV)
             visibility = android.view.View.GONE
         }
         imageContainer.addView(rankBadge, FrameLayout.LayoutParams(-2, -2, Gravity.TOP or Gravity.START))
 
-        card.addView(imageContainer, LinearLayout.LayoutParams(-1, TvUi.dp(context, 230)))
+        card.addView(imageContainer, LinearLayout.LayoutParams(-1, TvUi.dimen(context, R.dimen.series_card_image_height)))
 
         val title = TextView(context).apply {
             textSize = 14f; setTextColor(Color.WHITE); maxLines = 2; minLines = 2
-            setPadding(TvUi.dp(context, 4), TvUi.dp(context, 6), TvUi.dp(context, 4), TvUi.dp(context, 2))
+            val padH = TvUi.dimen(context, R.dimen.series_card_title_pad_h)
+            val padTop = TvUi.dimen(context, R.dimen.series_card_title_pad_top)
+            val padBottom = TvUi.dimen(context, R.dimen.series_card_title_pad_bottom)
+            setPadding(padH, padTop, padH, padBottom)
             setTypeface(typeface, Typeface.BOLD)
         }
         val badge = TextView(context).apply {
             textSize = 12f; setTextColor(TvUi.AMBER)
-            setPadding(TvUi.dp(context, 4), 0, TvUi.dp(context, 4), TvUi.dp(context, 4))
+            val padH = TvUi.dimen(context, R.dimen.series_card_badge_pad_h)
+            val padBottom = TvUi.dimen(context, R.dimen.series_card_badge_pad_bottom)
+            setPadding(padH, 0, padH, padBottom)
         }
         card.addView(title)
         card.addView(badge)
-        val progress = ProgressBar(context,null,android.R.attr.progressBarStyleHorizontal).apply{max=1000;visibility=android.view.View.GONE}
-        card.addView(progress,LinearLayout.LayoutParams(-1,TvUi.dp(context,4)))
+        val progress = ProgressBar(context, null, android.R.attr.progressBarStyleHorizontal).apply {
+            max = 1000
+            progressTintList = ColorStateList.valueOf(TvUi.RED)
+            progressBackgroundTintList = ColorStateList.valueOf(0x44ffffff.toInt())
+            visibility = android.view.View.GONE
+        }
+        val progressLayoutParams = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            TvUi.dimen(context, R.dimen.series_card_progress_height)
+        ).apply {
+            topMargin = TvUi.dimen(context, R.dimen.series_card_progress_margin_top)
+        }
+        card.addView(progress, progressLayoutParams)
 
         return Holder(card, imageContainer, image, rankBadge, title, badge,progress)
     }
@@ -102,8 +122,9 @@ internal class SeriesAdapter(
                 2 -> intArrayOf(0xfff97316.toInt(), 0xffea580c.toInt()) // Bronze
                 else -> intArrayOf(0xcc1e293b.toInt(), 0xaa0f172a.toInt())
             }
+            val cornerRadiusPx = TvUi.dimen(holder.itemView.context, R.dimen.series_rank_badge_radius).toFloat()
             holder.rankBadge.background = GradientDrawable(GradientDrawable.Orientation.TL_BR, bgGradient).apply {
-                cornerRadius = TvUi.dp(holder.itemView.context, 6).toFloat()
+                cornerRadius = cornerRadiusPx
             }
         } else {
             holder.rankBadge.visibility = android.view.View.GONE

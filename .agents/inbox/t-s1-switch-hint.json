@@ -1,0 +1,51 @@
+{
+  "id": "t-s1-switch-hint",
+  "createdAt": "2026-10-14T10:21:26.257Z",
+  "updatedAt": "2026-10-14T11:26:57.397Z",
+  "assignee": "antigravity",
+  "title": "S1 TV 端切剧轻量提示与加载动画",
+  "brief": "详见 .agents/inbox/t-s1-switch-hint.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "第六轮规划: .agents/shared/round6-plan.md",
+    "范围：仅 TV 端（apps/tv-android/）。Web/PC/Windows 不在本轮范围。",
+    "用户需求：上下键切剧只显示剧名不显示整个菜单；自动下一集同样；增加加载动画。",
+    "关键约束一：revealChrome() 有 9 个调用点，7 个需要完整 chrome，不可修改该函数本身。",
+    "关键约束二：loadEpisode() 有 13 个调用点，需在调用点控制是否显示轻量提示。",
+    "重点回归项：用户按 MENU 必须仍能唤出完整 chrome。"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-14T10:27:14.366Z",
+  "result": {
+    "summary": ".agents/shared/t-s1-switch-hint-antigravity.md"
+  },
+  "history": [
+    {
+      "at": "2026-10-14T10:21:26.257Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T10:27:14.366Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T11:26:57.398Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-s1-switch-hint.brief.md",
+  "order": 1,
+  "kind": "fix"
+}

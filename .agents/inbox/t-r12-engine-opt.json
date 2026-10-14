@@ -1,0 +1,52 @@
+{
+  "id": "t-r12-engine-opt",
+  "createdAt": "2026-10-14T05:38:23.429Z",
+  "updatedAt": "2026-10-14T08:46:53.693Z",
+  "assignee": "codex",
+  "title": "R12 引擎结构优化与 D1-F10 验证（D1-F5/F6/F7/F8/F9/F10）",
+  "brief": "详见 .agents/inbox/t-r12-engine-opt.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "第五轮规划: .agents/shared/round5-fix-plan.md",
+    "发现来源: .agents/shared/discovery-round4-synthesis.md",
+    "第四轮已入库（3af5e82 业务代码、a056538 协作记录）",
+    "修复类任务：可改代码，但严格限定在 brief 授权的文件范围内",
+    "必须提供「修复前失败证据 + 修复后通过证据」"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [
+    "t-r11-playback-correctness"
+  ],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-14T08:31:41.006Z",
+  "result": {
+    "summary": "R12完成，报告 .agents/shared/t-r12-engine-opt-codex.md。F5/F6/F7/F8/F9修复；缓存100/24、12重复POST/GET→1、样本end访问10001→14；新增21项含fresh竞态及box误判红绿，与R1/R11 47通过，npm93、APK/lint/JVM通过，真实四档CENC首样本验证通过。F10未取得真实AVC加密样本，按brief如实跳过且未改codec恢复；三副本同步兼容差异保留。独立复核通过。未重启部署。"
+  },
+  "history": [
+    {
+      "at": "2026-10-14T05:38:23.429Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T08:31:41.006Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T08:46:53.694Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-r12-engine-opt.brief.md",
+  "order": 12,
+  "kind": "fix"
+}

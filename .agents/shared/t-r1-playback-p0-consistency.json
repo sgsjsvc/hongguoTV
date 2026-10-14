@@ -1,0 +1,22 @@
+{
+  "remoteRangeIdentical": true,
+  "preservedCategoryDifferences": [
+    {
+      "file": "custom-server/vendor/hongguo.cjs",
+      "differingLines": [
+        138
+      ]
+    },
+    {
+      "file": "server/vendor/hongguo.cjs",
+      "differingLines": [
+        138
+      ]
+    }
+  ],
+  "hashes": {
+    "shared/content-core/hongguo.js": "1427c0ae3b9fba0f615737693fa507b56163f3330fb323e95368f02afd45ec89",
+    "custom-server/vendor/hongguo.cjs": "0077809122f7020d336bc5e735f978f71c2578cc5252c2ece2aae960452e8109",
+    "server/vendor/hongguo.cjs": "0077809122f7020d336bc5e735f978f71c2578cc5252c2ece2aae960452e8109"
+  }
+}

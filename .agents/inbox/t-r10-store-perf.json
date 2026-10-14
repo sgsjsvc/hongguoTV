@@ -1,0 +1,50 @@
+{
+  "id": "t-r10-store-perf",
+  "createdAt": "2026-10-14T05:38:23.424Z",
+  "updatedAt": "2026-10-14T06:48:34.614Z",
+  "assignee": "workbuddy",
+  "title": "R10 资料库性能与时序优化（D4-F4/F5/F6/F8/F9）",
+  "brief": "详见 .agents/inbox/t-r10-store-perf.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "第五轮规划: .agents/shared/round5-fix-plan.md",
+    "发现来源: .agents/shared/discovery-round4-synthesis.md",
+    "第四轮已入库（3af5e82 业务代码、a056538 协作记录）",
+    "修复类任务：可改代码，但严格限定在 brief 授权的文件范围内",
+    "必须提供「修复前失败证据 + 修复后通过证据」"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "workbuddy",
+  "claimedAt": "2026-10-14T06:12:36.917Z",
+  "result": {
+    "summary": "D4-F4/F5/F6 已修复并量化验证：ack 游标+清理（1500 行->0，pending 0.57ms->0.02ms），snapshot 缓存（6.5ms->3.3ms），显式 at 钳制（B2 复测 500->1000）；F8/F9 按协调者意见文档化于 docs/LOCAL_REMOTE_SERVICES.md。npm test 81/81（+4 回归测试）。报告：.agents/shared/t-r10-store-perf-workbuddy.md"
+  },
+  "history": [
+    {
+      "at": "2026-10-14T05:38:23.424Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T06:12:36.918Z",
+      "status": "claimed",
+      "by": "workbuddy",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T06:48:34.616Z",
+      "status": "done",
+      "by": "workbuddy",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-r10-store-perf.brief.md",
+  "order": 10,
+  "kind": "fix"
+}

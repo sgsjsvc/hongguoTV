@@ -1,0 +1,84 @@
+{"at":"2026-10-14T00:39:25.065Z","kind":"task-created","id":"t-u5-u1-evidence","assignee":"antigravity","title":"U5 补齐 U1 收藏页渲染证据闭环"}
+{"at":"2026-10-14T00:39:25.067Z","kind":"task-updated","id":"t-u5-u1-evidence","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T00:50:52.505Z","kind":"task-updated","id":"t-u5-u1-evidence","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T01:02:18.861Z","kind":"task-updated","id":"t-u5-u1-evidence","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T01:11:29.857Z","kind":"task-created","id":"t-u6-rank-tabs","assignee":"antigravity","title":"U6 榜单切换平铺化"}
+{"at":"2026-10-14T01:11:29.858Z","kind":"task-updated","id":"t-u6-rank-tabs","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T01:16:32.975Z","kind":"task-updated","id":"t-u6-rank-tabs","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T02:54:15.330Z","kind":"task-updated","id":"t-u6-rank-tabs","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T03:56:00.981Z","kind":"task-created","id":"t-d1-playback-discovery","assignee":"codex","title":"D1 播放链路与内容引擎 — Bug 发现 + 算法优化"}
+{"at":"2026-10-14T03:56:00.982Z","kind":"task-updated","id":"t-d1-playback-discovery","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T03:56:00.986Z","kind":"task-created","id":"t-d2-tv-ui-discovery","assignee":"antigravity","title":"D2 TV 端 UI Bug 发现"}
+{"at":"2026-10-14T03:56:00.987Z","kind":"task-updated","id":"t-d2-tv-ui-discovery","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T03:56:00.988Z","kind":"task-created","id":"t-d3-web-ui-discovery","assignee":"antigravity","title":"D3 Web / PC 端 UI Bug 发现"}
+{"at":"2026-10-14T03:56:00.989Z","kind":"task-updated","id":"t-d3-web-ui-discovery","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T03:56:00.991Z","kind":"task-created","id":"t-d4-sync-discovery","assignee":"workbuddy","title":"D4 资料库与同步算法 — Bug 发现 + 优化建议"}
+{"at":"2026-10-14T03:56:00.992Z","kind":"task-updated","id":"t-d4-sync-discovery","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T04:00:27.413Z","kind":"task-updated","id":"t-d1-playback-discovery","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T04:00:36.987Z","kind":"task-updated","id":"t-d2-tv-ui-discovery","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T04:02:49.926Z","kind":"task-updated","id":"t-d4-sync-discovery","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T04:11:28.072Z","kind":"task-updated","id":"t-d1-playback-discovery","by":"codex","status":"done","note":""}
+{"at":"2026-10-14T04:13:01.140Z","kind":"task-updated","id":"t-d2-tv-ui-discovery","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T04:13:20.804Z","kind":"task-updated","id":"t-d3-web-ui-discovery","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T04:36:52.708Z","kind":"task-updated","id":"t-d3-web-ui-discovery","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T04:40:56.153Z","kind":"task-updated","id":"t-d4-sync-discovery","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-14T05:38:23.397Z","kind":"task-created","id":"t-r1-playback-p0","assignee":"codex","title":"R1 播放链路 P0 修复（D1-F1/F2）"}
+{"at":"2026-10-14T05:38:23.399Z","kind":"task-updated","id":"t-r1-playback-p0","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T05:38:23.404Z","kind":"task-created","id":"t-r2-tv-focus","assignee":"antigravity","title":"R2 TV UI 焦点与导航修复（D2-F1/F2/F3/F6）"}
+{"at":"2026-10-14T05:38:23.405Z","kind":"task-updated","id":"t-r2-tv-focus","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T05:38:23.406Z","kind":"task-created","id":"t-r3-drawer-focus","assignee":"antigravity","title":"R3 选集抽屉 Tab 抢焦修复（D2-F4）"}
+{"at":"2026-10-14T05:38:23.408Z","kind":"task-updated","id":"t-r3-drawer-focus","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T05:38:23.409Z","kind":"task-created","id":"t-r4-manifest","assignee":"antigravity","title":"R4 AndroidManifest 屏幕配置修复（D2-F5）"}
+{"at":"2026-10-14T05:38:23.411Z","kind":"task-updated","id":"t-r4-manifest","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T05:38:23.412Z","kind":"task-created","id":"t-r5-web-interaction","assignee":"antigravity","title":"R5 Web/PC 交互缺陷修复（D3-F2/F3/F4）"}
+{"at":"2026-10-14T05:38:23.413Z","kind":"task-updated","id":"t-r5-web-interaction","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T05:38:23.415Z","kind":"task-created","id":"t-r6-web-assets","assignee":"antigravity","title":"R6 Web 静态资源 404 修复（D3-F5）"}
+{"at":"2026-10-14T05:38:23.416Z","kind":"task-updated","id":"t-r6-web-assets","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T05:38:23.417Z","kind":"task-created","id":"t-r7-web-refactor","assignee":"antigravity","title":"R7 拆分 App.tsx 单文件巨石组件（D3-F1）"}
+{"at":"2026-10-14T05:38:23.419Z","kind":"task-updated","id":"t-r7-web-refactor","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T05:38:23.420Z","kind":"task-created","id":"t-r8-history-time","assignee":"workbuddy","title":"R8 历史存储时序缺陷修复（D4-F1/F7）"}
+{"at":"2026-10-14T05:38:23.420Z","kind":"task-updated","id":"t-r8-history-time","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T05:38:23.422Z","kind":"task-created","id":"t-r9-import-perf","assignee":"workbuddy","title":"R9 导入路径性能与事务修复（D4-F2/F3）"}
+{"at":"2026-10-14T05:38:23.423Z","kind":"task-updated","id":"t-r9-import-perf","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T05:38:23.425Z","kind":"task-created","id":"t-r10-store-perf","assignee":"workbuddy","title":"R10 资料库性能与时序优化（D4-F4/F5/F6/F8/F9）"}
+{"at":"2026-10-14T05:38:23.426Z","kind":"task-updated","id":"t-r10-store-perf","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T05:38:23.428Z","kind":"task-created","id":"t-r11-playback-correctness","assignee":"codex","title":"R11 播放接口正确性修复（D1-F3/F4）"}
+{"at":"2026-10-14T05:38:23.429Z","kind":"task-updated","id":"t-r11-playback-correctness","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T05:38:23.430Z","kind":"task-created","id":"t-r12-engine-opt","assignee":"codex","title":"R12 引擎结构优化与 D1-F10 验证（D1-F5/F6/F7/F8/F9/F10）"}
+{"at":"2026-10-14T05:38:23.430Z","kind":"task-updated","id":"t-r12-engine-opt","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T06:02:19.231Z","kind":"task-updated","id":"t-r1-playback-p0","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T06:04:43.245Z","kind":"task-updated","id":"t-r2-tv-focus","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T06:12:15.255Z","kind":"task-updated","id":"t-r1-playback-p0","by":"codex","status":"done","note":""}
+{"at":"2026-10-14T06:12:36.537Z","kind":"task-updated","id":"t-r8-history-time","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T06:12:36.945Z","kind":"task-updated","id":"t-r10-store-perf","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T06:48:33.508Z","kind":"task-updated","id":"t-r8-history-time","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-14T06:48:34.624Z","kind":"task-updated","id":"t-r10-store-perf","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-14T06:49:37.168Z","kind":"task-updated","id":"t-r9-import-perf","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T06:52:44.777Z","kind":"task-updated","id":"t-r2-tv-focus","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T06:54:03.470Z","kind":"task-updated","id":"t-r3-drawer-focus","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T06:54:13.636Z","kind":"task-updated","id":"t-r5-web-interaction","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T06:54:22.394Z","kind":"task-updated","id":"t-r6-web-assets","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T07:07:29.626Z","kind":"task-updated","id":"t-r3-drawer-focus","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T07:07:53.782Z","kind":"task-updated","id":"t-r9-import-perf","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-14T07:07:54.840Z","kind":"task-updated","id":"t-r4-manifest","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T07:13:19.236Z","kind":"task-updated","id":"t-r4-manifest","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T07:20:08.684Z","kind":"task-updated","id":"t-r6-web-assets","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T08:10:21.160Z","kind":"task-updated","id":"t-r5-web-interaction","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T08:10:36.188Z","kind":"task-updated","id":"t-r7-web-refactor","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T08:20:38.931Z","kind":"task-created","id":"t-r13-cleanup","assignee":"codex","title":"R13 收尾清理：调试日志与测试纳管"}
+{"at":"2026-10-14T08:20:38.932Z","kind":"task-updated","id":"t-r13-cleanup","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T08:23:42.473Z","kind":"task-updated","id":"t-r11-playback-correctness","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T08:28:19.306Z","kind":"task-updated","id":"t-r11-playback-correctness","by":"codex","status":"done","note":""}
+{"at":"2026-10-14T08:29:23.890Z","kind":"task-updated","id":"t-r7-web-refactor","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T08:31:41.028Z","kind":"task-updated","id":"t-r12-engine-opt","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T08:38:08.946Z","kind":"task-updated","id":"t-r13-cleanup","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T08:46:53.701Z","kind":"task-updated","id":"t-r12-engine-opt","by":"codex","status":"done","note":""}
+{"at":"2026-10-14T08:46:53.792Z","kind":"task-updated","id":"t-r13-cleanup","by":"codex","status":"done","note":""}
+{"at":"2026-10-14T10:21:26.258Z","kind":"task-created","id":"t-s1-switch-hint","assignee":"antigravity","title":"S1 TV 端切剧轻量提示与加载动画"}
+{"at":"2026-10-14T10:21:26.259Z","kind":"task-updated","id":"t-s1-switch-hint","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T10:21:26.263Z","kind":"task-created","id":"t-s2-verify-hint","assignee":"workbuddy","title":"S2 TV 端切剧轻量提示 — 独立复核"}
+{"at":"2026-10-14T10:21:26.264Z","kind":"task-updated","id":"t-s2-verify-hint","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T10:27:14.369Z","kind":"task-updated","id":"t-s1-switch-hint","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T11:26:57.406Z","kind":"task-updated","id":"t-s1-switch-hint","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T12:33:18.616Z","kind":"task-updated","id":"t-s2-verify-hint","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T13:36:08.584Z","kind":"task-updated","id":"t-s2-verify-hint","by":"workbuddy","status":"done","note":""}

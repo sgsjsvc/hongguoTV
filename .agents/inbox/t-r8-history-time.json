@@ -1,0 +1,50 @@
+{
+  "id": "t-r8-history-time",
+  "createdAt": "2026-10-14T05:38:23.419Z",
+  "updatedAt": "2026-10-14T06:48:33.456Z",
+  "assignee": "workbuddy",
+  "title": "R8 历史存储时序缺陷修复（D4-F1/F7）",
+  "brief": "详见 .agents/inbox/t-r8-history-time.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "第五轮规划: .agents/shared/round5-fix-plan.md",
+    "发现来源: .agents/shared/discovery-round4-synthesis.md",
+    "第四轮已入库（3af5e82 业务代码、a056538 协作记录）",
+    "修复类任务：可改代码，但严格限定在 brief 授权的文件范围内",
+    "必须提供「修复前失败证据 + 修复后通过证据」"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "workbuddy",
+  "claimedAt": "2026-10-14T06:12:36.504Z",
+  "result": {
+    "summary": "D4-F1/F7 已修复并验证：importLegacy 改时间比较（I1 复测 0->1），registerSession 增加 1s 未来偏差守卫（I2 复测 accepted->410），陈旧数据仍拦截。npm test 77/77（+2 回归测试）。报告：.agents/shared/t-r8-history-time-workbuddy.md"
+  },
+  "history": [
+    {
+      "at": "2026-10-14T05:38:23.419Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T06:12:36.505Z",
+      "status": "claimed",
+      "by": "workbuddy",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T06:48:33.457Z",
+      "status": "done",
+      "by": "workbuddy",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-r8-history-time.brief.md",
+  "order": 8,
+  "kind": "fix"
+}

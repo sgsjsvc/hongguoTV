@@ -1,0 +1,49 @@
+{
+  "id": "t-d1-playback-discovery",
+  "createdAt": "2026-10-14T03:56:00.979Z",
+  "updatedAt": "2026-10-14T04:11:28.068Z",
+  "assignee": "codex",
+  "title": "D1 播放链路与内容引擎 — Bug 发现 + 算法优化",
+  "brief": "详见 .agents/inbox/t-d1-playback-discovery.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "发现类任务规范: .agents/shared/discovery-spec.md（必读）",
+    "性质：只读发现，禁止修改任何业务代码",
+    "统一交付格式与严重度定义见规范文件",
+    "必须区分「已核实」（有运行证据）与「推测」（仅静态推断）"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-14T04:00:27.410Z",
+  "result": {
+    "summary": "发现报告已提交：.agents/shared/t-d1-playback-discovery-codex.md。10项发现，9项运行核实，2项high；附可复现探针、运行及真实HTTP证据。6项既有测试通过，范围内六份源码哈希一致。建议优先处理并发备用CDN清空地址与传输中途失败不关闭响应。未修改业务代码，待DSH验收。"
+  },
+  "history": [
+    {
+      "at": "2026-10-14T03:56:00.980Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T04:00:27.410Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T04:11:28.069Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-d1-playback-discovery.brief.md",
+  "order": 1,
+  "kind": "discovery"
+}

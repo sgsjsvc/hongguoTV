@@ -1,0 +1,56 @@
+{
+  "id": "t-mv6o7lhy-8d34e3",
+  "createdAt": "2026-10-13T12:42:04.823Z",
+  "updatedAt": "2026-10-13T13:41:06.550Z",
+  "assignee": "workbuddy",
+  "title": "T4 独立复核 TV UI 自适应改动",
+  "brief": "独立复核 T1–T3 的改动，重点核查「是否真的自适应」而非仅「构建通过」。\n\n要核查的：\n1. 三档 dimens 是否真的按屏幕尺寸生效，还是只是复制粘贴了同一组数值。\n2. MainActivity.kt 是否还有硬编码 dp 字面量残留。\n3. 布局重组是否引入了功能回归（对比 T1 前的行为描述）。\n4. 区分「已验证事实」与「推测」——构建通过不等于布局正确。\n\n约束：只读复核，不修改任何代码。",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "协作规范: .agents/README.md 与 .agents/QUICKSTART.md",
+    "本轮规划: .agents/shared/tv-ui-plan.md",
+    "范围仅 apps/tv-android/ 的 Kotlin UI 层，禁止修改 shared/content-core/hongguo.js",
+    "当前 git 分支 codex/first-github-push-20261013，工作区已有未提交改动（播放修复），不得回退或清理",
+    "Antigravity 此前已落地：底部选集抽屉(episodeDrawer)、居中 Seek HUD(seekHud)、集数分组 Tab。这些行为必须保持不变。",
+    "依赖 T3 完成",
+    "审查对象：.agents/shared/T1-*.md、T2-*.md、T3-*.md 及实际代码"
+  ],
+  "acceptance": [
+    "报告明确列出：已核实事实、无法核实项、发现的问题、改进建议",
+    "对「自适应是否真实生效」给出明确判断与依据",
+    "报告写入 .agents/shared/<任务ID>-workbuddy.md"
+  ],
+  "blockedBy": [
+    "t-mv6o7lhy-53c065"
+  ],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "workbuddy",
+  "claimedAt": "2026-10-13T13:24:37.965Z",
+  "result": {
+    "summary": "T4复核通过：三档dimens真实分层(97键集合一致/97项单调递增/均值23.9-28.9-33.7dp)，APK覆盖当前源码，本机复跑测试30/0/0/0与lint均通过；onKeyDown逐字节一致、函数与键码集合零丢失、焦点链已迁移至PlayerOverlay且映射一致，未发现功能回归。遗留：P1 SeriesAdapter 3处TvUi.dp(context,N)字面量残留(两方报告扫描盲区)；P2 限定符与真实1080p@320dpi错配可能落基准档；P3 T3测试只比键集合不比值、逻辑测试为测试内重实现。报告：.agents/shared/t-mv6o7lhy-8d34e3-workbuddy.md"
+  },
+  "history": [
+    {
+      "at": "2026-10-13T12:42:04.823Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-13T13:24:37.965Z",
+      "status": "claimed",
+      "by": "workbuddy",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-13T13:41:06.552Z",
+      "status": "done",
+      "by": "workbuddy",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-mv6o7lhy-8d34e3.brief.md",
+  "order": 4,
+  "label": "T4 独立复核"
+}

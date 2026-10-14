@@ -24,6 +24,7 @@ import androidx.media3.ui.AspectRatioFrameLayout
 import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.hongguotv.tv.ui.*
 import kotlinx.coroutines.*
 
 /** TV owns its UI and library; styled according to Hongguo TV reference standard. */
@@ -50,6 +51,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var topHeader: LinearLayout
     private lateinit var topNavigation: HorizontalScrollView
     private val topNavigationButtons = mutableListOf<Button>()
+    private var actionButtons = listOf<Button>()
     private lateinit var navigation: FrameLayout
 
     // Feed Overlay Elements (Styled according to PC/TV reference UI)
@@ -79,9 +81,16 @@ class MainActivity : ComponentActivity() {
     private val hideSeekHud = Runnable {
         seekHud.visibility = View.GONE
         accumulatedSeekDelta = 0L
-        if (player?.isPlaying == false && !overlayVisible && dialog == null && (screen == Screen.FEED || screen == Screen.FULL)) {
+        val isSwitching = ::switchHintView.isInitialized && switchHintView.visibility == View.VISIBLE
+        if (player?.isPlaying == false && !overlayVisible && !isSwitching && dialog == null && (screen == Screen.FEED || screen == Screen.FULL)) {
             pauseIndicator.visibility = View.VISIBLE
         }
+    }
+
+    // Lightweight Switch Hint HUD
+    private lateinit var switchHintView: SwitchHintView
+    private val hideSwitchHintRunnable = Runnable {
+        hideSwitchHint()
     }
 
     // In-Player Bottom Episode Drawer
@@ -142,7 +151,14 @@ class MainActivity : ComponentActivity() {
     private var categoryTags = emptyList<Pair<String, String>>()
     private var categoryTagsType = ""
     private var categoryFilterFocus: String? = null
-    private var selectedRank = "hot-drama"
+    private var selectedRank = "rank_hot"
+    private val fallbackRankTypes = listOf(
+        "rank_hot" to "红果热播榜",
+        "rank_human" to "真人剧热播榜",
+        "rank_comic" to "漫剧热播榜",
+        "rank_ai" to "AI剧热播榜"
+    )
+    private var rankTypes = emptyList<Pair<String, String>>()
     private var searchQuery = ""
     private var lastSavedAt = 0L
     private var lastHistoryRefresh = 0L
@@ -153,8 +169,14 @@ class MainActivity : ComponentActivity() {
                                 var ended: Boolean = false)
     private fun repository() = TvRepository(getSharedPreferences("hongguotv_tv_v1", MODE_PRIVATE).getString("contentTestOrigin", null) ?: localContent.baseUrl)
     private fun dp(value: Int) = TvUi.dp(this, value)
+    private fun dimen(@androidx.annotation.DimenRes id: Int) = TvUi.dimen(this, id)
 
-    private fun focusPlayback() {
+    private fun focusPlayback(force: Boolean = false) {
+        if (!force) {
+            val hasUserFocus = (::topHeader.isInitialized && topHeader.findFocus() != null) ||
+                               (::feedOverlay.isInitialized && feedOverlay.findFocus() != null)
+            if (hasUserFocus) return
+        }
         if (::playerView.isInitialized) {
             playerView.isFocusable = true
             playerView.isFocusableInTouchMode = true
@@ -200,12 +222,12 @@ class MainActivity : ComponentActivity() {
         scrimTopView = View(this).apply {
             background = TvUi.scrimTop()
         }
-        root.addView(scrimTopView, FrameLayout.LayoutParams(-1, dp(96), Gravity.TOP))
+        root.addView(scrimTopView, FrameLayout.LayoutParams(-1, dimen(R.dimen.scrim_top_height), Gravity.TOP))
 
         scrimBottomView = View(this).apply {
             background = TvUi.scrimBottom()
         }
-        root.addView(scrimBottomView, FrameLayout.LayoutParams(-1, dp(280), Gravity.BOTTOM))
+        root.addView(scrimBottomView, FrameLayout.LayoutParams(-1, dimen(R.dimen.scrim_bottom_height), Gravity.BOTTOM))
 
         // 4. Modern Header (Logo + Title + Subtitle + Nav Tabs + Settings)
         buildHeader()
@@ -218,6 +240,9 @@ class MainActivity : ComponentActivity() {
 
         // 7. Center Seek HUD
         buildSeekHud()
+
+        // 7.5 Lightweight Switch Hint HUD
+        buildSwitchHintView()
 
         // 8. In-Player Bottom Episode Drawer
         buildEpisodeDrawer()
@@ -238,228 +263,57 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun buildHeader() {
-        topHeader = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            setPadding(dp(28), dp(8), dp(28), dp(8))
-        }
-
-        // Left Brand Logo Block
-        val brandBox = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-        }
-        val logoIcon = TvUi.logoIcon(this)
-        brandBox.addView(logoIcon, LinearLayout.LayoutParams(dp(34), dp(34)).apply { marginEnd = dp(10) })
-
-        val brandTitle = TextView(this).apply {
-            text = "红果短剧"
-            textSize = 17f
-            setTextColor(Color.WHITE)
-            setTypeface(typeface, Typeface.BOLD)
-        }
-        brandBox.addView(brandTitle)
-        topHeader.addView(brandBox, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(24) })
-
-        // Center Tabs Scroll
-        topNavigation = HorizontalScrollView(this).apply {
-            isHorizontalScrollBarEnabled = false
-        }
-        val navRow = TvUi.row(this)
-        val destinations = listOf(
-            "推荐" to { returnToFeed(autoplay = true) },
-            "搜索" to { showSearch() },
-            "分类" to { openCatalog("分类", "category") },
-            "榜单" to { openCatalog("排行榜", "rank") },
-            "追剧" to { openCatalog("我的收藏", "favorites") },
-            "历史" to { openCatalog("观看历史", "history") }
-        )
-        destinations.forEachIndexed { idx, (label, action) ->
-            val isActive = (idx == 0)
-            val button = Button(this).apply {
-                id = View.generateViewId()
-                text = label
-                contentDescription = "导航：$label"
-                textSize = 14f
-                isAllCaps = false
-                setTextColor(Color.WHITE)
-                background = TvUi.pillBackground(active = isActive)
-                minHeight = dp(36)
-                setPadding(dp(16), dp(4), dp(16), dp(4))
-                setOnClickListener { action() }
-                setOnFocusChangeListener { view, focused ->
-                    if (focused && feedOverlay.visibility == View.VISIBLE) {
-                        this@MainActivity.handler.removeCallbacks(hideChrome)
-                        this@MainActivity.handler.postDelayed(hideChrome, 5000)
-                    }
-                    view.scaleX = if (focused) 1.05f else 1f
-                    view.scaleY = if (focused) 1.05f else 1f
-                }
-            }
-            topNavigationButtons.add(button)
-            navRow.addView(button, LinearLayout.LayoutParams(-2, dp(38)).apply { marginEnd = dp(6) })
-        }
-        topNavigation.addView(navRow)
-        topHeader.addView(topNavigation, LinearLayout.LayoutParams(0, -2, 1f))
-
-        // Right Settings Button
-        val settingsBtn = Button(this).apply {
-            id = View.generateViewId()
-            text = "设置"
-            contentDescription = "导航：设置"
-            textSize = 14f
-            isAllCaps = false
-            setTextColor(TvUi.TEXT_MUTED)
-            background = TvUi.pillBackground(active = false)
-            minHeight = dp(36)
-            setPadding(dp(16), dp(4), dp(16), dp(4))
-            setOnClickListener { showSettings() }
-            setOnFocusChangeListener { view, focused ->
+        val headerView = AppHeaderView(
+            context = this,
+            onFeedClick = { returnToFeed(autoplay = true) },
+            onSearchClick = { showSearch() },
+            onCategoryClick = { openCatalog("分类", "category") },
+            onRankClick = { openCatalog("排行榜", "rank") },
+            onFavoritesClick = { openCatalog("我的收藏", "favorites") },
+            onHistoryClick = { openCatalog("观看历史", "history") },
+            onSettingsClick = { showSettings() },
+            onFocusChange = { _, focused ->
                 if (focused && feedOverlay.visibility == View.VISIBLE) {
                     this@MainActivity.handler.removeCallbacks(hideChrome)
                     this@MainActivity.handler.postDelayed(hideChrome, 5000)
                 }
-                view.scaleX = if (focused) 1.05f else 1f
-                view.scaleY = if (focused) 1.05f else 1f
             }
+        )
+        topHeader = headerView
+        topNavigationButtons.clear()
+        topNavigationButtons.addAll(headerView.topNavigationButtons)
+        topNavigationButtons.forEach {
+            it.isFocusable = true
+            it.isFocusableInTouchMode = true
         }
-        topNavigationButtons.add(settingsBtn)
-        topHeader.addView(settingsBtn, LinearLayout.LayoutParams(-2, dp(38)))
-
-        root.addView(topHeader, FrameLayout.LayoutParams(-1, dp(58), Gravity.TOP))
+        root.addView(topHeader, FrameLayout.LayoutParams(-1, dimen(R.dimen.header_height), Gravity.TOP))
     }
 
     private fun buildFeedOverlay() {
-        feedOverlay = FrameLayout(this)
-
-        // 1. Top-Left: "第 1 集" Pill Badge
-        episodeBadge = TextView(this).apply {
-            text = "第 1 集"
-            textSize = 12f
-            setTextColor(TvUi.RED)
-            setTypeface(typeface, Typeface.BOLD)
-            background = TvUi.surface(0xaa070a13.toInt(), 0x55f43f5e.toInt(), radius = 40f, strokeWidth = 2)
-            setPadding(dp(14), dp(5), dp(14), dp(5))
-        }
-        feedOverlay.addView(episodeBadge, FrameLayout.LayoutParams(-2, -2).apply {
-            gravity = Gravity.TOP or Gravity.START
-            marginStart = dp(28)
-            topMargin = dp(66)
-        })
-
-
-
-        // 3. Bottom-Left Information & Action Buttons
-        val bottomLeftBox = TvUi.column(this)
-        infoTitle = TextView(this).apply {
-            text = "@短剧精选"
-            textSize = 21f
-            setTextColor(Color.WHITE)
-            setTypeface(typeface, Typeface.BOLD)
-            setShadowLayer(8f, 0f, 2f, 0xee000000.toInt())
-        }
-        infoSubtitle = TextView(this).apply {
-            text = "第 1 集 · 精彩内容加载中"
-            textSize = 13.5f
-            setTextColor(0xfff1f5f9.toInt())
-            setTypeface(typeface, Typeface.BOLD)
-            setShadowLayer(6f, 0f, 1f, 0xee000000.toInt())
-            setPadding(0, dp(2), 0, dp(2))
-        }
-        infoTags = TextView(this).apply {
-            text = "#短剧  #爆款推荐"
-            textSize = 12f
-            setTextColor(TvUi.AMBER)
-            setTypeface(typeface, Typeface.BOLD)
-            setShadowLayer(6f, 0f, 1f, 0xee000000.toInt())
-            setPadding(0, 0, 0, dp(3))
-        }
-        infoDesc = TextView(this).apply {
-            text = "精彩短剧连播，高潮迭起，逆袭反转不停歇！"
-            textSize = 11.5f
-            setTextColor(TvUi.TEXT_MUTED)
-            maxLines = 2
-            setLineSpacing(dp(2).toFloat(), 1f)
-            setShadowLayer(6f, 0f, 1f, 0xee000000.toInt())
-        }
-        val actionsRow = TvUi.row(this).apply {
-            setPadding(0, dp(6), 0, 0)
-        }
-
-        // 1. 继续播放 / 暂停播放
-        playButton = Button(this).apply {
-            id = View.generateViewId()
-            text = "继续播放"
-            textSize = 13f
-            isAllCaps = false
-            setTextColor(Color.WHITE)
-            background = TvUi.pillBackground(active = false, radius = 24f)
-            minHeight = dp(38)
-            setPadding(dp(16), dp(4), dp(16), dp(4))
-            setOnClickListener {
+        val overlay = PlayerOverlay(
+            context = this,
+            onPlayClick = { btn ->
                 if (player?.isPlaying == true) {
                     player?.pause()
                     resumePaused = true
-                    text = "继续播放"
+                    btn.text = "继续播放"
                 } else {
                     resumePaused = false
                     player?.play()
-                    text = "暂停播放"; overlayVisible=false;hideChromeNow()
+                    btn.text = "暂停播放"; overlayVisible = false; hideChromeNow()
                 }
-            }
-            setOnFocusChangeListener { v, f ->
-                if (f && feedOverlay.visibility == View.VISIBLE) {
-                    this@MainActivity.handler.removeCallbacks(hideChrome)
-                    this@MainActivity.handler.postDelayed(hideChrome, 5000)
-                }
-                v.scaleX = if (f) 1.06f else 1f
-                v.scaleY = if (f) 1.06f else 1f
-            }
-        }
-        actionsRow.addView(playButton, LinearLayout.LayoutParams(-2, dp(38)).apply { marginEnd = dp(10) })
-
-        // 2. 下一集
-        nextEpisodeButton = Button(this).apply {
-            id = View.generateViewId()
-            text = "下一集"
-            textSize = 13f
-            isAllCaps = false
-            setTextColor(Color.WHITE)
-            background = TvUi.pillBackground(active = false, radius = 24f)
-            minHeight = dp(38)
-            setPadding(dp(16), dp(4), dp(16), dp(4))
-            setOnClickListener {
+            },
+            onNextEpisodeClick = {
                 val detail = activeDetail
                 if (detail != null && activeIndex + 1 < detail.episodes.size) {
                     saveProgress()
                     resumePaused = false
                     loadEpisode(activeIndex + 1)
                 } else {
-                    switchFeed(1,explicitNext=true)
+                    switchFeed(1, explicitNext = true)
                 }
-            }
-            setOnFocusChangeListener { v, f ->
-                if (f && feedOverlay.visibility == View.VISIBLE) {
-                    this@MainActivity.handler.removeCallbacks(hideChrome)
-                    this@MainActivity.handler.postDelayed(hideChrome, 5000)
-                }
-                v.scaleX = if (f) 1.06f else 1f
-                v.scaleY = if (f) 1.06f else 1f
-            }
-        }
-        actionsRow.addView(nextEpisodeButton, LinearLayout.LayoutParams(-2, dp(38)).apply { marginEnd = dp(10) })
-
-        // 3. 合集
-        collectionButton = Button(this).apply {
-            id = View.generateViewId()
-            text = "合集：短剧 | 全集 >"
-            textSize = 13f
-            isAllCaps = false
-            setTextColor(Color.WHITE)
-            background = TvUi.pillBackground(active = false, radius = 24f)
-            minHeight = dp(38)
-            setPadding(dp(16), dp(4), dp(16), dp(4))
-            setOnClickListener {
+            },
+            onCollectionClick = {
                 if (activeDetail != null) {
                     showEpisodeDrawer()
                 } else {
@@ -470,268 +324,123 @@ class MainActivity : ComponentActivity() {
                     episodeGroup = activeIndex / 50
                     showDetail()
                 }
-            }
-            setOnFocusChangeListener { v, f ->
-                if (f && feedOverlay.visibility == View.VISIBLE) {
-                    this@MainActivity.handler.removeCallbacks(hideChrome)
-                    this@MainActivity.handler.postDelayed(hideChrome, 5000)
-                }
-                v.scaleX = if (f) 1.06f else 1f
-                v.scaleY = if (f) 1.06f else 1f
-            }
-        }
-        actionsRow.addView(collectionButton, LinearLayout.LayoutParams(-2, dp(38)).apply { marginEnd = dp(10) })
-
-        // 4. 追剧
-        favButton = Button(this).apply {
-            id = View.generateViewId()
-            text = "♥ 追剧"
-            textSize = 13f
-            isAllCaps = false
-            setTextColor(Color.WHITE)
-            background = TvUi.pillBackground(active = false, radius = 24f)
-            minHeight = dp(38)
-            setPadding(dp(16), dp(4), dp(16), dp(4))
-            setOnClickListener {
+            },
+            onFavClick = {
                 activeDetail?.let {
                     store.toggleFavorite(it.series)
                     updateFavState()
                 }
-            }
-            setOnFocusChangeListener { v, f ->
+            },
+            onSpeedClick = { chooseSpeed() },
+            onQualityClick = { chooseQuality() },
+            onFocusChange = { _, f ->
                 if (f && feedOverlay.visibility == View.VISIBLE) {
                     this@MainActivity.handler.removeCallbacks(hideChrome)
                     this@MainActivity.handler.postDelayed(hideChrome, 5000)
                 }
-                v.scaleX = if (f) 1.06f else 1f
-                v.scaleY = if (f) 1.06f else 1f
             }
-        }
-        actionsRow.addView(favButton, LinearLayout.LayoutParams(-2, dp(38)).apply { marginEnd = dp(10) })
+        )
+        feedOverlay = overlay
+        episodeBadge = overlay.episodeBadge
+        infoTitle = overlay.infoTitle
+        infoSubtitle = overlay.infoSubtitle
+        infoTags = overlay.infoTags
+        infoDesc = overlay.infoDesc
+        playButton = overlay.playButton
+        nextEpisodeButton = overlay.nextEpisodeButton
+        collectionButton = overlay.collectionButton
+        favButton = overlay.favButton
+        speedButton = overlay.speedButton
+        qualityButton = overlay.qualityButton
+        progressBox = overlay.progressBox
+        timeText = overlay.timeText
+        progressBar = overlay.progressBar
 
-        // 5. 倍速
-        speedButton = Button(this).apply {
-            id = View.generateViewId()
-            text = "${store.speed}x"
-            textSize = 13f
-            isAllCaps = false
-            setTextColor(Color.WHITE)
-            background = TvUi.pillBackground(active = false, radius = 24f)
-            minHeight = dp(38)
-            setPadding(dp(16), dp(4), dp(16), dp(4))
-            setOnClickListener { chooseSpeed() }
-            setOnFocusChangeListener { v, f ->
-                if (f && feedOverlay.visibility == View.VISIBLE) {
-                    this@MainActivity.handler.removeCallbacks(hideChrome)
-                    this@MainActivity.handler.postDelayed(hideChrome, 5000)
-                }
-                v.scaleX = if (f) 1.06f else 1f
-                v.scaleY = if (f) 1.06f else 1f
+        val actions = listOf(playButton, nextEpisodeButton, collectionButton, favButton, speedButton, qualityButton)
+        actionButtons = actions
+        actions.forEach {
+            it.isFocusable = true
+            it.isFocusableInTouchMode = true
+        }
+        topNavigationButtons.forEachIndexed { index, navBtn ->
+            val targetAction = when (index) {
+                0, 1 -> playButton
+                2 -> nextEpisodeButton
+                3 -> collectionButton
+                4 -> favButton
+                5 -> speedButton
+                else -> qualityButton
             }
+            navBtn.nextFocusDownId = targetAction.id
         }
-        actionsRow.addView(speedButton, LinearLayout.LayoutParams(-2, dp(38)).apply { marginEnd = dp(10) })
-
-        // 6. 清晰度
-        qualityButton = Button(this).apply {
-            id = View.generateViewId()
-            text = quality.ifBlank { "1080P" }
-            textSize = 13f
-            isAllCaps = false
-            setTextColor(Color.WHITE)
-            background = TvUi.pillBackground(active = false, radius = 24f)
-            minHeight = dp(38)
-            setPadding(dp(16), dp(4), dp(16), dp(4))
-            setOnClickListener { chooseQuality() }
-            setOnFocusChangeListener { v, f ->
-                if (f && feedOverlay.visibility == View.VISIBLE) {
-                    this@MainActivity.handler.removeCallbacks(hideChrome)
-                    this@MainActivity.handler.postDelayed(hideChrome, 5000)
-                }
-                v.scaleX = if (f) 1.06f else 1f
-                v.scaleY = if (f) 1.06f else 1f
+        actions.forEachIndexed { index, actionBtn ->
+            val targetNav = when (index) {
+                0 -> topNavigationButtons.getOrNull(0) ?: topNavigationButtons.first()
+                1 -> topNavigationButtons.getOrNull(2) ?: topNavigationButtons.first()
+                2 -> topNavigationButtons.getOrNull(3) ?: topNavigationButtons.first()
+                3 -> topNavigationButtons.getOrNull(4) ?: topNavigationButtons.first()
+                4 -> topNavigationButtons.getOrNull(5) ?: topNavigationButtons.first()
+                else -> topNavigationButtons.getOrNull(6) ?: topNavigationButtons.last()
             }
+            actionBtn.nextFocusUpId = targetNav.id
         }
-        actionsRow.addView(qualityButton, LinearLayout.LayoutParams(-2, dp(38)))
-
-        playButton.apply {
-            nextFocusLeftId = playButton.id
-            nextFocusRightId = nextEpisodeButton.id
-        }
-        nextEpisodeButton.apply {
-            nextFocusLeftId = playButton.id
-            nextFocusRightId = collectionButton.id
-        }
-        collectionButton.apply {
-            nextFocusLeftId = nextEpisodeButton.id
-            nextFocusRightId = favButton.id
-        }
-        favButton.apply {
-            nextFocusLeftId = collectionButton.id
-            nextFocusRightId = speedButton.id
-        }
-        speedButton.apply {
-            nextFocusLeftId = favButton.id
-            nextFocusRightId = qualityButton.id
-        }
-        qualityButton.apply {
-            nextFocusLeftId = speedButton.id
-            nextFocusRightId = qualityButton.id
-        }
-        topNavigationButtons.forEach { it.nextFocusDownId=playButton.id }
-        listOf(playButton,nextEpisodeButton,collectionButton,favButton,speedButton,qualityButton).forEach { it.nextFocusUpId=topNavigationButtons.first().id }
-
-        bottomLeftBox.addView(infoTitle)
-        bottomLeftBox.addView(infoSubtitle)
-        bottomLeftBox.addView(infoTags)
-        bottomLeftBox.addView(infoDesc)
-        bottomLeftBox.addView(actionsRow)
-
-        feedOverlay.addView(bottomLeftBox, FrameLayout.LayoutParams(-2, -2).apply {
-            gravity = Gravity.BOTTOM or Gravity.START
-            marginStart = dp(28)
-            bottomMargin = dp(46)
-        })
-
-        // Bottom Seekbar & Timestamp Row
-        progressBox = TvUi.column(this)
-        val timeRow = TvUi.row(this)
-        timeText = TextView(this).apply {
-            text = "00:00 / 00:00"
-            textSize = 11.5f
-            setTextColor(Color.WHITE)
-            typeface = Typeface.MONOSPACE
-        }
-        timeRow.addView(timeText, LinearLayout.LayoutParams(-2, -2))
-        progressBox.addView(timeRow)
-
-        progressBar = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply {
-            max = 1000
-            progressTintList = ColorStateList.valueOf(TvUi.RED)
-            progressBackgroundTintList = ColorStateList.valueOf(0x44ffffff.toInt())
-        }
-        progressBox.addView(progressBar, LinearLayout.LayoutParams(-1, dp(5)).apply {
-            topMargin = dp(4)
-        })
 
         root.addView(feedOverlay, FrameLayout.LayoutParams(-1, -1))
         root.addView(progressBox, FrameLayout.LayoutParams(-1, -2).apply {
             gravity = Gravity.BOTTOM
-            marginStart = dp(28)
-            marginEnd = dp(28)
-            bottomMargin = dp(12)
+            marginStart = dimen(R.dimen.indicator_margin_h)
+            marginEnd = dimen(R.dimen.indicator_margin_h)
+            bottomMargin = dimen(R.dimen.indicator_margin_bottom)
         })
     }
 
     private fun buildPauseIndicator() {
-        val indicator = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            visibility = View.GONE
-            isFocusable = false
-            isClickable = false
-            background = TvUi.surface(0xdd0f172a.toInt(), 0x33ffffff.toInt(), radius = 36f, strokeWidth = 2)
-            setPadding(dp(20), dp(12), dp(22), dp(12))
-        }
-
-        val iconBadge = TextView(this).apply {
-            text = "❚❚"
-            textSize = 12f
-            setTextColor(Color.WHITE)
-            gravity = Gravity.CENTER
-            background = GradientDrawable().apply {
-                shape = GradientDrawable.OVAL
-                setColor(TvUi.RED)
-            }
-        }
-        val iconSize = dp(32)
-        indicator.addView(iconBadge, LinearLayout.LayoutParams(iconSize, iconSize).apply { marginEnd = dp(12) })
-
-        val textCol = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER_VERTICAL
-        }
-        val pauseTitle = TextView(this).apply {
-            text = "播放已暂停"
-            textSize = 15f
-            setTextColor(Color.WHITE)
-            setTypeface(typeface, Typeface.BOLD)
-        }
-        val pauseHint = TextView(this).apply {
-            text = "按遥控器确认键继续播放"
-            textSize = 11.5f
-            setTextColor(TvUi.TEXT_MUTED)
-        }
-        textCol.addView(pauseTitle)
-        textCol.addView(pauseHint)
-        indicator.addView(textCol)
-
-        pauseIndicator = indicator
+        pauseIndicator = CenterHudBuilder.buildPauseIndicator(this)
         root.addView(pauseIndicator, FrameLayout.LayoutParams(-2, -2, Gravity.CENTER))
     }
 
     private fun buildSeekHud() {
-        seekHud = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            visibility = View.GONE
-            isFocusable = false
-            isClickable = false
-            background = TvUi.surface(0xee0b0f19.toInt(), 0x33ffffff.toInt(), radius = 32f, strokeWidth = 2)
-            setPadding(dp(22), dp(12), dp(24), dp(12))
-        }
-
-        seekHudDelta = TextView(this).apply {
-            text = "▶▶ +10s"
-            textSize = 14f
-            setTextColor(TvUi.AMBER)
-            setTypeface(typeface, Typeface.BOLD)
-            setPadding(dp(8), dp(3), dp(8), dp(3))
-            background = TvUi.surface(0x33fbbf24.toInt(), radius = 14f)
-        }
-        seekHud.addView(seekHudDelta, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(14) })
-
-        seekHudText = TextView(this).apply {
-            text = "00:00 / 00:00"
-            textSize = 15f
-            setTextColor(Color.WHITE)
-            setTypeface(Typeface.MONOSPACE, Typeface.BOLD)
-        }
-        seekHud.addView(seekHudText)
-
+        val components = CenterHudBuilder.buildSeekHud(this)
+        seekHud = components.layout
+        seekHudDelta = components.deltaText
+        seekHudText = components.timeText
         root.addView(seekHud, FrameLayout.LayoutParams(-2, -2, Gravity.CENTER))
     }
 
+    private fun buildSwitchHintView() {
+        switchHintView = SwitchHintView(this)
+        val lp = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            FrameLayout.LayoutParams.WRAP_CONTENT,
+            Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL
+        ).apply {
+            bottomMargin = TvUi.dimen(this@MainActivity, R.dimen.switch_hint_margin_bottom)
+        }
+        root.addView(switchHintView, lp)
+    }
+
+    private fun showSwitchHint(title: String, subtitle: String? = null, badge: String? = null, loadingHint: String? = null) {
+        handler.removeCallbacks(hideSwitchHintRunnable)
+        if (::pauseIndicator.isInitialized) {
+            pauseIndicator.visibility = View.GONE
+        }
+        if (::switchHintView.isInitialized) {
+            switchHintView.show(title, subtitle, badge, loadingHint)
+            handler.postDelayed(hideSwitchHintRunnable, 8000)
+        }
+    }
+
+    private fun hideSwitchHint() {
+        handler.removeCallbacks(hideSwitchHintRunnable)
+        if (::switchHintView.isInitialized) {
+            switchHintView.hide()
+        }
+    }
+
     private fun buildEpisodeDrawer() {
-        episodeDrawer = LinearLayout(this).apply {
-            orientation = LinearLayout.VERTICAL
-            visibility = View.GONE
-            background = TvUi.surface(0xf20b0f19.toInt(), 0x33ffffff.toInt(), radius = 24f, strokeWidth = 2)
-            setPadding(dp(24), dp(16), dp(24), dp(16))
-            isFocusable = false
-        }
-
-        // 1. Top row: Title + Group Tabs + Full Detail Button
-        val topRow = TvUi.row(this)
-        episodeDrawerTitle = TextView(this).apply {
-            text = "选集列表"
-            textSize = 15.5f
-            setTextColor(Color.WHITE)
-            setTypeface(typeface, Typeface.BOLD)
-        }
-        topRow.addView(episodeDrawerTitle, LinearLayout.LayoutParams(-2, -2).apply { marginEnd = dp(16) })
-
-        episodeDrawerGroupRow = TvUi.row(this)
-        topRow.addView(episodeDrawerGroupRow, LinearLayout.LayoutParams(0, -2, 1f))
-
-        val fullDetailBtn = Button(this).apply {
-            text = "查看详情 >"
-            textSize = 12.5f
-            isAllCaps = false
-            setTextColor(TvUi.TEXT_MUTED)
-            background = TvUi.pillBackground(active = false, radius = 20f)
-            minHeight = dp(32)
-            setPadding(dp(12), dp(2), dp(12), dp(2))
-            setOnClickListener {
+        val drawerView = EpisodeDrawerView(
+            context = this,
+            onDetailClick = {
                 hideEpisodeDrawer(returnToMenu = false)
                 browsingDetail = activeDetail
                 detailOrigin = Screen.FEED
@@ -739,29 +448,25 @@ class MainActivity : ComponentActivity() {
                 detailFocus = activeIndex % 50
                 episodeGroup = activeIndex / 50
                 showDetail()
+            },
+            onEpisodeSelected = { index ->
+                saveProgress()
+                resumePaused = false
+                loadEpisode(index, 0L, true)
+                hideEpisodeDrawer(returnToMenu = false)
             }
-            setOnFocusChangeListener { v, f ->
-                v.scaleX = if (f) 1.05f else 1f
-                v.scaleY = if (f) 1.05f else 1f
-            }
-        }
-        topRow.addView(fullDetailBtn, LinearLayout.LayoutParams(-2, dp(32)))
-        episodeDrawer.addView(topRow)
-
-        // 2. Horizontal Scroll of Episode Pills
-        episodeDrawerScroll = HorizontalScrollView(this).apply {
-            isHorizontalScrollBarEnabled = false
-            setPadding(0, dp(10), 0, 0)
-        }
-        episodeDrawerList = TvUi.row(this)
-        episodeDrawerScroll.addView(episodeDrawerList)
-        episodeDrawer.addView(episodeDrawerScroll, LinearLayout.LayoutParams(-1, -2))
+        )
+        episodeDrawer = drawerView
+        episodeDrawerTitle = drawerView.titleView
+        episodeDrawerGroupRow = drawerView.groupTabsRow
+        episodeDrawerScroll = drawerView.scrollView
+        episodeDrawerList = drawerView.episodeListRow
 
         root.addView(episodeDrawer, FrameLayout.LayoutParams(-1, -2).apply {
             gravity = Gravity.BOTTOM
-            marginStart = dp(16)
-            marginEnd = dp(16)
-            bottomMargin = dp(14)
+            marginStart = dimen(R.dimen.episode_drawer_margin_h)
+            marginEnd = dimen(R.dimen.episode_drawer_margin_h)
+            bottomMargin = dimen(R.dimen.episode_drawer_margin_bottom)
         })
     }
 
@@ -776,7 +481,7 @@ class MainActivity : ComponentActivity() {
         activeBtn?.requestFocus()
         activeBtn?.let { btn ->
             episodeDrawerScroll.post {
-                episodeDrawerScroll.smoothScrollTo(btn.left - dp(80), 0)
+                episodeDrawerScroll.smoothScrollTo(btn.left - dimen(R.dimen.episode_drawer_scroll_offset), 0)
             }
         }
     }
@@ -799,6 +504,12 @@ class MainActivity : ComponentActivity() {
         episodeDrawerGroupRow.removeAllViews()
         val totalGroups = (detail.episodes.size + 49) / 50
         if (totalGroups > 1) {
+            val groupMinHeight = dimen(R.dimen.episode_group_btn_min_height)
+            val groupHeight = dimen(R.dimen.episode_group_btn_height)
+            val groupPadH = dimen(R.dimen.episode_group_btn_pad_h)
+            val groupPadV = dimen(R.dimen.episode_group_btn_pad_v)
+            val groupMarginEnd = dimen(R.dimen.episode_group_btn_margin_end)
+
             for (g in 0 until totalGroups) {
                 val start = g * 50 + 1
                 val end = minOf((g + 1) * 50, detail.episodes.size)
@@ -809,8 +520,8 @@ class MainActivity : ComponentActivity() {
                     isAllCaps = false
                     setTextColor(if (isCurrentGroup) Color.WHITE else TvUi.TEXT_MUTED)
                     background = TvUi.pillBackground(active = isCurrentGroup, radius = 20f)
-                    minHeight = dp(30)
-                    setPadding(dp(12), dp(2), dp(12), dp(2))
+                    minHeight = groupMinHeight
+                    setPadding(groupPadH, groupPadV, groupPadH, groupPadV)
                     setOnClickListener {
                         drawerEpisodeGroup = g
                         renderEpisodeDrawer(detail)
@@ -821,7 +532,9 @@ class MainActivity : ComponentActivity() {
                         v.scaleY = if (f) 1.06f else 1f
                     }
                 }
-                episodeDrawerGroupRow.addView(groupBtn, LinearLayout.LayoutParams(-2, dp(30)).apply { marginEnd = dp(6) })
+                episodeDrawerGroupRow.addView(groupBtn, LinearLayout.LayoutParams(-2, groupHeight).apply {
+                    marginEnd = groupMarginEnd
+                })
             }
         }
 
@@ -829,6 +542,12 @@ class MainActivity : ComponentActivity() {
         episodeDrawerList.removeAllViews()
         drawerEpisodeButtons.clear()
         val visible = detail.episodes.drop(drawerEpisodeGroup * 50).take(50)
+        val itemMinHeight = dimen(R.dimen.episode_item_btn_min_height)
+        val itemHeight = dimen(R.dimen.episode_item_btn_height)
+        val itemPadH = dimen(R.dimen.episode_item_btn_pad_h)
+        val itemPadV = dimen(R.dimen.episode_item_btn_pad_v)
+        val itemMarginEnd = dimen(R.dimen.episode_item_btn_margin_end)
+
         visible.forEachIndexed { offset, episode ->
             val index = drawerEpisodeGroup * 50 + offset
             val isCurrent = index == activeIndex
@@ -839,8 +558,8 @@ class MainActivity : ComponentActivity() {
                 setTypeface(typeface, Typeface.BOLD)
                 setTextColor(if (isCurrent) Color.WHITE else 0xffcbd5e1.toInt())
                 background = TvUi.pillBackground(active = isCurrent, radius = 12f)
-                minHeight = dp(42)
-                setPadding(dp(16), dp(4), dp(16), dp(4))
+                minHeight = itemMinHeight
+                setPadding(itemPadH, itemPadV, itemPadH, itemPadV)
                 setOnClickListener {
                     saveProgress()
                     resumePaused = false
@@ -853,7 +572,9 @@ class MainActivity : ComponentActivity() {
                 }
             }
             drawerEpisodeButtons.add(btn)
-            episodeDrawerList.addView(btn, LinearLayout.LayoutParams(-2, dp(42)).apply { marginEnd = dp(8) })
+            episodeDrawerList.addView(btn, LinearLayout.LayoutParams(-2, itemHeight).apply {
+                marginEnd = itemMarginEnd
+            })
         }
     }
 
@@ -874,6 +595,7 @@ class MainActivity : ComponentActivity() {
         if (screen == Screen.CATALOG && catalog.rows.isEmpty() && navigationJob?.isActive != true && catalog.source !in listOf("favorites", "history")) loadCatalog(false)
     }
     override fun onStop() {
+        hideSwitchHint()
         foreground=false
         updateRecommendationPlaying(false);flushRecommendation()
         foreground = false; history.foreground(false); resumePaused = true; saveProgress()
@@ -883,6 +605,7 @@ class MainActivity : ComponentActivity() {
         super.onStop()
     }
     override fun onDestroy() {
+        hideSwitchHint()
         this@MainActivity.handler.removeCallbacksAndMessages(null); dialog?.dismiss(); artwork.close(); scope.cancel()
         Thread({ localContent.close() }, "TV-content-close").apply { isDaemon=true; start() }
         super.onDestroy()
@@ -934,12 +657,20 @@ class MainActivity : ComponentActivity() {
         progressBox.visibility = View.GONE
         scrimTopView.visibility = View.GONE
         scrimBottomView.visibility = View.GONE
-        focusPlayback()
+        focusPlayback(force = true)
     }
 
-    private val hideChrome = Runnable {
+    private val hideChrome: Runnable = Runnable {
         if (!overlayVisible && dialog == null && (screen == Screen.FEED || screen == Screen.FULL)) {
-            hideChromeNow()
+            val focused = currentFocus
+            val isNavFocused = (focused != null && focused != playerView && focused != root) ||
+                               (::topHeader.isInitialized && topHeader.findFocus() != null) ||
+                               (::feedOverlay.isInitialized && feedOverlay.findFocus() != null)
+            if (isNavFocused) {
+                this@MainActivity.handler.postDelayed(hideChrome, 5000)
+            } else {
+                hideChromeNow()
+            }
         }
     }
 
@@ -989,6 +720,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun stopForNavigation(next: Screen) {
+        hideSwitchHint()
         saveProgress(); player?.pause(); playbackJob?.cancel(); playbackGeneration.next()
         feedJob?.cancel()
         pendingFeedIndex = null; pendingDetail = null; pendingSeries = null
@@ -1020,12 +752,16 @@ class MainActivity : ComponentActivity() {
                         if (feedOverlay.visibility == View.VISIBLE) revealChrome()
                     } else {
                         saveProgress()
-                        if ((screen == Screen.FEED || screen == Screen.FULL) && !overlayVisible && dialog == null) {
+                        val isSwitching = ::switchHintView.isInitialized && switchHintView.visibility == View.VISIBLE
+                        if ((screen == Screen.FEED || screen == Screen.FULL) && !overlayVisible && !isSwitching && dialog == null) {
                             pauseIndicator.visibility = View.VISIBLE
                         }
                     }
                 }
                 override fun onPlaybackStateChanged(playbackState: Int) {
+                    if (playbackState == Player.STATE_READY) {
+                        hideSwitchHint()
+                    }
                     if (playbackState == Player.STATE_ENDED) {
                         // Clearing/replacing a playlist also emits ENDED. Only the active media may complete.
                         val episode=activeDetail?.episodes?.getOrNull(activeIndex) ?: return
@@ -1035,6 +771,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 override fun onPlayerError(error: PlaybackException) {
+                    hideSwitchHint()
                     pauseIndicator.visibility = View.GONE
                     if (!retryUsed) { retryUsed = true; loadEpisode(activeIndex, current.currentPosition, true, false) }
                     else playbackError("视频播放失败，可能是网络或设备解码不支持。")
@@ -1043,7 +780,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun loadEpisode(index: Int, position: Long = 0, autoplay: Boolean = true, resetRetry: Boolean = true, afterPrepare: (() -> Unit)? = null) {
+    private fun loadEpisode(index: Int, position: Long = 0, autoplay: Boolean = true, resetRetry: Boolean = true, afterPrepare: (() -> Unit)? = null, showSwitchHint: Boolean = false) {
         val detail = activeDetail ?: return
         val episode = detail.episodes.getOrNull(index) ?: return
         playbackJob?.cancel(); val generation = playbackGeneration.next()
@@ -1063,7 +800,16 @@ class MainActivity : ComponentActivity() {
         updateFavState()
 
         navigation.removeAllViews()
-        revealChrome()
+        if (showSwitchHint) {
+            hideChromeNow()
+            showSwitchHint(
+                title = detail.series.title,
+                subtitle = "第 ${episode.number} 集 · 《${detail.series.title}》",
+                badge = detail.series.badge.ifBlank { "全${detail.episodes.size}集" }
+            )
+        } else {
+            revealChrome()
+        }
         if (!overlayVisible) focusPlayback()
         artwork.load(detail.series.cover, backdrop)
 
@@ -1080,7 +826,9 @@ class MainActivity : ComponentActivity() {
                 current.setMediaItem(MediaItem.Builder().setMediaId(episode.id).setUri(api.streamUrl(episode.id, detail.series.id, quality)).build())
                 current.seekTo(position); current.setPlaybackSpeed(store.speed)
                 current.prepare(); current.playWhenReady = autoplay && !resumePaused && foreground && dialog == null && (screen == Screen.FEED || screen == Screen.FULL)
-                revealChrome()
+                if (!showSwitchHint) {
+                    revealChrome()
+                }
                 afterPrepare?.invoke()
             } catch (cancelled: CancellationException) { throw cancelled }
             catch (error: Exception) { if (playbackGeneration.isCurrent(generation)) playbackError(error.message ?: "内容加载失败") }
@@ -1088,6 +836,7 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun playbackError(message: String) {
+        hideSwitchHint()
         if (!foreground) return
         player?.pause(); overlayVisible = true; revealChrome()
         infoSubtitle.text = message
@@ -1102,7 +851,7 @@ class MainActivity : ComponentActivity() {
         val detail = activeDetail ?: return
         if(activeIndex==detail.episodes.lastIndex){activeRecommendation?.completed=true;flushRecommendation()}
         saveProgress(true)
-        if (activeIndex + 1 < detail.episodes.size) loadEpisode(activeIndex + 1)
+        if (activeIndex + 1 < detail.episodes.size) loadEpisode(activeIndex + 1, showSwitchHint = true)
         else if (feedMode) switchFeed(1) else showRelated(detail.series)
     }
 
@@ -1140,15 +889,17 @@ class MainActivity : ComponentActivity() {
         pendingSeries = series
         saveProgress(); player?.pause(); screen = Screen.FEED; feedMode = true; feedIndex = index
         navigation.removeAllViews()
+        pauseIndicator.visibility = View.GONE
         playbackJob?.cancel(); val generation = playbackGeneration.next()
-        revealChrome(); infoTitle.text = "@${series.title} · 加载中"
+        hideChromeNow()
+        showSwitchHint(title = series.title, subtitle = "内容加载中...", badge = series.badge)
         playbackJob = scope.launch {
             try {
                 val detail = repository().detail(series.id)
                 ensureActive(); if (!playbackGeneration.isCurrent(generation)) return@launch
                 val typed=detail.copy(series=detail.series.copy(contentType=series.contentType))
                 pendingSeries = null; history.begin(store.baseUrl, typed.series); lastRecord = null; activeDetail = typed;activateRecommendation(typed.series)
-                val previous=feedPositions[typed.series.id];loadEpisode(previous?.first?:0,previous?.second?:0)
+                val previous=feedPositions[typed.series.id];loadEpisode(previous?.first?:0,previous?.second?:0,showSwitchHint = true)
             } catch (cancelled: CancellationException) { throw cancelled }
             catch (error: Exception) { if (playbackGeneration.isCurrent(generation)) feedError(error.message ?: "剧集加载失败") }
         }
@@ -1187,6 +938,8 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun feedError(message: String) {
+        hideSwitchHint()
+        if (!foreground) return
         overlayVisible = true; revealChrome()
         infoTitle.text = "@红果短剧"
         infoSubtitle.text = message
@@ -1224,7 +977,13 @@ class MainActivity : ComponentActivity() {
     private fun panel(title: String): LinearLayout {
         navigation.removeAllViews()
         val column = TvUi.column(this).apply {
-            setBackgroundColor(TvUi.BACKGROUND); setPadding(dp(36), dp(24), dp(36), dp(24))
+            setBackgroundColor(TvUi.BACKGROUND)
+            setPadding(
+                dimen(R.dimen.search_page_pad_h),
+                dimen(R.dimen.search_page_pad_v),
+                dimen(R.dimen.search_page_pad_h),
+                dimen(R.dimen.search_page_pad_v)
+            )
         }
         column.addView(TvUi.title(this, title)); navigation.addView(column, FrameLayout.LayoutParams(-1, -1)); return column
     }
@@ -1239,30 +998,19 @@ class MainActivity : ComponentActivity() {
 
     private fun showSearch() {
         stopForNavigation(Screen.CATALOG)
-        val column = panel("搜索短剧")
-        val input = EditText(this).apply {
-            hint = "输入剧名或关键词"
-            setText(searchQuery)
-            textSize = 20f
-            setTextColor(Color.WHITE)
-            isSingleLine = true
-            imeOptions = android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH
-            background = TvUi.surface(TvUi.PANEL, TvUi.BORDER_SUBTLE, radius = 24f)
-            setPadding(dp(20), dp(12), dp(20), dp(12))
-        }
-        column.addView(input, LinearLayout.LayoutParams(-1, dp(56)).apply { bottomMargin = dp(16) })
-
-        val submit = { searchQuery = input.text.toString().trim(); if (searchQuery.isNotBlank()) {store.saveSearch(searchQuery);openCatalog("搜索：$searchQuery", "search")} }
-        column.addView(TvUi.pillButton(this, "🔍 开始搜索", active = true, submit).apply {
-            layoutParams = LinearLayout.LayoutParams(dp(180), dp(44))
-        })
-        input.setOnEditorActionListener { _, actionId, event ->
-            if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_SEARCH || event?.keyCode == KeyEvent.KEYCODE_ENTER) { submit(); true } else false
-        }
-        val recent=TvUi.row(this)
-        store.searches().take(6).forEach {query->recent.addView(TvUi.pillButton(this,query){input.setText(query);submit()})}
-        column.addView(recent)
-        input.requestFocus()
+        navigation.removeAllViews()
+        val searchView = SearchScreenView(
+            context = this,
+            initialQuery = searchQuery,
+            recentQueries = store.searches(),
+            onSearchSubmit = { query ->
+                searchQuery = query
+                store.saveSearch(query)
+                openCatalog("搜索：$query", "search")
+            }
+        )
+        navigation.addView(searchView, FrameLayout.LayoutParams(-1, -1))
+        searchView.input.requestFocus()
     }
 
     private fun openCatalog(title: String, source: String) {
@@ -1298,7 +1046,7 @@ class MainActivity : ComponentActivity() {
             return
         }
         val generation = navigationGeneration.next(); val snapshot = catalog
-        if (!nextPage) panel(snapshot.title).addView(TvUi.text(this, "加载中…"))
+        if (!nextPage && navigation.childCount == 0) panel(snapshot.title).addView(TvUi.text(this, "加载中…"))
         navigationJob = scope.launch {
             try {
                 val api = repository(); val page = if (nextPage) snapshot.page + 1 else 1
@@ -1307,6 +1055,15 @@ class MainActivity : ComponentActivity() {
                     if (categoryTagsType!=selectedCategory) {
                         categoryTags=api.categoryTags(selectedCategory)
                         categoryTagsType=selectedCategory
+                    }
+                }
+                if (snapshot.source == "rank") {
+                    if (rankTypes.isEmpty()) {
+                        rankTypes = runCatching { api.rankTypes() }.getOrDefault(fallbackRankTypes)
+                        if (rankTypes.isEmpty()) rankTypes = fallbackRankTypes
+                    }
+                    if (rankTypes.none { it.first == selectedRank }) {
+                        selectedRank = rankTypes.firstOrNull()?.first ?: "hot-drama"
                     }
                 }
                 var officialLastPage=0
@@ -1332,78 +1089,94 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun renderCatalog(preserveFocus: String? = null) {
-        screen = Screen.CATALOG; val column = panel(catalog.title)
-        val tools = TvUi.row(this)
-        val categoryButtons = mutableListOf<Button>()
-        if (catalog.source == "category") {
-            fun filters(values: List<Pair<String, String>>, kind: String, selected: String) {
-                val group = CategoryTagLayout(this).apply { setPadding(dp(4), dp(4), dp(4), dp(4)) }
-                values.forEach { (id, label) ->
-                    val key = "分类筛选：$kind:$id"
-                    val button = TvUi.pillButton(this, label, active = id == selected) {
-                        categoryFilterFocus = key
-                        if (kind == "type") {selectedCategory = id;selectedTag=""} else selectedTag = id
-                        catalog.page = 1; catalog.focusedId = null; catalogScroll = null
-                        navigationJob = null; loadCatalog(false)
-                    }.apply {
-                        contentDescription = key; isSelected = id == selected
-                        minWidth = 0; minimumWidth = 0
-                        setTextColor(if (isSelected) Color.WHITE else TvUi.TEXT_MUTED)
-                        background = TvUi.pillBackground(isSelected, TvUi.PANEL, TvUi.BORDER_SUBTLE)
-                    }
-                    categoryButtons += button; group.addView(button)
+        screen = Screen.CATALOG
+        navigation.removeAllViews()
+
+        val catalogView = CatalogScreenView(
+            context = this,
+            title = catalog.title,
+            source = catalog.source,
+            rows = catalog.rows,
+            selectedCategory = selectedCategory,
+            selectedTag = selectedTag,
+            categoryTypes = categoryTypes,
+            categoryTags = categoryTags,
+            categoryFilterFocus = categoryFilterFocus,
+            rankTypes = rankTypes,
+            selectedRank = selectedRank,
+            artwork = artwork,
+            onFilterSelected = { key, kind, id ->
+                categoryFilterFocus = key
+                if (kind == "type") { selectedCategory = id; selectedTag = "" } else selectedTag = id
+                catalog.page = 1; catalog.focusedId = null; catalogScroll = null
+                navigationJob = null; loadCatalog(false)
+            },
+            onRankSelected = { slug ->
+                if (slug != selectedRank) {
+                    selectedRank = slug
+                    catalog.page = 1
+                    catalog.focusedId = null
+                    catalogScroll = null
+                    navigationJob = null
+                    loadCatalog(false)
                 }
-                column.addView(group, LinearLayout.LayoutParams(-1, -2))
+            },
+            onRefreshHistory = { loadHistory() },
+            onReturnFeed = { returnToFeed() },
+            onSeriesClick = { series, manager ->
+                catalogScroll = manager.onSaveInstanceState()
+                if (catalog.source == "history") {
+                    selectedHistory = historyRows.firstOrNull { it.series.id == series.id }
+                    openDetail(series, resumeImmediately = true)
+                } else {
+                    selectedHistory = null
+                    openDetail(series)
+                }
+            },
+            onSeriesFocused = { series -> catalog.focusedId = series.id },
+            onSubtitleProvider = { series ->
+                if (catalog.source == "history") {
+                    historyRows.firstOrNull { it.series.id == series.id }?.let {
+                        "第 ${it.episodeNumber} 集 · ${TvUi.time(it.positionMs)}\n${java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT, java.text.DateFormat.SHORT).format(java.util.Date(it.updatedAt))}"
+                    } ?: series.badge
+                } else series.badge
+            },
+            onProgressProvider = { series ->
+                if (catalog.source == "history") {
+                    historyRows.firstOrNull { it.series.id == series.id }?.let {
+                        if (it.durationMs > 0) it.positionMs.toFloat() / it.durationMs else 0f
+                    }
+                } else null
             }
-            filters(categoryTypes, "type", selectedCategory)
-            filters(listOf("" to "全部题材") + categoryTags, "tag", selectedTag)
-        }
-        if (catalog.source == "rank") tools.addView(TvUi.pillButton(this, "切换榜单") {
-            loadChoices("榜单", { repository().rankTypes() }) {
-                selectedRank = it; catalogScroll = null; navigationJob = null; loadCatalog(false)
+        )
+
+        catalogGrid = catalogView.gridView
+        val manager = catalogView.manager
+
+        if (!catalog.ended && catalog.rows.isNotEmpty() && manager != null) {
+            catalogView.addLoadMoreButton("加载更多 · 第 ${catalog.page} 页") {
+                catalogScroll = manager.onSaveInstanceState()
+                loadCatalog(true)
             }
-        })
-        if (catalog.source == "history") tools.addView(TvUi.pillButton(this, "刷新") { loadHistory() })
-        column.addView(tools)
-        if (catalog.rows.isEmpty()) {
-            column.addView(TvUi.text(this, "暂时没有内容"))
-            column.addView(TvUi.pillButton(this, "返回推荐", active = true) { returnToFeed() }.apply { requestFocus() })
-            categoryButtons.firstOrNull { it.contentDescription == categoryFilterFocus }?.requestFocus()
-            categoryFilterFocus = null
-            return
         }
 
-        val manager = GridLayoutManager(this, 5)
-        val grid = RecyclerView(this).apply {
-            layoutManager = manager
-            descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
-        }
-        catalogGrid = grid
-        grid.adapter = SeriesAdapter(catalog.rows, artwork, { series ->
-            catalogScroll = manager.onSaveInstanceState()
-            if (catalog.source == "history") {
-                selectedHistory = historyRows.firstOrNull { it.series.id == series.id }
-                openDetail(series, resumeImmediately = true)
-            } else {
-                selectedHistory = null
-                openDetail(series)
+        navigation.addView(catalogView, FrameLayout.LayoutParams(-1, -1))
+
+        if (catalog.rows.isNotEmpty() && manager != null) {
+            val grid = catalogView.gridView ?: return
+            val index = PlaybackPolicy.restoredIndex(catalog.rows, catalog.focusedId)
+            if (catalogScroll != null) manager.onRestoreInstanceState(catalogScroll) else grid.scrollToPosition(index)
+            grid.post {
+                val filter = catalogView.categoryButtons.firstOrNull { it.contentDescription == categoryFilterFocus }
+                categoryFilterFocus = null
+                val rankBtn = if (catalog.source == "rank" && catalog.focusedId == null) {
+                    catalogView.rankButtons.firstOrNull { it.isSelected } ?: catalogView.rankButtons.firstOrNull()
+                } else null
+                val tool = (0 until catalogView.tools.childCount).map { catalogView.tools.getChildAt(it) }.filterIsInstance<Button>()
+                    .firstOrNull { preserveFocus != null && it.text.toString().removePrefix("● ") == preserveFocus.removePrefix("● ") }
+                filter?.requestFocus() ?: rankBtn?.requestFocus() ?: tool?.requestFocus() ?: (manager.findViewByPosition(index)?.requestFocus() ?: grid.requestFocus())
             }
-        }, { series -> catalog.focusedId = series.id }, subtitle = { series ->
-            if (catalog.source == "history") historyRows.firstOrNull { it.series.id == series.id }?.let { "第 ${it.episodeNumber} 集 · ${TvUi.time(it.positionMs)}\n${java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT,java.text.DateFormat.SHORT).format(java.util.Date(it.updatedAt))}" } ?: series.badge else series.badge
-        }, progress = { series -> if(catalog.source=="history")historyRows.firstOrNull{it.series.id==series.id}?.let{if(it.durationMs>0)it.positionMs.toFloat()/it.durationMs else 0f} else null })
-        column.addView(grid, LinearLayout.LayoutParams(-1, 0, 1f))
-        val index = PlaybackPolicy.restoredIndex(catalog.rows, catalog.focusedId)
-        if (catalogScroll != null) manager.onRestoreInstanceState(catalogScroll) else grid.scrollToPosition(index)
-        grid.post {
-            val filter = categoryButtons.firstOrNull { it.contentDescription == categoryFilterFocus }
-            categoryFilterFocus = null
-            val tool = (0 until tools.childCount).map { tools.getChildAt(it) }.filterIsInstance<Button>()
-                .firstOrNull { preserveFocus != null && it.text.toString().removePrefix("● ") == preserveFocus.removePrefix("● ") }
-            filter?.requestFocus() ?: tool?.requestFocus() ?: (manager.findViewByPosition(index)?.requestFocus() ?: grid.requestFocus())
         }
-        if (!catalog.ended) column.addView(TvUi.pillButton(this, "加载更多 · 第 ${catalog.page} 页") {
-            catalogScroll = manager.onSaveInstanceState(); loadCatalog(true)
-        })
     }
 
     private fun loadChoices(title: String, fetch: suspend () -> List<Pair<String, String>>, selected: (String) -> Unit) {
@@ -1441,108 +1214,37 @@ class MainActivity : ComponentActivity() {
 
     private fun showDetail() {
         val detail = browsingDetail ?: activeDetail ?: return
-        browsingDetail = detail; stopForNavigation(Screen.DETAIL)
-        val column = panel(detail.series.title)
-        val top = TvUi.row(this)
-        val cover = ImageView(this).apply {
-            scaleType = ImageView.ScaleType.CENTER_CROP
-            background = GradientDrawable().apply {
-                cornerRadius = dp(10).toFloat()
-            }
-        }
-        artwork.load(detail.series.cover, cover)
-        top.addView(cover, LinearLayout.LayoutParams(dp(110), dp(150)).apply { marginEnd = dp(16) })
+        browsingDetail = detail
+        stopForNavigation(Screen.DETAIL)
+        navigation.removeAllViews()
 
-        val infoCol = TvUi.column(this)
-        infoCol.addView(TvUi.text(this, "${detail.series.badge} · ${detail.series.tags}", 14f).apply { setTextColor(TvUi.AMBER) })
-        infoCol.addView(TvUi.text(this, detail.series.description, 14.5f).apply {
-            maxLines = 4
-            setTextColor(TvUi.TEXT_MUTED)
-        })
-        top.addView(infoCol, LinearLayout.LayoutParams(0, -2, 1f))
-        column.addView(top)
+        val detailView = DetailScreenView(
+            context = this,
+            detail = detail,
+            isFavorite = store.isFavorite(detail.series.id),
+            activeIndex = activeIndex,
+            episodeGroup = episodeGroup,
+            detailFocus = detailFocus,
+            artwork = artwork,
+            onPlayFromStart = { playDetail(false) },
+            onResumePlay = { playDetail(true) },
+            onToggleFavorite = {
+                store.toggleFavorite(detail.series)
+                showDetail()
+            },
+            onGroupChanged = { g ->
+                episodeGroup = g
+                detailFocus = 0
+                showDetail()
+            },
+            onEpisodeSelected = { focus, episodeIndex ->
+                detailFocus = focus
+                playDetail(false, episodeIndex)
+            }
+        )
 
-        // Action Buttons
-        val controls = TvUi.row(this).apply {
-            setPadding(0, dp(12), 0, dp(12))
-        }
-        val play = TvUi.pillButton(this, "▶ 从头播放") { playDetail(false) }; controls.addView(play)
-        controls.addView(TvUi.pillButton(this, "继续观看", active = true) { playDetail(true) })
-        controls.addView(TvUi.pillButton(this, if (store.isFavorite(detail.series.id)) "已追剧" else "追剧") {
-            store.toggleFavorite(detail.series); showDetail()
-        })
-        column.addView(controls)
-
-        // Episode Group Horizontal Tabs (Eliminates modal dialog popup)
-        val groups = (detail.episodes.size + 49) / 50
-        if (groups > 1) {
-            val groupScroll = HorizontalScrollView(this).apply {
-                isHorizontalScrollBarEnabled = false
-                setPadding(0, 0, 0, dp(10))
-            }
-            val groupRow = TvUi.row(this)
-            for (g in 0 until groups) {
-                val start = g * 50 + 1
-                val end = minOf((g + 1) * 50, detail.episodes.size)
-                val isSelected = g == episodeGroup
-                val groupBtn = Button(this).apply {
-                    text = "$start—$end 集"
-                    textSize = 13f
-                    isAllCaps = false
-                    setTextColor(if (isSelected) Color.WHITE else TvUi.TEXT_MUTED)
-                    background = TvUi.pillBackground(active = isSelected, radius = 20f)
-                    minHeight = dp(34)
-                    setPadding(dp(16), dp(4), dp(16), dp(4))
-                    setOnClickListener {
-                        episodeGroup = g
-                        detailFocus = 0
-                        showDetail()
-                    }
-                    setOnFocusChangeListener { v, f ->
-                        v.scaleX = if (f) 1.05f else 1f
-                        v.scaleY = if (f) 1.05f else 1f
-                    }
-                }
-                groupRow.addView(groupBtn, LinearLayout.LayoutParams(-2, dp(34)).apply { marginEnd = dp(8) })
-            }
-            groupScroll.addView(groupRow)
-            column.addView(groupScroll)
-        }
-
-        // Fixed 8-Column Grid for Episodes (Prevents stretching on incomplete rows)
-        val scroll = ScrollView(this); val episodeRows = TvUi.column(this)
-        val visible = detail.episodes.drop(episodeGroup * 50).take(50)
-        var focusButton: View? = null
-        visible.chunked(8).forEachIndexed { rowIndex, chunk ->
-            val row = TvUi.row(this)
-            chunk.forEachIndexed { offset, episode ->
-                val index = episodeGroup * 50 + rowIndex * 8 + offset
-                val isCurrent = index == activeIndex
-                val button = Button(this).apply {
-                    text = episode.number.toString()
-                    textSize = 14f
-                    setTextColor(Color.WHITE); background = TvUi.pillBackground(active = isCurrent, radius = 10f)
-                    setOnClickListener {
-                        detailFocus = rowIndex * 8 + offset
-                        playDetail(false, index)
-                    }
-                    setOnFocusChangeListener { v, f ->
-                        v.scaleX = if (f) 1.08f else 1f
-                        v.scaleY = if (f) 1.08f else 1f
-                    }
-                }
-                row.addView(button, LinearLayout.LayoutParams(0, dp(44), 1f).apply { setMargins(dp(3), dp(3), dp(3), dp(3)) })
-                if (rowIndex * 8 + offset == detailFocus || (detailFocus < 0 && isCurrent)) focusButton = button
-            }
-            // Fill remaining slots in last row with spacers so buttons maintain fixed width!
-            for (i in chunk.size until 8) {
-                row.addView(View(this), LinearLayout.LayoutParams(0, dp(44), 1f).apply { setMargins(dp(3), dp(3), dp(3), dp(3)) })
-            }
-            episodeRows.addView(row)
-        }
-        scroll.addView(episodeRows)
-        column.addView(scroll, LinearLayout.LayoutParams(-1, 0, 1f))
-        if (detailFocus >= 0) focusButton?.requestFocus() else play.requestFocus()
+        navigation.addView(detailView, FrameLayout.LayoutParams(-1, -1))
+        detailView.focusTargetView?.requestFocus()
     }
 
     private fun playDetail(resume: Boolean, selectedIndex: Int? = null, autoplay: Boolean = true) {
@@ -1581,64 +1283,68 @@ class MainActivity : ComponentActivity() {
 
     private fun showSettings() {
         stopForNavigation(Screen.SETTINGS)
-        settingsError=null
-        val column = panel("远程共享与同步")
-        column.addView(TvUi.text(this, "电视已内置内容服务。未配置远程时，收藏、历史和播放偏好保存在本机。", 16f).apply {
-            setTextColor(TvUi.TEXT_MUTED)
-        })
-        val input = EditText(this).apply {
-            setText(history.remoteUrl)
-            hint = "https://远程共享服务器"
-            textSize = 20f
-            setTextColor(Color.WHITE)
-            isSingleLine = true
-            inputType = android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_URI
-            background = TvUi.surface(TvUi.PANEL, TvUi.BORDER_SUBTLE, radius = 18f)
-            setPadding(dp(18), dp(12), dp(18), dp(12))
-        }
-        column.addView(input, LinearLayout.LayoutParams(-1, dp(58)).apply {
-            topMargin = dp(8)
-            bottomMargin = dp(14)
-        })
-        val key = EditText(this).apply {
-            setText(history.remoteKey); hint = "家庭共享密钥"; textSize=20f; setTextColor(Color.WHITE); isSingleLine=true
-            inputType=android.text.InputType.TYPE_CLASS_TEXT or android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD
-            background=TvUi.surface(TvUi.PANEL,TvUi.BORDER_SUBTLE,radius=18f);setPadding(dp(18),dp(12),dp(18),dp(12))
-        }
-        column.addView(key,LinearLayout.LayoutParams(-1,dp(58)).apply{bottomMargin=dp(14)})
-        val status = TvUi.text(this, history.status, 14f).apply {
-            setTextColor(TvUi.TEXT_MUTED)
-        }
-        settingsStatus=status
-        val connect = TvUi.pillButton(this, "验证并开启同步", active = true) {
-            navigationJob?.cancel(); val generation = navigationGeneration.next()
-            navigationJob = scope.launch {
-                try {
-                    settingsError=null;status.text = "正在检查远程服务…"; history.configure(input.text.toString(),key.text.toString())
-                    ensureActive(); if (!navigationGeneration.isCurrent(generation)) return@launch
-                    status.text=history.status
-                } catch (cancelled: CancellationException) { throw cancelled }
-                catch (error: Exception) { settingsError="连接失败：${error.message?:"原配置已保留"}";status.text=settingsError }
+        settingsError = null
+        navigation.removeAllViews()
+
+        val settingsView = SettingsScreenView(
+            context = this,
+            history = history,
+            store = store,
+            onConnectClick = { url, key, statusView ->
+                navigationJob?.cancel()
+                val generation = navigationGeneration.next()
+                navigationJob = scope.launch {
+                    try {
+                        settingsError = null
+                        statusView.text = "正在检查远程服务…"
+                        history.configure(url, key)
+                        ensureActive()
+                        if (!navigationGeneration.isCurrent(generation)) return@launch
+                        statusView.text = history.status
+                    } catch (cancelled: CancellationException) {
+                        throw cancelled
+                    } catch (error: Exception) {
+                        settingsError = "连接失败：${error.message ?: "原配置已保留"}"
+                        statusView.text = settingsError
+                    }
+                }
+            },
+            onDisableSyncClick = { urlEdit, keyEdit, statusView ->
+                scope.launch {
+                    history.disable()
+                    urlEdit.setText("")
+                    keyEdit.setText("")
+                    statusView.text = history.status
+                }
+            },
+            onChooseModeClick = {
+                val modeNames = arrayOf("混合推荐", "真人剧", "漫剧", "AI剧")
+                val modes = listOf("mixed", "real-drama", "comic-drama", "ai-drama")
+                dialog = AlertDialog.Builder(this)
+                    .setTitle("推荐内容")
+                    .setSingleChoiceItems(modeNames, modes.indexOf(store.recommendationMode).coerceAtLeast(0)) { d, index ->
+                        store.recommendationMode = modes[index]
+                        d.dismiss()
+                        dialog = null
+                        startFeed()
+                    }
+                    .create()
+                    .also {
+                        it.setOnDismissListener { dialog = null }
+                        it.show()
+                    }
+            },
+            onResetPreferencesClick = {
+                confirm("重置推荐兴趣？观看历史和收藏会保留。") {
+                    store.resetRecommendationPreferences()
+                    startFeed()
+                }
             }
-        }
-        column.addView(connect)
-        column.addView(TvUi.pillButton(this,"取消远程同步") { scope.launch {history.disable();input.setText("");key.setText("");status.text=history.status} })
-        val modeNames=arrayOf("混合推荐","真人剧","漫剧","AI剧")
-        val modes=listOf("mixed","real-drama","comic-drama","ai-drama")
-        column.addView(TvUi.pillButton(this,"推荐内容：${modeNames[modes.indexOf(store.recommendationMode).coerceAtLeast(0)]}") {
-            dialog=AlertDialog.Builder(this).setTitle("推荐内容").setSingleChoiceItems(modeNames,modes.indexOf(store.recommendationMode).coerceAtLeast(0)){ d,index->
-                store.recommendationMode=modes[index];d.dismiss();dialog=null;startFeed()
-            }.create().also{it.setOnDismissListener{dialog=null};it.show()}
-        })
-        column.addView(TvUi.pillButton(this,"重置推荐偏好") {confirm("重置推荐兴趣？观看历史和收藏会保留。"){store.resetRecommendationPreferences();startFeed()}})
-        column.addView(status)
-        navigation.removeView(column)
-        val settingsScroll=ScrollView(this).apply {
-            isFillViewport=true
-            addView(column,ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT))
-        }
-        navigation.addView(settingsScroll,FrameLayout.LayoutParams(-1,-1))
-        input.requestFocus()
+        )
+
+        settingsStatus = settingsView.statusText
+        navigation.addView(settingsView, FrameLayout.LayoutParams(-1, -1))
+        settingsView.urlInput.requestFocus()
     }
 
     private fun message(value: String) { dialog = AlertDialog.Builder(this).setMessage(value).setPositiveButton("确定", null).create().also { it.setOnDismissListener { dialog = null }; it.show() } }
@@ -1681,7 +1387,7 @@ class MainActivity : ComponentActivity() {
                         finish()
                     } else {
                         revealChrome()
-                        collectionButton.requestFocus()
+                        collectionButton.post { collectionButton.requestFocus() }
                     }
                 }
             }
@@ -1729,8 +1435,11 @@ class MainActivity : ComponentActivity() {
                     hideChromeNow()
                     true
                 } else {
+                    hideSwitchHint()
                     revealChrome()
-                    collectionButton.requestFocus()
+                    collectionButton.post {
+                        collectionButton.requestFocus()
+                    }
                     true
                 }
             }
@@ -1793,31 +1502,76 @@ class MainActivity : ComponentActivity() {
                     this@MainActivity.handler.removeCallbacks(hideChrome)
                     this@MainActivity.handler.postDelayed(hideChrome, 5000)
                     if (currentFocus == null || currentFocus == root || currentFocus == playerView) {
-                        collectionButton.requestFocus()
+                        collectionButton.post { collectionButton.requestFocus() }
                         true
                     } else {
                         super.onKeyDown(keyCode, event)
                     }
                 }
             }
-            KeyEvent.KEYCODE_DPAD_UP, KeyEvent.KEYCODE_DPAD_DOWN -> {
+            KeyEvent.KEYCODE_DPAD_UP -> {
                 if (::episodeDrawer.isInitialized && episodeDrawer.visibility == View.VISIBLE) {
                     super.onKeyDown(keyCode, event)
-                } else if (feedOverlay.visibility != View.VISIBLE) {
-                    if (event.repeatCount == 0 && feedMode) {
-                        resumePaused = false
-                        switchFeed(if (keyCode == KeyEvent.KEYCODE_DPAD_UP) -1 else 1,explicitNext=keyCode==KeyEvent.KEYCODE_DPAD_DOWN)
-                    }
-                    true
-                } else {
+                } else if (feedOverlay.visibility == View.VISIBLE) {
                     this@MainActivity.handler.removeCallbacks(hideChrome)
                     this@MainActivity.handler.postDelayed(hideChrome, 5000)
-                    if (currentFocus == null || currentFocus == root || currentFocus == playerView) {
-                        collectionButton.requestFocus()
+                    val actionIdx = actionButtons.indexOf(currentFocus)
+                    if (actionIdx != -1) {
+                        val targetNav = when (actionIdx) {
+                            0 -> topNavigationButtons.getOrNull(0) ?: topNavigationButtons.first()
+                            1 -> topNavigationButtons.getOrNull(1) ?: topNavigationButtons.first()
+                            2 -> topNavigationButtons.getOrNull(2) ?: topNavigationButtons.first()
+                            3 -> topNavigationButtons.getOrNull(3) ?: topNavigationButtons.first()
+                            4 -> topNavigationButtons.getOrNull(4) ?: topNavigationButtons.first()
+                            else -> topNavigationButtons.getOrNull(6) ?: topNavigationButtons.last()
+                        }
+                        targetNav.requestFocus()
+                        true
+                    } else if (currentFocus == null || currentFocus == root || currentFocus == playerView) {
+                        val target = topNavigationButtons.firstOrNull() ?: collectionButton
+                        target.post { target.requestFocus() }
                         true
                     } else {
                         super.onKeyDown(keyCode, event)
                     }
+                } else {
+                    if (event.repeatCount == 0 && feedMode) {
+                        resumePaused = false
+                        switchFeed(-1, explicitNext = false)
+                    }
+                    true
+                }
+            }
+            KeyEvent.KEYCODE_DPAD_DOWN -> {
+                if (::episodeDrawer.isInitialized && episodeDrawer.visibility == View.VISIBLE) {
+                    super.onKeyDown(keyCode, event)
+                } else if (feedOverlay.visibility == View.VISIBLE) {
+                    this@MainActivity.handler.removeCallbacks(hideChrome)
+                    this@MainActivity.handler.postDelayed(hideChrome, 5000)
+                    val navIdx = topNavigationButtons.indexOf(currentFocus)
+                    if (navIdx != -1) {
+                        val targetAction = when (navIdx) {
+                            0 -> playButton
+                            1 -> nextEpisodeButton
+                            2, 3 -> collectionButton
+                            4 -> favButton
+                            5 -> speedButton
+                            else -> qualityButton
+                        }
+                        targetAction.requestFocus()
+                        true
+                    } else if (currentFocus == null || currentFocus == root || currentFocus == playerView) {
+                        collectionButton.post { collectionButton.requestFocus() }
+                        true
+                    } else {
+                        super.onKeyDown(keyCode, event)
+                    }
+                } else {
+                    if (event.repeatCount == 0 && feedMode) {
+                        resumePaused = false
+                        switchFeed(1, explicitNext = true)
+                    }
+                    true
                 }
             }
             else -> super.onKeyDown(keyCode, event)
@@ -1827,6 +1581,9 @@ class MainActivity : ComponentActivity() {
     @android.annotation.SuppressLint("RestrictedApi")
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         if (event.keyCode == KeyEvent.KEYCODE_BACK && dialog == null) {
+            if (currentFocus is android.widget.EditText) {
+                return super.dispatchKeyEvent(event)
+            }
             if (event.action == KeyEvent.ACTION_UP && !event.isCanceled) back()
             return true
         }

@@ -1,0 +1,10 @@
+{
+  "id": "t-d2-tv-ui-discovery",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-14T04:13:01.140Z",
+  "title": "D2 TV 端 UI Bug 发现",
+  "result": {
+    "summary": "D2 TV 端 UI Bug 发现已完成，共发现 5 条 verified 实测 Bug 与 1 条推测缺陷，闭环 K1 与 K2，已提供全套证据两步法截图与 XML dump，报告写入 .agents/shared/t-d2-tv-ui-discovery-antigravity.md"
+  }
+}

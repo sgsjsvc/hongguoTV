@@ -1,0 +1,52 @@
+{
+  "id": "t-u2-progress-bar",
+  "createdAt": "2026-10-13T13:47:59.577Z",
+  "updatedAt": "2026-10-13T14:44:45.270Z",
+  "assignee": "antigravity",
+  "title": "U2 修复历史页卡片进度条可见性",
+  "brief": "详见 .agents/inbox/t-u2-progress-bar.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "协作规范: .agents/README.md 与 .agents/QUICKSTART.md",
+    "本轮规划: .agents/shared/tv-ui-round2-plan.md",
+    "TV 在本轮范围内（QUICKSTART 旧边界已废止）",
+    "工作区已有未提交改动（T1-T3 + 播放修复），不得回退或清理",
+    "【补充】截图必须用两步法：adb shell screencap -p /sdcard/x.png 然后 adb pull，不要用 adb exec-out > file.png（PowerShell 重定向会破坏二进制，U1 的截图已因此损坏）",
+    "【补充】协调者在历史页观察到：卡片底部进度条区域与日期文字存在重叠，请一并排查"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [
+    "t-u1-fix-layout"
+  ],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-13T14:18:50.131Z",
+  "result": {
+    "summary": "修复历史页卡片进度条可见性：配置高对比度红色进度着色与半透明白色底轨、扩增进度条高度及边距，并在模拟器上完成视觉验证与截图"
+  },
+  "history": [
+    {
+      "at": "2026-10-13T13:47:59.577Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-13T14:18:50.131Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-13T14:44:45.271Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-u2-progress-bar.brief.md",
+  "order": 2
+}

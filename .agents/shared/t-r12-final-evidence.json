@@ -1,0 +1,9 @@
+{
+  "replicasConsistent": true,
+  "categoryCompatibilityPreserved": true,
+  "endReadsBefore": 10001,
+  "endReadsAfter": 14,
+  "apkAssetMatchesSource": true,
+  "apkSha256": "a28fc27e2cf87114d2fe92f10bcb7376a6cddcf7b37db774effa2e1536ce266d",
+  "sourceSha256": "d1c69b60ef15761e5cb1f267a9b859c971c081e403a1505f503d1194377997fe"
+}

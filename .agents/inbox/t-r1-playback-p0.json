@@ -1,0 +1,50 @@
+{
+  "id": "t-r1-playback-p0",
+  "createdAt": "2026-10-14T05:38:23.396Z",
+  "updatedAt": "2026-10-14T06:12:15.247Z",
+  "assignee": "codex",
+  "title": "R1 播放链路 P0 修复（D1-F1/F2）",
+  "brief": "详见 .agents/inbox/t-r1-playback-p0.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "第五轮规划: .agents/shared/round5-fix-plan.md",
+    "发现来源: .agents/shared/discovery-round4-synthesis.md",
+    "第四轮已入库（3af5e82 业务代码、a056538 协作记录）",
+    "修复类任务：可改代码，但严格限定在 brief 授权的文件范围内",
+    "必须提供「修复前失败证据 + 修复后通过证据」"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-14T06:02:19.221Z",
+  "result": {
+    "summary": "R1修复完成，待DSH验收：.agents/shared/t-r1-playback-p0-codex.md。修复前三副本并发备用切换及响应挂起等10项测试9失败，修复后10/10通过；npm test 75/75；Android assembleDebug成功，APK引擎资产与源码哈希一致。独立复核无阻断问题。仅四个授权业务文件，副本兼容差异保留。未提交、推送、重启服务或安装APK；取消仅覆盖活动媒体分片，共享头预取限制已记录。"
+  },
+  "history": [
+    {
+      "at": "2026-10-14T05:38:23.397Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T06:02:19.222Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T06:12:15.248Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-r1-playback-p0.brief.md",
+  "order": 1,
+  "kind": "fix"
+}

@@ -1,0 +1,102 @@
+{
+  "metadata": [
+    {
+      "vid": "7503780574541122622",
+      "rows": [
+        {
+          "quality": "1920",
+          "codec": "bytevc1",
+          "encrypted": true
+        },
+        {
+          "quality": "1280",
+          "codec": "bytevc1",
+          "encrypted": true
+        },
+        {
+          "quality": "960",
+          "codec": "bytevc1",
+          "encrypted": true
+        },
+        {
+          "quality": "854",
+          "codec": "bytevc1",
+          "encrypted": true
+        },
+        {
+          "quality": "640",
+          "codec": "bytevc1",
+          "encrypted": true
+        }
+      ]
+    },
+    {
+      "vid": "7686715400607779902",
+      "rows": [
+        {
+          "quality": "1920",
+          "codec": "bytevc1",
+          "encrypted": true
+        },
+        {
+          "quality": "1280",
+          "codec": "bytevc2",
+          "encrypted": true
+        },
+        {
+          "quality": "1024",
+          "codec": "bytevc2",
+          "encrypted": true
+        },
+        {
+          "quality": "854",
+          "codec": "bytevc2",
+          "encrypted": true
+        },
+        {
+          "quality": "640",
+          "codec": "bytevc2",
+          "encrypted": true
+        }
+      ]
+    }
+  ],
+  "media": [
+    {
+      "quality": "360P",
+      "actual": "360P",
+      "bytes": 1024,
+      "ftyp": true,
+      "samples": 15479,
+      "nalPrefix": 29,
+      "sampleBytes": 2233
+    },
+    {
+      "quality": "540P",
+      "actual": "540P",
+      "bytes": 1024,
+      "ftyp": true,
+      "samples": 15479,
+      "nalPrefix": 29,
+      "sampleBytes": 3492
+    },
+    {
+      "quality": "720P",
+      "actual": "720P",
+      "bytes": 1024,
+      "ftyp": true,
+      "samples": 15479,
+      "nalPrefix": 29,
+      "sampleBytes": 3926
+    },
+    {
+      "quality": "1080P",
+      "actual": "1080P",
+      "bytes": 1024,
+      "ftyp": true,
+      "samples": 15479,
+      "nalPrefix": 29,
+      "sampleBytes": 7946
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "id": "t-r11-playback-correctness",
+  "createdAt": "2026-10-14T05:38:23.427Z",
+  "updatedAt": "2026-10-14T08:28:19.297Z",
+  "assignee": "codex",
+  "title": "R11 播放接口正确性修复（D1-F3/F4）",
+  "brief": "详见 .agents/inbox/t-r11-playback-correctness.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "第五轮规划: .agents/shared/round5-fix-plan.md",
+    "发现来源: .agents/shared/discovery-round4-synthesis.md",
+    "第四轮已入库（3af5e82 业务代码、a056538 协作记录）",
+    "修复类任务：可改代码，但严格限定在 brief 授权的文件范围内",
+    "必须提供「修复前失败证据 + 修复后通过证据」"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [
+    "t-r9-import-perf"
+  ],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-14T08:23:42.470Z",
+  "result": {
+    "summary": "R11完成，报告 .agents/shared/t-r11-playback-correctness-codex.md。空画质明确502、不虚构1080P；206严格校验偏移和total。新16项+R1共26通过，npm83通过，APK构建通过；真实四档ftyp通过，独立复核无阻断。Web错误仅记录警告、完整媒体身份校验限制已注明。未重启部署。"
+  },
+  "history": [
+    {
+      "at": "2026-10-14T05:38:23.427Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T08:23:42.470Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T08:28:19.298Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-r11-playback-correctness.brief.md",
+  "order": 11,
+  "kind": "fix"
+}

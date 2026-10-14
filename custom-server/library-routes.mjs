@@ -11,7 +11,10 @@ export function createLibraryHandler(store,sync){return async(req,res,url)=>{
       const input=await readJson(req);const id=typeof input.migrationId==='string'?input.migrationId:'';if(!id||id.length>256)throw new LibraryError(400,'migration ID required');
       if(!store.getMeta(`migration:${id}`)){
         if(!Array.isArray(input.operations)||input.operations.length>10000)throw new LibraryError(400,'invalid migration operations');
-        // Outer transaction also includes the migration marker; write() uses its own transaction.
+        // Each write commits in its own transaction: write() opens one internally and SQLite rejects
+        // nested transactions, so no outer transaction is possible here. A crash mid-loop leaves a
+        // partial import that is safe to retry — operation IDs are deterministic, replay is idempotent,
+        // and the marker is set by the first attempt that completes the whole loop.
         for(let i=0;i<input.operations.length;i++)store.write({...input.operations[i],id:`migration:${id}:${i}`});
         store.setMeta(`migration:${id}`,true);
       }

@@ -73,7 +73,11 @@ export class HistoryStore {
       }
       const removed = this.db.prepare('SELECT deleted_at FROM tombstones WHERE series_id=? AND source=?').get(metadata.id, platform)?.deleted_at ?? -1;
       const cleared = this.db.prepare('SELECT deleted_at FROM deletion_watermarks WHERE source=?').get(platform)?.deleted_at ?? -1;
-      if (startedAt <= Math.max(removed, cleared)) throw new HistoryError(410, 'history session predates deletion');
+      const deletedAt = Math.max(removed, cleared);
+      // D4-F7: deletion markers must not be jumpable via a client-claimed future timestamp.
+      // Clock skew up to 1s is tolerated; a claim further ahead cannot be trusted to be after the deletion.
+      if (deletedAt >= 0 && startedAt > Date.now() + 1000) throw new HistoryError(410, 'history session predates deletion');
+      if (startedAt <= deletedAt) throw new HistoryError(410, 'history session predates deletion');
       const result = this.db.prepare('INSERT INTO sessions(session_id,client_id,source,series_id,series_json,started_at) VALUES(?,?,?,?,?,?)').run(sessionId, clientId, platform, metadata.id, JSON.stringify(metadata), startedAt);
       return { sessionId, sessionOrder: Number(result.lastInsertRowid) };
     });
@@ -146,8 +150,11 @@ export class HistoryStore {
     });
     return this.transaction(() => {
       for (const item of items) {
-        if (this.db.prepare('SELECT 1 FROM tombstones WHERE series_id=? AND source=?').get(item.seriesId, platform)) continue;
-        if (this.db.prepare('SELECT 1 FROM deletion_watermarks WHERE source=?').get(platform)) continue;
+        // D4-F1: compare against deletion timestamps instead of mere existence, so data updated
+        // after a clear/tombstone is importable while stale data stays blocked (mirrors registerSession).
+        const removed = this.db.prepare('SELECT deleted_at FROM tombstones WHERE series_id=? AND source=?').get(item.seriesId, platform)?.deleted_at ?? -1;
+        const cleared = this.db.prepare('SELECT deleted_at FROM deletion_watermarks WHERE source=?').get(platform)?.deleted_at ?? -1;
+        if (item.updatedAt <= Math.max(removed, cleared)) continue;
         const revision = Number(this.db.prepare('INSERT INTO revisions DEFAULT VALUES').run().lastInsertRowid);
         this.db.prepare('INSERT OR IGNORE INTO history VALUES(?,?,?,?,1,?)').run(item.seriesId, platform, JSON.stringify(item), item.updatedAt, revision);
       }

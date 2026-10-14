@@ -6,7 +6,7 @@ import android.view.ViewGroup
 
 /** All filters stay visible; wrap to the available TV width without horizontal scrolling. */
 internal class CategoryTagLayout(context: Context) : ViewGroup(context) {
-    private val gap = TvUi.dp(context, 8)
+    private val gap = TvUi.dimen(context, R.dimen.category_tag_gap)
     init { clipChildren = false; clipToPadding = false }
 
     override fun generateDefaultLayoutParams() = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)

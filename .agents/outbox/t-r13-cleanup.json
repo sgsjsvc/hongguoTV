@@ -1,0 +1,10 @@
+{
+  "id": "t-r13-cleanup",
+  "agent": "codex",
+  "status": "done",
+  "finishedAt": "2026-10-14T08:46:53.793Z",
+  "title": "R13 收尾清理：调试日志与测试纳管",
+  "result": {
+    "summary": "R13完成，报告 .agents/shared/t-r13-cleanup-codex.md。移除3个TvFocus日志保留requestFocus副作用；R1十项回归正式迁入tests/playback-p0.test.mjs，仅改import，旧协作测试删除。npm本轮83→93全绿（brief75为旧计数）；最终47专项、APK构建/lint/JVM单测通过，独立复核无阻断。未重启、提交或安装。"
+  }
+}

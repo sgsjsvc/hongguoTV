@@ -1,0 +1,34 @@
+[
+  {
+    "quality": "360P",
+    "actual": "360P",
+    "total": 6524051,
+    "bytes": 1024,
+    "ftyp": true,
+    "samples": 15479
+  },
+  {
+    "quality": "540P",
+    "actual": "540P",
+    "total": 9302409,
+    "bytes": 1024,
+    "ftyp": true,
+    "samples": 15479
+  },
+  {
+    "quality": "720P",
+    "actual": "720P",
+    "total": 11291532,
+    "bytes": 1024,
+    "ftyp": true,
+    "samples": 15479
+  },
+  {
+    "quality": "1080P",
+    "actual": "1080P",
+    "total": 22421134,
+    "bytes": 1024,
+    "ftyp": true,
+    "samples": 15479
+  }
+]

@@ -1,0 +1,49 @@
+{
+  "id": "t-d2-tv-ui-discovery",
+  "createdAt": "2026-10-14T03:56:00.985Z",
+  "updatedAt": "2026-10-14T04:13:01.136Z",
+  "assignee": "antigravity",
+  "title": "D2 TV 端 UI Bug 发现",
+  "brief": "详见 .agents/inbox/t-d2-tv-ui-discovery.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "发现类任务规范: .agents/shared/discovery-spec.md（必读）",
+    "性质：只读发现，禁止修改任何业务代码",
+    "统一交付格式与严重度定义见规范文件",
+    "必须区分「已核实」（有运行证据）与「推测」（仅静态推断）"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-14T04:00:36.966Z",
+  "result": {
+    "summary": "D2 TV 端 UI Bug 发现已完成，共发现 5 条 verified 实测 Bug 与 1 条推测缺陷，闭环 K1 与 K2，已提供全套证据两步法截图与 XML dump，报告写入 .agents/shared/t-d2-tv-ui-discovery-antigravity.md"
+  },
+  "history": [
+    {
+      "at": "2026-10-14T03:56:00.985Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T04:00:36.967Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T04:13:01.137Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-d2-tv-ui-discovery.brief.md",
+  "order": 2,
+  "kind": "discovery"
+}

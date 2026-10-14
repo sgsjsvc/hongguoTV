@@ -1,0 +1,10 @@
+{
+  "id": "t-u3-verify",
+  "agent": "workbuddy",
+  "status": "done",
+  "finishedAt": "2026-10-13T16:15:54.402Z",
+  "title": "U3 独立复核第二轮修复（U1/U2/U4）",
+  "result": {
+    "summary": "U3复核通过：双模式扫描三种口径全部归零(dp(数字)=0, TvUi.dp(...,数字)=0, 放宽口径=0, 仅剩MainActivity:156 helper定义)；10个新增/变更dimens键三档齐全有梯度，全量105键单调无违例；U2进度条根因真实(低对比+3dp过小+无间距)且无回归(无进度卡片仍GONE)，前后截图我亲自查验属实；U1按钮代码级已修好(WRAP_CONTENT)但渲染证据链断裂(截图UTF-16损坏37.7%字节丢失+outputs/debug的u1文件实为播放页名不副实+本机无adb)，建议补dump闭环不返工。本机复跑构建链全绿30/0/0，APK(22:57:05)覆盖当前源码，改动均在授权范围。报告：.agents/shared/t-u3-verify-workbuddy.md"
+  }
+}

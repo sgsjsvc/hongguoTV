@@ -1,0 +1,54 @@
+{
+  "id": "t-u3-verify",
+  "createdAt": "2026-10-13T13:47:59.580Z",
+  "updatedAt": "2026-10-13T16:15:54.393Z",
+  "assignee": "workbuddy",
+  "title": "U3 独立复核第二轮修复（U1/U2/U4）",
+  "brief": "详见 .agents/inbox/t-u3-verify.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "协作规范: .agents/README.md 与 .agents/QUICKSTART.md",
+    "本轮规划: .agents/shared/tv-ui-round2-plan.md",
+    "TV 在本轮范围内（QUICKSTART 旧边界已废止）",
+    "工作区已有未提交改动（T1-T3 + 播放修复），不得回退或清理",
+    "【范围更新】复核对象为三个任务：t-u1-fix-layout、t-u2-progress-bar、t-u4-tag-layout",
+    "【背景】U4 是在 U3 brief 写好后追加的（协调者发现 CategoryTagLayout.kt 残留），必须一并复核",
+    "【协调者已知的两处问题，请独立验证】① 报告称 series_card_width 实为高度参数，键名有误导性；② 执行方 U1 截图曾因 PowerShell 重定向损坏（UTF-16），U2/U4 已改用两步法",
+    "【重点】核查『硬编码是否真归零』时，必须用双模式扫描：dp\\(\\d+\\) 与 TvUi\\.dp\\([^)]*,\\s*\\d+\\)"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [
+    "t-u2-progress-bar"
+  ],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "workbuddy",
+  "claimedAt": "2026-10-13T16:02:50.534Z",
+  "result": {
+    "summary": "U3复核通过：双模式扫描三种口径全部归零(dp(数字)=0, TvUi.dp(...,数字)=0, 放宽口径=0, 仅剩MainActivity:156 helper定义)；10个新增/变更dimens键三档齐全有梯度，全量105键单调无违例；U2进度条根因真实(低对比+3dp过小+无间距)且无回归(无进度卡片仍GONE)，前后截图我亲自查验属实；U1按钮代码级已修好(WRAP_CONTENT)但渲染证据链断裂(截图UTF-16损坏37.7%字节丢失+outputs/debug的u1文件实为播放页名不副实+本机无adb)，建议补dump闭环不返工。本机复跑构建链全绿30/0/0，APK(22:57:05)覆盖当前源码，改动均在授权范围。报告：.agents/shared/t-u3-verify-workbuddy.md"
+  },
+  "history": [
+    {
+      "at": "2026-10-13T13:47:59.580Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-13T16:02:50.534Z",
+      "status": "claimed",
+      "by": "workbuddy",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-13T16:15:54.394Z",
+      "status": "done",
+      "by": "workbuddy",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-u3-verify.brief.md",
+  "order": 3
+}

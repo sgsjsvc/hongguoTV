@@ -12,6 +12,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.DimenRes
 
 internal object TvUi {
     const val BACKGROUND = 0xff070a13.toInt()
@@ -25,6 +26,8 @@ internal object TvUi {
     const val BORDER_SUBTLE = 0x33ffffff.toInt()
 
     fun dp(context: Context, value: Int) = (value * context.resources.displayMetrics.density).toInt()
+
+    fun dimen(context: Context, @DimenRes id: Int): Int = context.resources.getDimensionPixelSize(id)
 
     fun surface(color: Int, stroke: Int = Color.TRANSPARENT, radius: Float = 14f, strokeWidth: Int = 3) = GradientDrawable().apply {
         setColor(color)

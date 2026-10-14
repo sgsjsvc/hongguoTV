@@ -1,0 +1,10 @@
+{
+  "id": "t-u4-tag-layout",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-13T14:59:06.586Z",
+  "title": "U4 补齐 CategoryTagLayout 尺寸资源化",
+  "result": {
+    "summary": "CategoryTagLayout gap 尺寸资源化已完成：三档 dimens 均配置 category_tag_gap，硬编码扫描全项目归零，单元测试/lint/构建均通过，并在模拟器上完成分类页布局截图验证 (.agents/shared/u4-category.png)"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": "t-r13-cleanup",
+  "createdAt": "2026-10-14T08:20:38.929Z",
+  "updatedAt": "2026-10-14T08:46:53.785Z",
+  "assignee": "codex",
+  "title": "R13 收尾清理：调试日志与测试纳管",
+  "brief": "详见 .agents/inbox/t-r13-cleanup.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "中期检查报告: .agents/shared/round5-midcheck.md",
+    "来源1: R2 遗留 3 处 android.util.Log.d(\"TvFocus\", ...) 调试日志",
+    "来源2: R1 的 10 项回归测试未纳入 npm test",
+    "R1 修复的是 P0 级并发回归（D1-F1），测试必须纳管防复发"
+  ],
+  "acceptance": [
+    "MainActivity.kt 无 Log.d(\"TvFocus\" 残留",
+    "npm test 从 75 项增至 85 项且全绿",
+    "构建/lint/单元测试通过",
+    "报告写入 .agents/shared/t-r13-cleanup-codex.md"
+  ],
+  "blockedBy": [
+    "t-r7-web-refactor"
+  ],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-14T08:38:08.939Z",
+  "result": {
+    "summary": "R13完成，报告 .agents/shared/t-r13-cleanup-codex.md。移除3个TvFocus日志保留requestFocus副作用；R1十项回归正式迁入tests/playback-p0.test.mjs，仅改import，旧协作测试删除。npm本轮83→93全绿（brief75为旧计数）；最终47专项、APK构建/lint/JVM单测通过，独立复核无阻断。未重启、提交或安装。"
+  },
+  "history": [
+    {
+      "at": "2026-10-14T08:20:38.930Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T08:38:08.939Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T08:46:53.786Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-r13-cleanup.brief.md",
+  "order": 13,
+  "kind": "cleanup"
+}

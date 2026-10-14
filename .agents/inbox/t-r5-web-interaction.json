@@ -1,0 +1,50 @@
+{
+  "id": "t-r5-web-interaction",
+  "createdAt": "2026-10-14T05:38:23.411Z",
+  "updatedAt": "2026-10-14T08:10:21.138Z",
+  "assignee": "antigravity",
+  "title": "R5 Web/PC 交互缺陷修复（D3-F2/F3/F4）",
+  "brief": "详见 .agents/inbox/t-r5-web-interaction.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "第五轮规划: .agents/shared/round5-fix-plan.md",
+    "发现来源: .agents/shared/discovery-round4-synthesis.md",
+    "第四轮已入库（3af5e82 业务代码、a056538 协作记录）",
+    "修复类任务：可改代码，但严格限定在 brief 授权的文件范围内",
+    "必须提供「修复前失败证据 + 修复后通过证据」"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-14T06:54:13.611Z",
+  "result": {
+    "summary": ".agents/shared/t-r5-web-interaction-antigravity.md"
+  },
+  "history": [
+    {
+      "at": "2026-10-14T05:38:23.411Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T06:54:13.611Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T08:10:21.139Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-r5-web-interaction.brief.md",
+  "order": 5,
+  "kind": "fix"
+}

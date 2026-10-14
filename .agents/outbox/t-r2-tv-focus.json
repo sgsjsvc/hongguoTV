@@ -1,0 +1,10 @@
+{
+  "id": "t-r2-tv-focus",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-14T06:52:44.777Z",
+  "title": "R2 TV UI 焦点与导航修复（D2-F1/F2/F3/F6）",
+  "result": {
+    "summary": ".agents/shared/t-r2-tv-focus-antigravity.md"
+  }
+}

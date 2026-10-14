@@ -1,0 +1,10 @@
+{
+  "id": "t-r5-web-interaction",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-14T08:10:21.160Z",
+  "title": "R5 Web/PC 交互缺陷修复（D3-F2/F3/F4）",
+  "result": {
+    "summary": ".agents/shared/t-r5-web-interaction-antigravity.md"
+  }
+}

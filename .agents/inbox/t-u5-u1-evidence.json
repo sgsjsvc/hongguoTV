@@ -1,0 +1,48 @@
+{
+  "id": "t-u5-u1-evidence",
+  "createdAt": "2026-10-14T00:39:25.063Z",
+  "updatedAt": "2026-10-14T01:02:18.851Z",
+  "assignee": "antigravity",
+  "title": "U5 补齐 U1 收藏页渲染证据闭环",
+  "brief": "详见 .agents/inbox/t-u5-u1-evidence.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "U3 复核报告: .agents/shared/t-u3-verify-workbuddy.md",
+    "协调者处置记录: .agents/shared/u3-verdict-and-actions.md（含可靠的 chrome 唤出方法与坐标）",
+    "本任务只补证据，不修改任何业务代码",
+    "U1 代码修复已确认成立，缺的是渲染证据闭环"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-14T00:50:52.487Z",
+  "result": {
+    "summary": "U1 收藏页渲染证据闭环完成：两步法截图已验证标准 PNG 签名，UI dump 提取 bounds [33,128][171,204]（宽度 138px << 1280px 全屏），报告见 .agents/shared/t-u5-u1-evidence-antigravity.md"
+  },
+  "history": [
+    {
+      "at": "2026-10-14T00:39:25.064Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T00:50:52.487Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T01:02:18.852Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-u5-u1-evidence.brief.md",
+  "order": 5
+}
