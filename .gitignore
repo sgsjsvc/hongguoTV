@@ -51,6 +51,7 @@ shared-key.txt
 
 # Delivery artifacts, native intermediates, local runtime
 /outputs/
+/release/
 /server/.local/
 /custom-server/data/
 /apps/sync-server/data/

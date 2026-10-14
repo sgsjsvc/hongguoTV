@@ -6,11 +6,50 @@
 //   resources/hongguotv/   本地后端（custom-server + shared + runtime/node.exe + scripts）
 //
 // main.cjs 通过 process.resourcesPath/hongguotv 定位后端，并优先使用其中的 runtime/node.exe。
+//
+// 代码签名：
+//   证书与密码不写入本文件，通过环境变量提供：
+//     HG_CODESIGN_PFX       .pfx 文件绝对路径
+//     HG_CODESIGN_PASSWORD  .pfx 密码
+//   未提供时跳过签名（构建仍成功），便于无证书环境（CI 或新克隆）使用。
 const path = require("node:path");
 const fs = require("node:fs");
+const { execFileSync } = require("node:child_process");
 
 const root = path.resolve(__dirname, "../..");
 const webBundle = path.join(root, "outputs", "bundles", "hongguotv-web-win-${arch}");
+
+// signtool 定位：优先环境变量，其次常见 Windows SDK 路径
+function findSignTool() {
+  if (process.env.HG_SIGNTOOL && fs.existsSync(process.env.HG_SIGNTOOL)) return process.env.HG_SIGNTOOL;
+  const bases = [
+    "C:\\Program Files (x86)\\Windows Kits\\10\\bin",
+    "C:\\Program Files\\Windows Kits\\10\\bin",
+  ];
+  for (const base of bases) {
+    if (!fs.existsSync(base)) continue;
+    const versions = fs.readdirSync(base).filter((n) => /^10\./.test(n)).sort().reverse();
+    for (const v of versions) {
+      const p = path.join(base, v, "x64", "signtool.exe");
+      if (fs.existsSync(p)) return p;
+    }
+  }
+  return null;
+}
+
+const pfxPath = process.env.HG_CODESIGN_PFX;
+const pfxPassword = process.env.HG_CODESIGN_PASSWORD;
+const signTool = pfxPath ? findSignTool() : null;
+const canSign = Boolean(pfxPath && pfxPassword && signTool && fs.existsSync(pfxPath));
+
+if (pfxPath && !canSign) {
+  // 明确告知而非静默跳过：用户以为在签名但实际没有，风险更大
+  console.warn(
+    `[codesign] 已提供 HG_CODESIGN_PFX 但无法签名：` +
+      `pfx存在=${fs.existsSync(pfxPath)} 密码=${Boolean(pfxPassword)} signtool=${Boolean(signTool)}`
+  );
+}
+
 
 module.exports = {
   beforePack(context) {
@@ -48,10 +87,24 @@ module.exports = {
   ],
 
   // 本地后端随包分发（含 Node 运行时，实现免环境）
+  //
+  // ⚠️ node_modules 必须用 extraFiles 单独打包，不能用 extraResources。
+  // 原因（见 app-builder-lib/out/util/filter.js 的 createFilter）：
+  //   对 extraResources 的根级 "node_modules" 目录存在硬编码排除，
+  //   在应用自定义 filter 之前就 return false，filter 无法覆盖。
+  // 而 custom-server/index.mjs 需要 import "axios"，缺它会导致
+  // 后端启动即报 ERR_MODULE_NOT_FOUND，应用完全不可用。
   extraResources: [
     {
       from: webBundle,
       to: "hongguotv",
+      filter: ["**/*", "!node_modules/**/*", "!**/*.log", "!**/*.map"],
+    },
+  ],
+  extraFiles: [
+    {
+      from: path.join(webBundle, "node_modules"),
+      to: "resources/hongguotv/node_modules",
       filter: ["**/*"],
     },
   ],
@@ -60,6 +113,31 @@ module.exports = {
   win: {
     target: ["nsis", "portable"],
     icon: path.join(root, "assets", "branding", "hongguotv-icon-v2.png"),
+    // 证书缺失时不设置该字段，electron-builder 跳过签名
+    ...(canSign
+      ? {
+          signtoolOptions: {
+            sign: async (configuration) => {
+              const files = configuration.path ? [configuration.path] : [];
+              for (const file of files) {
+                execFileSync(
+                  signTool,
+                  [
+                    "sign",
+                    "/f", pfxPath,
+                    "/p", pfxPassword,
+                    "/fd", "SHA256",
+                    "/tr", "http://timestamp.digicert.com",
+                    "/td", "SHA256",
+                    file,
+                  ],
+                  { stdio: "inherit" }
+                );
+              }
+            },
+          },
+        }
+      : {}),
   },
 
   // NSIS 安装包：可选目录、创建快捷方式、可卸载
