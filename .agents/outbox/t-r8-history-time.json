@@ -1,0 +1,10 @@
+{
+  "id": "t-r8-history-time",
+  "agent": "workbuddy",
+  "status": "done",
+  "finishedAt": "2026-10-14T06:48:33.510Z",
+  "title": "R8 历史存储时序缺陷修复（D4-F1/F7）",
+  "result": {
+    "summary": "D4-F1/F7 已修复并验证：importLegacy 改时间比较（I1 复测 0->1），registerSession 增加 1s 未来偏差守卫（I2 复测 accepted->410），陈旧数据仍拦截。npm test 77/77（+2 回归测试）。报告：.agents/shared/t-r8-history-time-workbuddy.md"
+  }
+}

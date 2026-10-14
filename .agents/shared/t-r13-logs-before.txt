@@ -1,0 +1,3 @@
+            android.util.Log.d("TvFocus", "hideChrome check: isNavFocused=$isNavFocused, currentFocus=${focused?.javaClass?.simpleName}")
+        android.util.Log.d("TvFocus", "onKeyDown: keyCode=$keyCode, feedOverlayVisible=${feedOverlay.visibility == View.VISIBLE}, currentFocus=${currentFocus?.javaClass?.simpleName}")
+                        android.util.Log.d("TvFocus", "collectionButton.requestFocus returned $ok, hasFocus=${collectionButton.hasFocus()}, currentFocus=${currentFocus?.javaClass?.simpleName}")

@@ -46,3 +46,31 @@
 {"at":"2026-10-14T05:38:23.429Z","kind":"task-updated","id":"t-r11-playback-correctness","by":"dsh","status":"pending","note":"brief ok"}
 {"at":"2026-10-14T05:38:23.430Z","kind":"task-created","id":"t-r12-engine-opt","assignee":"codex","title":"R12 引擎结构优化与 D1-F10 验证（D1-F5/F6/F7/F8/F9/F10）"}
 {"at":"2026-10-14T05:38:23.430Z","kind":"task-updated","id":"t-r12-engine-opt","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T06:02:19.231Z","kind":"task-updated","id":"t-r1-playback-p0","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T06:04:43.245Z","kind":"task-updated","id":"t-r2-tv-focus","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T06:12:15.255Z","kind":"task-updated","id":"t-r1-playback-p0","by":"codex","status":"done","note":""}
+{"at":"2026-10-14T06:12:36.537Z","kind":"task-updated","id":"t-r8-history-time","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T06:12:36.945Z","kind":"task-updated","id":"t-r10-store-perf","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T06:48:33.508Z","kind":"task-updated","id":"t-r8-history-time","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-14T06:48:34.624Z","kind":"task-updated","id":"t-r10-store-perf","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-14T06:49:37.168Z","kind":"task-updated","id":"t-r9-import-perf","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T06:52:44.777Z","kind":"task-updated","id":"t-r2-tv-focus","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T06:54:03.470Z","kind":"task-updated","id":"t-r3-drawer-focus","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T06:54:13.636Z","kind":"task-updated","id":"t-r5-web-interaction","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T06:54:22.394Z","kind":"task-updated","id":"t-r6-web-assets","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T07:07:29.626Z","kind":"task-updated","id":"t-r3-drawer-focus","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T07:07:53.782Z","kind":"task-updated","id":"t-r9-import-perf","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-14T07:07:54.840Z","kind":"task-updated","id":"t-r4-manifest","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T07:13:19.236Z","kind":"task-updated","id":"t-r4-manifest","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T07:20:08.684Z","kind":"task-updated","id":"t-r6-web-assets","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T08:10:21.160Z","kind":"task-updated","id":"t-r5-web-interaction","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T08:10:36.188Z","kind":"task-updated","id":"t-r7-web-refactor","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T08:20:38.931Z","kind":"task-created","id":"t-r13-cleanup","assignee":"codex","title":"R13 收尾清理：调试日志与测试纳管"}
+{"at":"2026-10-14T08:20:38.932Z","kind":"task-updated","id":"t-r13-cleanup","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T08:23:42.473Z","kind":"task-updated","id":"t-r11-playback-correctness","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T08:28:19.306Z","kind":"task-updated","id":"t-r11-playback-correctness","by":"codex","status":"done","note":""}
+{"at":"2026-10-14T08:29:23.890Z","kind":"task-updated","id":"t-r7-web-refactor","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T08:31:41.028Z","kind":"task-updated","id":"t-r12-engine-opt","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T08:38:08.946Z","kind":"task-updated","id":"t-r13-cleanup","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T08:46:53.701Z","kind":"task-updated","id":"t-r12-engine-opt","by":"codex","status":"done","note":""}
+{"at":"2026-10-14T08:46:53.792Z","kind":"task-updated","id":"t-r13-cleanup","by":"codex","status":"done","note":""}

@@ -1,7 +1,7 @@
 {
   "id": "t-r4-manifest",
   "createdAt": "2026-10-14T05:38:23.408Z",
-  "updatedAt": "2026-10-14T05:38:23.409Z",
+  "updatedAt": "2026-10-14T07:13:19.233Z",
   "assignee": "antigravity",
   "title": "R4 AndroidManifest 屏幕配置修复（D2-F5）",
   "brief": "详见 .agents/inbox/t-r4-manifest.brief.md",
@@ -20,15 +20,29 @@
     "t-r3-drawer-focus"
   ],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-14T07:07:54.830Z",
+  "result": {
+    "summary": ".agents/shared/t-r4-manifest-antigravity.md"
+  },
   "history": [
     {
       "at": "2026-10-14T05:38:23.408Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T07:07:54.830Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T07:13:19.234Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

@@ -1,7 +1,7 @@
 {
   "id": "t-r6-web-assets",
   "createdAt": "2026-10-14T05:38:23.414Z",
-  "updatedAt": "2026-10-14T05:38:23.415Z",
+  "updatedAt": "2026-10-14T07:20:08.681Z",
   "assignee": "antigravity",
   "title": "R6 Web 静态资源 404 修复（D3-F5）",
   "brief": "详见 .agents/inbox/t-r6-web-assets.brief.md",
@@ -18,15 +18,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-14T06:54:22.379Z",
+  "result": {
+    "summary": ".agents/shared/t-r6-web-assets-antigravity.md"
+  },
   "history": [
     {
       "at": "2026-10-14T05:38:23.414Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T06:54:22.379Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T07:20:08.682Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

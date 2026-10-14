@@ -1,0 +1,10 @@
+{
+  "id": "t-r11-playback-correctness",
+  "agent": "codex",
+  "status": "done",
+  "finishedAt": "2026-10-14T08:28:19.306Z",
+  "title": "R11 播放接口正确性修复（D1-F3/F4）",
+  "result": {
+    "summary": "R11完成，报告 .agents/shared/t-r11-playback-correctness-codex.md。空画质明确502、不虚构1080P；206严格校验偏移和total。新16项+R1共26通过，npm83通过，APK构建通过；真实四档ftyp通过，独立复核无阻断。Web错误仅记录警告、完整媒体身份校验限制已注明。未重启部署。"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "t-r4-manifest",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-14T07:13:19.237Z",
+  "title": "R4 AndroidManifest 屏幕配置修复（D2-F5）",
+  "result": {
+    "summary": ".agents/shared/t-r4-manifest-antigravity.md"
+  }
+}

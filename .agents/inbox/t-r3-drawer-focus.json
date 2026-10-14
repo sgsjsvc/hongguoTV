@@ -1,7 +1,7 @@
 {
   "id": "t-r3-drawer-focus",
   "createdAt": "2026-10-14T05:38:23.405Z",
-  "updatedAt": "2026-10-14T05:38:23.407Z",
+  "updatedAt": "2026-10-14T07:07:29.604Z",
   "assignee": "antigravity",
   "title": "R3 选集抽屉 Tab 抢焦修复（D2-F4）",
   "brief": "详见 .agents/inbox/t-r3-drawer-focus.brief.md",
@@ -20,15 +20,29 @@
     "t-r2-tv-focus"
   ],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-14T06:54:03.448Z",
+  "result": {
+    "summary": ".agents/shared/t-r3-drawer-focus-antigravity.md"
+  },
   "history": [
     {
       "at": "2026-10-14T05:38:23.405Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T06:54:03.449Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T07:07:29.605Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

@@ -1,0 +1,10 @@
+{
+  "id": "t-r10-store-perf",
+  "agent": "workbuddy",
+  "status": "done",
+  "finishedAt": "2026-10-14T06:48:34.626Z",
+  "title": "R10 资料库性能与时序优化（D4-F4/F5/F6/F8/F9）",
+  "result": {
+    "summary": "D4-F4/F5/F6 已修复并量化验证：ack 游标+清理（1500 行->0，pending 0.57ms->0.02ms），snapshot 缓存（6.5ms->3.3ms），显式 at 钳制（B2 复测 500->1000）；F8/F9 按协调者意见文档化于 docs/LOCAL_REMOTE_SERVICES.md。npm test 81/81（+4 回归测试）。报告：.agents/shared/t-r10-store-perf-workbuddy.md"
+  }
+}

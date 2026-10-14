@@ -1,7 +1,7 @@
 {
   "id": "t-r1-playback-p0",
   "createdAt": "2026-10-14T05:38:23.396Z",
-  "updatedAt": "2026-10-14T05:38:23.398Z",
+  "updatedAt": "2026-10-14T06:12:15.247Z",
   "assignee": "codex",
   "title": "R1 播放链路 P0 修复（D1-F1/F2）",
   "brief": "详见 .agents/inbox/t-r1-playback-p0.brief.md",
@@ -18,15 +18,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-14T06:02:19.221Z",
+  "result": {
+    "summary": "R1修复完成，待DSH验收：.agents/shared/t-r1-playback-p0-codex.md。修复前三副本并发备用切换及响应挂起等10项测试9失败，修复后10/10通过；npm test 75/75；Android assembleDebug成功，APK引擎资产与源码哈希一致。独立复核无阻断问题。仅四个授权业务文件，副本兼容差异保留。未提交、推送、重启服务或安装APK；取消仅覆盖活动媒体分片，共享头预取限制已记录。"
+  },
   "history": [
     {
       "at": "2026-10-14T05:38:23.397Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T06:02:19.222Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T06:12:15.248Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

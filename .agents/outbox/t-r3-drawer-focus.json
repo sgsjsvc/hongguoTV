@@ -1,0 +1,10 @@
+{
+  "id": "t-r3-drawer-focus",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-14T07:07:29.626Z",
+  "title": "R3 选集抽屉 Tab 抢焦修复（D2-F4）",
+  "result": {
+    "summary": ".agents/shared/t-r3-drawer-focus-antigravity.md"
+  }
+}

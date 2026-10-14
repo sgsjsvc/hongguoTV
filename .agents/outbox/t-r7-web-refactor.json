@@ -1,0 +1,10 @@
+{
+  "id": "t-r7-web-refactor",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-14T08:29:23.891Z",
+  "title": "R7 拆分 App.tsx 单文件巨石组件（D3-F1）",
+  "result": {
+    "summary": ".agents/shared/t-r7-web-refactor-antigravity.md"
+  }
+}

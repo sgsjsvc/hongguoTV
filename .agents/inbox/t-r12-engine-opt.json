@@ -1,7 +1,7 @@
 {
   "id": "t-r12-engine-opt",
   "createdAt": "2026-10-14T05:38:23.429Z",
-  "updatedAt": "2026-10-14T05:38:23.430Z",
+  "updatedAt": "2026-10-14T08:46:53.693Z",
   "assignee": "codex",
   "title": "R12 引擎结构优化与 D1-F10 验证（D1-F5/F6/F7/F8/F9/F10）",
   "brief": "详见 .agents/inbox/t-r12-engine-opt.brief.md",
@@ -20,15 +20,29 @@
     "t-r11-playback-correctness"
   ],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-14T08:31:41.006Z",
+  "result": {
+    "summary": "R12完成，报告 .agents/shared/t-r12-engine-opt-codex.md。F5/F6/F7/F8/F9修复；缓存100/24、12重复POST/GET→1、样本end访问10001→14；新增21项含fresh竞态及box误判红绿，与R1/R11 47通过，npm93、APK/lint/JVM通过，真实四档CENC首样本验证通过。F10未取得真实AVC加密样本，按brief如实跳过且未改codec恢复；三副本同步兼容差异保留。独立复核通过。未重启部署。"
+  },
   "history": [
     {
       "at": "2026-10-14T05:38:23.429Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T08:31:41.006Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T08:46:53.694Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

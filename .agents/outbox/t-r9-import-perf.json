@@ -1,0 +1,10 @@
+{
+  "id": "t-r9-import-perf",
+  "agent": "workbuddy",
+  "status": "done",
+  "finishedAt": "2026-10-14T07:07:53.784Z",
+  "title": "R9 导入路径性能与事务修复（D4-F2/F3）",
+  "result": {
+    "summary": "D4-F2/F3 已修复并验证：导入桥接 snapshot() 调用 500->1（真实 HTTP 前后对照，无缓存模拟下省去约 4.8ms/条）；F3 采用修正注释方案（嵌套事务不可行已实证：cannot start a transaction within a transaction），H1 部分提交+幂等重试自愈实测通过。R1 修复完整保留。npm test 83/83（+2 回归测试）。报告：.agents/shared/t-r9-import-perf-workbuddy.md"
+  }
+}
