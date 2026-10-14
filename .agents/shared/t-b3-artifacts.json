@@ -1,0 +1,28 @@
+[
+  {
+    "file": "outputs\\tv-android\\hongguotv-android5.1-debug.apk",
+    "bytes": 8828939,
+    "sha256": "a8e43a21dfc7b18c1b179cf99e87c6f3544b98db3be3536e91c14cd71f2b11db",
+    "libraries": [
+      "lib/arm64-v8a/libhongguo_quickjs.so",
+      "lib/armeabi-v7a/libhongguo_quickjs.so",
+      "lib/x86/libhongguo_quickjs.so",
+      "lib/x86_64/libhongguo_quickjs.so"
+    ],
+    "engineIncludedAndCurrent": true,
+    "signed": true
+  },
+  {
+    "file": "outputs\\tv-android\\hongguotv-android5.1-release-unsigned.apk",
+    "bytes": 6857460,
+    "sha256": "905e2a5bfd7c48bc04961b231b99be728d3e328727570dd5cc75f2fb5892037b",
+    "libraries": [
+      "lib/arm64-v8a/libhongguo_quickjs.so",
+      "lib/armeabi-v7a/libhongguo_quickjs.so",
+      "lib/x86/libhongguo_quickjs.so",
+      "lib/x86_64/libhongguo_quickjs.so"
+    ],
+    "engineIncludedAndCurrent": true,
+    "signed": false
+  }
+]

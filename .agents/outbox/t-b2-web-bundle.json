@@ -1,0 +1,10 @@
+{
+  "id": "t-b2-web-bundle",
+  "agent": "codex",
+  "status": "done",
+  "finishedAt": "2026-10-14T15:12:38.555Z",
+  "title": "B2 Web 端脚本启动包打包（5 平台）",
+  "result": {
+    "summary": "六个Web包及两个Linux同步包完成，归档架构权限与SHA256通过，Windows x64 PATH空独立启停通过；其他平台未实机启动。报告 .agents/shared/t-b2-web-bundle-codex.md"
+  }
+}

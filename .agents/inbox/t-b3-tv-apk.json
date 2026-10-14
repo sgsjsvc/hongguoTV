@@ -1,7 +1,7 @@
 {
   "id": "t-b3-tv-apk",
   "createdAt": "2026-10-14T14:43:24.650Z",
-  "updatedAt": "2026-10-14T14:43:24.651Z",
+  "updatedAt": "2026-10-14T15:12:38.981Z",
   "assignee": "codex",
   "title": "B3 TV 端 APK 打包（Android 5.1+ / 4 种 ABI）",
   "brief": "详见 .agents/inbox/t-b3-tv-apk.brief.md",
@@ -21,15 +21,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-14T14:47:24.435Z",
+  "result": {
+    "summary": "Debug和未签名Release已产出，API22/四ABI/引擎/Debug签名验证通过，lint与单元测试通过；新版未实机安装。报告 .agents/shared/t-b3-tv-apk-codex.md"
+  },
   "history": [
     {
       "at": "2026-10-14T14:43:24.650Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T14:47:24.435Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T15:12:38.982Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

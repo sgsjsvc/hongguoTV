@@ -1,0 +1,26 @@
+[
+  {
+    "file": "F:\\Project\\hongguoTV\\outputs\\windows\\红果短剧-1.0.0-arm64-setup.exe",
+    "bytes": 107891428,
+    "sha256": "15f0a9b67bc05afa0336b50592278414a3da1ba1c9f08f2b5a0c4466d20fc42e",
+    "signature": "NotSigned"
+  },
+  {
+    "file": "F:\\Project\\hongguoTV\\outputs\\windows\\红果短剧-1.0.0-x64-setup.exe",
+    "bytes": 116726562,
+    "sha256": "06bbfeea86cda13d62fef056189d68d189116ab5baec27c028373f95f933ca85",
+    "signature": "NotSigned"
+  },
+  {
+    "file": "F:\\Project\\hongguoTV\\outputs\\windows\\红果短剧-1.0.0-arm64-portable.exe",
+    "bytes": 107626400,
+    "sha256": "d9679599af170a6c4b77bab8728bb70b4236788147d346f8eb0f89a18de6f59a",
+    "signature": "NotSigned"
+  },
+  {
+    "file": "F:\\Project\\hongguoTV\\outputs\\windows\\红果短剧-1.0.0-x64-portable.exe",
+    "bytes": 116461052,
+    "sha256": "308480493955be1edda0635389c18d299a161b182998cbfdb1ee1baf8d0af907",
+    "signature": "NotSigned"
+  }
+]

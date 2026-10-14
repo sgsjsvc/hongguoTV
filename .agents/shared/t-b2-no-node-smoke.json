@@ -1,0 +1,10 @@
+{
+  "systemNodeOnPath": false,
+  "bundledNode": "F:\\Project\\hongguoTV\\outputs\\bundles\\hongguotv-web-win-x64\\runtime\\node.exe",
+  "port": 1418,
+  "health": 200,
+  "home": 200,
+  "html": true,
+  "repeatStart": true,
+  "stopped": true
+}

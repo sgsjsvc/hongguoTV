@@ -1,0 +1,10 @@
+{
+  "url": "hongguotv://app/",
+  "healthStatus": 200,
+  "homeStatus": 200,
+  "homepageHTML": true,
+  "rootTextLength": 64,
+  "closedOwnApplication": true,
+  "pathEmpty": true,
+  "profile": "F:\\Project\\hongguoTV\\outputs\\packaging-tests\\desktop-no-node"
+}

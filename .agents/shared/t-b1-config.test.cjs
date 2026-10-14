@@ -1,0 +1,4 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');
+test('desktop backend resource follows the selected architecture',()=>{const config=require('../../apps/web-pc/electron-builder.config.cjs');assert.ok(config.extraResources[0].from.includes('${arch}'));assert.equal(typeof config.beforePack,'function');assert.equal(config.nsis.allowToChangeInstallationDirectory,true);assert.equal(config.nsis.createDesktopShortcut,true);});
+test('CLI architecture is not overridden by targets and packaged binaries are checked',()=>{const c=require('../../apps/web-pc/electron-builder.config.cjs');assert.ok(c.win.target.every(t=>typeof t==='string'||!t.arch));assert.equal(typeof c.afterPack,'function');});
+test('external Node backend receives physically accessible renderer files',()=>{assert.equal(require('../../apps/web-pc/electron-builder.config.cjs').asar,false);});

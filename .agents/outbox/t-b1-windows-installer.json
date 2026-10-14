@@ -1,0 +1,10 @@
+{
+  "id": "t-b1-windows-installer",
+  "agent": "codex",
+  "status": "done",
+  "finishedAt": "2026-10-14T15:12:38.105Z",
+  "title": "B1 Windows 安装包与便携版打包（x64 + arm64）",
+  "result": {
+    "summary": "四个安装/便携EXE已构建，修复架构与ASAR路径问题，x64 PATH空启动通过；ARM64实机与安装卸载待验收。报告 .agents/shared/t-b1-windows-installer-codex.md"
+  }
+}

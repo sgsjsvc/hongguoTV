@@ -1,0 +1,98 @@
+[
+  {
+    "file": "outputs\\bundles\\hongguotv-web-win-x64.zip",
+    "bytes": 33871277,
+    "sha256": "b8e252d0e564d883a72e2918a5668f0c14e80a9cc0b721f4dae4c493a864d567",
+    "runtimeBytes": 85588976,
+    "entryCount": 415,
+    "unixModes": null,
+    "privateDataExcluded": true
+  },
+  {
+    "file": "outputs\\bundles\\hongguotv-web-win-arm64.zip",
+    "bytes": 29482057,
+    "sha256": "b44f1e11863668cd496e0c3244cbcb6faf29c017bdc58a354450b77d4edae82b",
+    "runtimeBytes": 75731440,
+    "entryCount": 415,
+    "unixModes": null,
+    "privateDataExcluded": true
+  },
+  {
+    "file": "outputs\\bundles\\hongguotv-web-linux-x64.tar.gz",
+    "bytes": 44400023,
+    "sha256": "f537dec55a401c65a8e66b946e61e3bd337b3a8c257bc84ba98e909fcbd9a000",
+    "runtimeBytes": 123183528,
+    "entryCount": 501,
+    "unixModes": {
+      "runtime/node": "0o755",
+      "start.sh": "0o755",
+      "stop.sh": "0o755"
+    },
+    "privateDataExcluded": true
+  },
+  {
+    "file": "outputs\\bundles\\hongguotv-web-linux-arm64.tar.gz",
+    "bytes": 44251318,
+    "sha256": "cd19d4c2dc4277d8d001643a88fcb151e07f1499f27b968a5dacc0ab2cbcf9bd",
+    "runtimeBytes": 120348024,
+    "entryCount": 501,
+    "unixModes": {
+      "runtime/node": "0o755",
+      "start.sh": "0o755",
+      "stop.sh": "0o755"
+    },
+    "privateDataExcluded": true
+  },
+  {
+    "file": "outputs\\bundles\\hongguotv-web-darwin-x64.tar.gz",
+    "bytes": 38743253,
+    "sha256": "effdbba1424883ff7f4e00518c26e89dcc97262c64438f7df37d81896c8ff13b",
+    "runtimeBytes": 113822016,
+    "entryCount": 501,
+    "unixModes": {
+      "runtime/node": "0o755",
+      "start.sh": "0o755",
+      "stop.sh": "0o755"
+    },
+    "privateDataExcluded": true
+  },
+  {
+    "file": "outputs\\bundles\\hongguotv-web-darwin-arm64.tar.gz",
+    "bytes": 37531624,
+    "sha256": "3c467fe29509ce5ea27146bf8cc4cb9c7299383b140b5ed906e3fa6f025d0a7a",
+    "runtimeBytes": 111332720,
+    "entryCount": 501,
+    "unixModes": {
+      "runtime/node": "0o755",
+      "start.sh": "0o755",
+      "stop.sh": "0o755"
+    },
+    "privateDataExcluded": true
+  },
+  {
+    "file": "outputs\\bundles\\hongguotv-sync-linux-x64.tar.gz",
+    "bytes": 43369056,
+    "sha256": "381c3405f00952f96448b35f52a789e02eb65336c82df10d3ea4e00a903a902c",
+    "runtimeBytes": 123183528,
+    "entryCount": 30,
+    "unixModes": {
+      "runtime/node": "0o755",
+      "start.sh": "0o755",
+      "stop.sh": "0o755"
+    },
+    "privateDataExcluded": true
+  },
+  {
+    "file": "outputs\\bundles\\hongguotv-sync-linux-arm64.tar.gz",
+    "bytes": 43219945,
+    "sha256": "67db1a8bb8ef3aa0346ac7ee92d68e942afdc5ce2da0e6e57de9ca5d4f1058bb",
+    "runtimeBytes": 120348024,
+    "entryCount": 30,
+    "unixModes": {
+      "runtime/node": "0o755",
+      "start.sh": "0o755",
+      "stop.sh": "0o755"
+    },
+    "privateDataExcluded": true
+  }
+]

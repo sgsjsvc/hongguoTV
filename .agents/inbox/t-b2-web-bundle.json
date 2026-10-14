@@ -1,7 +1,7 @@
 {
   "id": "t-b2-web-bundle",
   "createdAt": "2026-10-14T14:43:24.648Z",
-  "updatedAt": "2026-10-14T14:43:24.649Z",
+  "updatedAt": "2026-10-14T15:12:38.531Z",
   "assignee": "codex",
   "title": "B2 Web 端脚本启动包打包（5 平台）",
   "brief": "详见 .agents/inbox/t-b2-web-bundle.brief.md",
@@ -21,15 +21,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-14T14:47:24.347Z",
+  "result": {
+    "summary": "六个Web包及两个Linux同步包完成，归档架构权限与SHA256通过，Windows x64 PATH空独立启停通过；其他平台未实机启动。报告 .agents/shared/t-b2-web-bundle-codex.md"
+  },
   "history": [
     {
       "at": "2026-10-14T14:43:24.648Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T14:47:24.347Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T15:12:38.532Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

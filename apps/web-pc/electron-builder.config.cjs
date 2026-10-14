@@ -10,16 +10,25 @@ const path = require("node:path");
 const fs = require("node:fs");
 
 const root = path.resolve(__dirname, "../..");
-const webBundle = path.join(root, "outputs", "bundles", "hongguotv-web-win-x64");
-
-// 便携版与安装包都需要这份后端；若尚未生成，明确报错而不是产出残缺包
-if (!fs.existsSync(path.join(webBundle, "custom-server", "index.mjs"))) {
-  throw new Error(
-    `缺少 Web 包后端：${webBundle}\n请先运行 npm run build:bundles -- --platforms=win-x64`
-  );
-}
+const webBundle = path.join(root, "outputs", "bundles", "hongguotv-web-win-${arch}");
 
 module.exports = {
+  beforePack(context) {
+    const arch = { 1: "x64", 3: "arm64" }[context.arch];
+    if (!arch) throw new Error("不支持的 Windows 架构");
+    const bundle = webBundle.replace("${arch}", arch);
+    if (!fs.existsSync(path.join(bundle, "custom-server", "index.mjs"))) throw new Error(`缺少 ${arch} 后端包：${bundle}`);
+    const binary = fs.readFileSync(path.join(bundle, "runtime", "node.exe"));
+    const machine = binary.readUInt16LE(binary.readUInt32LE(0x3c) + 4);
+    if (machine !== { x64: 0x8664, arm64: 0xaa64 }[arch]) throw new Error(`内置 Node 与目标 ${arch} 架构不一致`);
+  },
+  afterPack(context) {
+    const expected = { 1: 0x8664, 3: 0xaa64 }[context.arch];
+    for (const file of [path.join(context.appOutDir, "红果短剧.exe"), path.join(context.appOutDir, "resources", "hongguotv", "runtime", "node.exe")]) {
+      const data = fs.readFileSync(file);
+      if (data.readUInt16LE(data.readUInt32LE(0x3c) + 4) !== expected) throw new Error(`产物架构错误：${file}`);
+    }
+  },
   appId: "com.hongguotv.desktop",
   productName: "红果短剧",
   copyright: "GPL-3.0-only",
@@ -49,10 +58,7 @@ module.exports = {
 
   // 只打 Windows
   win: {
-    target: [
-      { target: "nsis", arch: ["x64", "arm64"] },
-      { target: "portable", arch: ["x64", "arm64"] },
-    ],
+    target: ["nsis", "portable"],
     icon: path.join(root, "assets", "branding", "hongguotv-icon-v2.png"),
   },
 
@@ -74,6 +80,9 @@ module.exports = {
 
   // 打包阶段不需要额外下载 Electron（已装为 devDependency）
   electronVersion: "40.0.0",
+  // Build callers may use a verified local distribution to avoid a network download.
+  electronDist: process.env.HG_ELECTRON_DIST || undefined,
   npmRebuild: false,
-  asar: true,
+  // The external Node backend reads HG_WEB_DIR with ordinary fs, outside Electron's ASAR support.
+  asar: false,
 };

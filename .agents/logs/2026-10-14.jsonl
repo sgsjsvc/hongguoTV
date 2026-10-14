@@ -88,3 +88,9 @@
 {"at":"2026-10-14T14:43:24.650Z","kind":"task-updated","id":"t-b2-web-bundle","by":"dsh","status":"pending","note":"brief ok"}
 {"at":"2026-10-14T14:43:24.651Z","kind":"task-created","id":"t-b3-tv-apk","assignee":"codex","title":"B3 TV 端 APK 打包（Android 5.1+ / 4 种 ABI）"}
 {"at":"2026-10-14T14:43:24.652Z","kind":"task-updated","id":"t-b3-tv-apk","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T14:47:24.263Z","kind":"task-updated","id":"t-b1-windows-installer","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T14:47:24.354Z","kind":"task-updated","id":"t-b2-web-bundle","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T14:47:24.438Z","kind":"task-updated","id":"t-b3-tv-apk","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T15:12:38.104Z","kind":"task-updated","id":"t-b1-windows-installer","by":"codex","status":"done","note":""}
+{"at":"2026-10-14T15:12:38.554Z","kind":"task-updated","id":"t-b2-web-bundle","by":"codex","status":"done","note":""}
+{"at":"2026-10-14T15:12:39.004Z","kind":"task-updated","id":"t-b3-tv-apk","by":"codex","status":"done","note":""}
