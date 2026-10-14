@@ -1,0 +1,10 @@
+{
+  "id": "t-s1-switch-hint",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-14T11:26:57.406Z",
+  "title": "S1 TV 端切剧轻量提示与加载动画",
+  "result": {
+    "summary": ".agents/shared/t-s1-switch-hint-antigravity.md"
+  }
+}

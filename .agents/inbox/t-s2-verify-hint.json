@@ -1,7 +1,7 @@
 {
   "id": "t-s2-verify-hint",
   "createdAt": "2026-10-14T10:21:26.262Z",
-  "updatedAt": "2026-10-14T10:21:26.263Z",
+  "updatedAt": "2026-10-14T13:36:08.558Z",
   "assignee": "workbuddy",
   "title": "S2 TV 端切剧轻量提示 — 独立复核",
   "brief": "详见 .agents/inbox/t-s2-verify-hint.brief.md",
@@ -21,15 +21,29 @@
     "t-s1-switch-hint"
   ],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "workbuddy",
+  "claimedAt": "2026-10-14T12:33:18.575Z",
+  "result": {
+    "summary": "S2 复核完成：①切剧只显示轻量提示-实测通过（timeText像素=0，无chrome）；②MENU唤出完整chrome-实测通过无回归，revealChrome与HEAD逐字节一致；③越界改动-无；④自动下一集功能实测通过（集数连续自动前进）但发现S1截图progressBox共存异常（机制：切换期间seek处理器重新点亮progressBox，建议seek加isSwitching守卫并重拍纯净证据）；⑤加载失败实测因模拟器adb桥接崩溃未能完成（代码级已验证）。构建BUILD SUCCESSFUL、lint无S1新增问题、npm test 93/93。报告：.agents/shared/t-s2-verify-hint-workbuddy.md"
+  },
   "history": [
     {
       "at": "2026-10-14T10:21:26.262Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T12:33:18.576Z",
+      "status": "claimed",
+      "by": "workbuddy",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T13:36:08.559Z",
+      "status": "done",
+      "by": "workbuddy",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",
