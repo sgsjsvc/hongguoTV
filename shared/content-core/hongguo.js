@@ -21,7 +21,7 @@
 const crypto = require('node:crypto');
 
 const SITE = 'https://hongguoduanju.com';
-const VIDEO_API = 'https://api5-normal-sinfonlineb.fqnovel.com/novel/player/multi_video_model/v1/';
+const VIDEO_API = 'https://api5-normal-sinfonlineb.fqnovel.com/novel/player/video_model/v1/';
 const APP_SEARCH_API = 'https://api5-normal-sinfonlinea.fqnovel.com/reading/bookapi/search/tab/v';
 const VIDEO_UA = 'com.phoenix.read/71332 (Linux; U; Android 16; zh_CN; 25053RT47C; Build/BP2A.250605.031.A3; Cronet/TTNetVersion:04657795 2026-01-23 QuicVersion:c67e9834 2025-09-08)';
 const APP_UA = 'com.phoenix.read/72232 (Linux; U; Android 16; zh_CN; 25053RT47C; Build/BP2A.250605.031.A3)';
@@ -439,21 +439,22 @@ function signedVideoRequest(payload) {
 async function requestVideoModel(vid) {
     const payload = JSON.stringify({
         biz_param: { detail_page_version: 0, device_level: 3, disable_digg_stat: false, need_all_video_definition: true, need_mp4_align: false, use_os_player: false, use_server_dns: false, video_platform: 1024 },
-        mixed_video_id_map: { '1004': [str(vid)] },
+        video_id: str(vid),
     });
     const signed = signedVideoRequest(payload);
     const resp = await axios.post(signed.url, signed.body, { headers: signed.headers, timeout: 20000, responseType: 'text' });
     const data = jsonBody(resp.data);
-    if (resp.status !== 200 || !data || Number(data.Code || data.code || 0) !== 0) throw new Error(`video_model failed: ${data?.Message || data?.message || resp.status}`);
+    const status = Number(data?.BaseResp?.StatusCode ?? data?.Code ?? data?.code ?? -1);
+    if (resp.status !== 200 || !data || status !== 0) throw new Error(`video_model failed: ${data?.BaseResp?.StatusMessage || data?.Message || data?.message || resp.status}`);
     return data;
 }
 
 function modelForVideo(data, vid) {
-    const map = data?.data || {};
-    const entry = map[str(vid)] || Object.values(map).find((value) => value && typeof value === 'object');
-    if (!entry) throw new Error('video_model 没有对应视频');
-    const model = typeof entry.video_model === 'string' ? jsonBody(entry.video_model) : entry.video_model;
+    const raw = data?.data?.video_model ?? data?.video_model;
+    if (!raw) throw new Error('video_model 内容为空');
+    const model = typeof raw === 'string' ? jsonBody(raw) : raw;
     if (!model) throw new Error('video_model 内容为空');
+    if (!Array.isArray(model.video_list)) throw new Error('video_model 缺少 video_list');
     return model;
 }
 
@@ -466,7 +467,7 @@ function parseFallback(value) {
 function qualityNumber(value) {
     const text = str(value); const match = text.match(/(2160|1440|1080|720|576|540|480|360)/);
     if (match) return Number(match[1]);
-    return ({ '1920': 1080, '1280': 720, '1024': 576, '854': 480, '640': 360 })[text] || (/^\d{3,4}$/.test(text) ? Number(text) : 0);
+    return ({ '1920': 1080, '1280': 720, '960': 540, '1024': 576, '854': 480, '640': 360 })[text] || (/^\d{3,4}$/.test(text) ? Number(text) : 0);
 }
 function qualityLabel(value) {
     const n = qualityNumber(value); if (n) return `${n}P`;
@@ -677,26 +678,39 @@ async function resolveStream(vid, quality) {
     const cacheKey = playKey(vid, quality); const cached = streamCache.get(cacheKey); if (cached && Date.now() - cached.time < 300000) return cached.value;
     const { info, rows } = await fetchVideoInfo(vid); const wanted = str(quality, 'auto');
     const selected = rows.find((row) => row.key === wanted || qualityNumber(row.quality) === qualityNumber(wanted)) || rows[0]; if (!selected) throw new Error('没有可用清晰度');
-    let url = cleanUrl(selected.item.main_url); const seed = Buffer.from(str(info.key_seed), 'base64');
-    if (seed.length && url) url = decryptSpadeUrl(url, seed);
-    const result = { url, quality: qualityLabel(selected.quality || selected.key), key: selected.item.spade_a ? deriveContentKey(selected.item.spade_a) : null };
+    const seed = Buffer.from(str(info.key_seed), 'base64');
+    const decode = (value) => { const text = cleanUrl(value); return text && seed.length ? decryptSpadeUrl(text, seed) : text; };
+    // 官方每档同时下发主/备两个不同 CDN 主机，个别主机偶发 DNS 失败，故保留备用地址供重试。
+    const url = decode(selected.item.main_url); const backupUrl = decode(selected.item.backup_url || selected.item.backup_url_1);
+    const result = { url, backupUrl: backupUrl && backupUrl !== url ? backupUrl : '', quality: qualityLabel(selected.quality || selected.key), key: selected.item.spade_a ? deriveContentKey(selected.item.spade_a) : null };
     streamCache.set(cacheKey, { time: Date.now(), value: result }); return result;
 }
 
 async function remoteRange(stream, start, end) {
-    const resp = await axios(stream.url, {
-        headers: { 'User-Agent': VIDEO_UA, Referer: 'https://novel.snssdk.com/', Range: `bytes=${start}-${end}` },
-        timeout: 30000, responseType: 'arraybuffer',
-    });
-    let data = Buffer.from(resp.data);
-    let total = Number(String(resp.headers['content-range'] || '').match(/\/(\d+)$/)?.[1] || 0);
-    if (resp.status === 200) {
-        total ||= Number(resp.headers['content-length'] || data.length);
-        data = data.subarray(start, end + 1);
+    const attempt = async (target) => {
+        const resp = await axios(target, {
+            headers: { 'User-Agent': VIDEO_UA, Referer: 'https://novel.snssdk.com/', Range: `bytes=${start}-${end}` },
+            timeout: 30000, responseType: 'arraybuffer',
+        });
+        let data = Buffer.from(resp.data);
+        let total = Number(String(resp.headers['content-range'] || '').match(/\/(\d+)$/)?.[1] || 0);
+        if (resp.status === 200) {
+            total ||= Number(resp.headers['content-length'] || data.length);
+            data = data.subarray(start, end + 1);
+        }
+        const expected = end - start + 1;
+        if (data.length !== expected) throw new Error(`媒体 Range 长度异常: ${data.length}/${expected}`);
+        return { data, total };
+    };
+    try {
+        return await attempt(stream.url);
+    } catch (error) {
+        // 备用主机可用时粘性切换，后续分片不再重复失败一次。
+        if (!stream.backupUrl) throw error;
+        const result = await attempt(stream.backupUrl);
+        stream.url = stream.backupUrl; stream.backupUrl = '';
+        return result;
     }
-    const expected = end - start + 1;
-    if (data.length !== expected) throw new Error(`媒体 Range 长度异常: ${data.length}/${expected}`);
-    return { data, total };
 }
 
 // 预取 ftyp+moov 并建 CENC 样本索引（结果挂在 stream 上随 streamCache 缓存）

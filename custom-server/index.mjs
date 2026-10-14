@@ -179,57 +179,16 @@ const recommendations = new RecommendationService({
 
 // 官方四大排行榜类别定义
 const OFFICIAL_RANK_TYPES = [
-  { slug: "hot-drama", name: "红果热播榜", key: "all" },
-  { slug: "hot-real-drama", name: "真人剧热播榜", key: "real" },
-  { slug: "hot-ai-drama", name: "AI剧热播榜", key: "ai" },
-  { slug: "hot-comic-drama", name: "漫剧热播榜", key: "comic" },
+  { id: "hot-drama", slug: "hot-drama", name: "红果热播榜", key: "all" },
+  { id: "hot-real-drama", slug: "hot-real-drama", name: "真人剧热播榜", key: "real" },
+  { id: "hot-ai-drama", slug: "hot-ai-drama", name: "AI剧热播榜", key: "ai" },
+  { id: "hot-comic-drama", slug: "hot-comic-drama", name: "漫剧热播榜", key: "comic" },
 ];
 
 let cacheHome = { timestamp: 0, banners: [], sections: [] };
 let categoryCache = new Map();
 let rankPageCache = new Map();
 const vidToSeriesMap = new Map();
-const webStreamCache = new Map();
-
-// 获取官方 Web 端原生 720P 高兼容 H.264 视频直链
-async function getOfficialWeb720pStream(seriesId, vid) {
-  if (!seriesId || !vid) return null;
-  const cacheKey = `${seriesId}_${vid}`;
-  const cached = webStreamCache.get(cacheKey);
-  if (cached && Date.now() - cached.time < 15 * 60 * 1000) {
-    return cached.url;
-  }
-
-  const urlsToTry = [
-    `https://hongguoduanju.com/player/${seriesId}/${vid}`,
-    `https://hongguoduanju.com/player/${seriesId}?vid=${vid}`,
-    `https://hongguoduanju.com/player/${seriesId}`
-  ];
-
-  for (const url of urlsToTry) {
-    try {
-      const res = await axios.get(url, {
-        timeout: 6000,
-        headers: {
-          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        },
-      });
-      const match = res.data.match(/_ROUTER_DATA\s*=\s*(\{[\s\S]*?\});/);
-      if (match) {
-        const data = JSON.parse(match[1]);
-        const p = data?.loaderData?.["player_(series_id)/(vid)/page"] || data?.loaderData?.["player_(series_id)/page"];
-        const mainUrl = p?.video_player_info?.main_url;
-        if (mainUrl) {
-          webStreamCache.set(cacheKey, { time: Date.now(), url: mainUrl });
-          return mainUrl;
-        }
-      }
-    } catch (err) {
-      // 尝试下一个 URL
-    }
-  }
-  return null;
-}
 
 
 // 1. 获取官方首页数据 (含 Banner + 四大排行榜基础池)
@@ -716,7 +675,6 @@ const server = http.createServer(async (req, res) => {
     const qMatch = /^\/api\/episodes\/(\d+)\/qualities$/.exec(pathname);
     if (qMatch) {
       const episodeId = qMatch[1];
-      const seriesId = u.searchParams.get("seriesId") || u.searchParams.get("series_id") || vidToSeriesMap.get(episodeId);
       const list = [];
       const seenKeys = new Set();
 
@@ -764,24 +722,6 @@ const server = http.createServer(async (req, res) => {
         }
       }
 
-      // 如果 720P 在 App 端属于 bytevc2 被过滤，但官方 Web 网页端拥有原生可播放的 720P H.264，则由官方 Web 补充
-      if (!seenKeys.has("720P") && seriesId) {
-        try {
-          const webUrl = await getOfficialWeb720pStream(seriesId, episodeId);
-          if (webUrl) {
-            seenKeys.add("720P");
-            list.push({
-              key: "720P",
-              label: "720P 高清",
-              qualityNum: 720,
-              codec: "H.264",
-              rawKey: "web_720p",
-              isDefault: false,
-            });
-          }
-        } catch (_) {}
-      }
-
       // 兜底保障
       if (list.length === 0) {
         list.push({
@@ -822,59 +762,8 @@ const server = http.createServer(async (req, res) => {
     if (sMatch) {
       const episodeId = sMatch[1];
       const quality = u.searchParams.get("quality") || "1080P";
-      const seriesId = u.searchParams.get("seriesId") || u.searchParams.get("series_id") || vidToSeriesMap.get(episodeId);
 
-      // 分支 A: 用户选择 720P 时，若官方 App 端该流属于 bytevc2（不可解码），自动优先调度官方 Web 端原生 H.264 零报错直链
-      let preferWeb720p = false;
-      if (quality === "720P" && seriesId) {
-        if (hgEngine) {
-          try {
-            const info = await hgEngine.fetchVideoInfo(episodeId);
-            const row720 = info.rows?.find(
-              (r) => r.key === "video_4" || hgEngine.qualityNumber(r.quality) === 720
-            );
-            if (!row720 || row720.item?.codec_type === "bytevc2") {
-              preferWeb720p = true;
-            }
-          } catch (_) {
-            preferWeb720p = true;
-          }
-        } else {
-          preferWeb720p = true;
-        }
-      }
-
-      if (preferWeb720p && seriesId) {
-        try {
-          const webUrl = await getOfficialWeb720pStream(seriesId, episodeId);
-          if (webUrl) {
-            const headers = {
-              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-              "Referer": "https://hongguoduanju.com/",
-            };
-            if (req.headers["range"]) headers["Range"] = req.headers["range"];
-            const streamRes = await axios({
-              method: "GET",
-              url: webUrl,
-              responseType: "stream",
-              headers,
-              timeout: 15000,
-              validateStatus: () => true,
-            });
-            res.writeHead(streamRes.status, {
-              ...streamRes.headers,
-              "Content-Type": "video/mp4",
-              "Access-Control-Allow-Origin": "*",
-              "Access-Control-Expose-Headers": "Content-Range, Content-Length, Accept-Ranges",
-            });
-            return streamRes.data.pipe(res);
-          }
-        } catch (err) {
-          console.warn("[Web 720p Stream Error]:", err.message);
-        }
-      }
-
-      // 分支 B: 走本地解密引擎调度官方 HEVC (bytevc1) 视频流
+      // 走本地解密引擎调度官方 HEVC (bytevc1) 视频流
       if (hgEngine) {
         try {
           const stream = await hgEngine.resolveStream(episodeId, quality);
@@ -923,38 +812,6 @@ const server = http.createServer(async (req, res) => {
           return res.end();
         } catch (err) {
           console.warn(`[Stream Engine Error for ${quality}]:`, err.message);
-        }
-      }
-
-
-      // 如果解密引擎不可用且用户请求的是 720P，降级尝试官方 Web 端流
-      if (seriesId) {
-        try {
-          const webUrl = await getOfficialWeb720pStream(seriesId, episodeId);
-          if (webUrl) {
-            const headers = {
-              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-              "Referer": "https://hongguoduanju.com/",
-            };
-            if (req.headers["range"]) headers["Range"] = req.headers["range"];
-            const streamRes = await axios({
-              method: "GET",
-              url: webUrl,
-              responseType: "stream",
-              headers,
-              timeout: 15000,
-              validateStatus: () => true,
-            });
-            res.writeHead(streamRes.status, {
-              ...streamRes.headers,
-              "Content-Type": "video/mp4",
-              "Access-Control-Allow-Origin": "*",
-              "Access-Control-Expose-Headers": "Content-Range, Content-Length, Accept-Ranges",
-            });
-            return streamRes.data.pipe(res);
-          }
-        } catch (err) {
-          console.warn("[Web Stream Fallback Error]:", err.message);
         }
       }
 

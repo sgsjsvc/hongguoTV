@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Large Screens & 1080p+ TV (Matches original 1080p exact proportions) -->
+
+    <!-- Scrim Overlays -->
+    <dimen name="scrim_top_height">96dp</dimen>
+    <dimen name="scrim_bottom_height">280dp</dimen>
+
+    <!-- Header & Navigation -->
+    <dimen name="header_height">58dp</dimen>
+    <dimen name="header_padding_h">28dp</dimen>
+    <dimen name="header_padding_v">8dp</dimen>
+    <dimen name="brand_logo_size">34dp</dimen>
+    <dimen name="brand_margin_end">24dp</dimen>
+    <dimen name="nav_button_min_height">36dp</dimen>
+    <dimen name="nav_button_height">38dp</dimen>
+    <dimen name="nav_button_pad_h">16dp</dimen>
+    <dimen name="nav_button_pad_v">4dp</dimen>
+    <dimen name="nav_button_margin_end">6dp</dimen>
+
+    <!-- Hero / Metadata Banner -->
+    <dimen name="hero_margin_start">28dp</dimen>
+    <dimen name="hero_top_margin">66dp</dimen>
+    <dimen name="hero_tag_pad_h">14dp</dimen>
+    <dimen name="hero_tag_pad_v">5dp</dimen>
+    <dimen name="hero_title_pad_v">2dp</dimen>
+    <dimen name="hero_meta_pad_bottom">3dp</dimen>
+    <dimen name="hero_desc_line_spacing">2dp</dimen>
+    <dimen name="hero_desc_pad_top">6dp</dimen>
+
+    <!-- Player Action Controls -->
+    <dimen name="action_button_min_height">38dp</dimen>
+    <dimen name="action_button_height">38dp</dimen>
+    <dimen name="action_button_pad_h">16dp</dimen>
+    <dimen name="action_button_pad_v">4dp</dimen>
+    <dimen name="action_button_margin_end">10dp</dimen>
+
+    <!-- Progress Bar & Indicator -->
+    <dimen name="progress_box_margin_start">28dp</dimen>
+    <dimen name="progress_box_margin_bottom">46dp</dimen>
+    <dimen name="progress_bar_height">5dp</dimen>
+    <dimen name="progress_bar_margin_top">4dp</dimen>
+    <dimen name="indicator_margin_h">28dp</dimen>
+    <dimen name="indicator_margin_bottom">12dp</dimen>
+    <dimen name="indicator_pad_h_start">20dp</dimen>
+    <dimen name="indicator_pad_h_end">22dp</dimen>
+    <dimen name="indicator_pad_v">12dp</dimen>
+    <dimen name="indicator_icon_size">32dp</dimen>
+    <dimen name="indicator_icon_margin_end">12dp</dimen>
+
+    <!-- Seek HUD -->
+    <dimen name="seek_hud_pad_h_start">22dp</dimen>
+    <dimen name="seek_hud_pad_h_end">24dp</dimen>
+    <dimen name="seek_hud_pad_v">12dp</dimen>
+    <dimen name="seek_hud_delta_pad_h">8dp</dimen>
+    <dimen name="seek_hud_delta_pad_v">3dp</dimen>
+    <dimen name="seek_hud_delta_margin_end">14dp</dimen>
+
+    <!-- Episode Drawer -->
+    <dimen name="episode_drawer_pad_h">24dp</dimen>
+    <dimen name="episode_drawer_pad_v">16dp</dimen>
+    <dimen name="episode_drawer_title_margin_end">16dp</dimen>
+    <dimen name="episode_drawer_detail_btn_min_height">32dp</dimen>
+    <dimen name="episode_drawer_detail_btn_height">32dp</dimen>
+    <dimen name="episode_drawer_detail_btn_pad_h">12dp</dimen>
+    <dimen name="episode_drawer_detail_btn_pad_v">2dp</dimen>
+    <dimen name="episode_drawer_tabs_pad_top">10dp</dimen>
+    <dimen name="episode_drawer_margin_h">16dp</dimen>
+    <dimen name="episode_drawer_margin_bottom">14dp</dimen>
+    <dimen name="episode_drawer_scroll_offset">80dp</dimen>
+    <dimen name="episode_group_btn_min_height">30dp</dimen>
+    <dimen name="episode_group_btn_height">30dp</dimen>
+    <dimen name="episode_group_btn_pad_h">12dp</dimen>
+    <dimen name="episode_group_btn_pad_v">2dp</dimen>
+    <dimen name="episode_group_btn_margin_end">6dp</dimen>
+    <dimen name="episode_item_btn_min_height">42dp</dimen>
+    <dimen name="episode_item_btn_height">42dp</dimen>
+    <dimen name="episode_item_btn_pad_h">16dp</dimen>
+    <dimen name="episode_item_btn_pad_v">4dp</dimen>
+    <dimen name="episode_item_btn_margin_end">8dp</dimen>
+
+    <!-- Search View -->
+    <dimen name="search_page_pad_h">36dp</dimen>
+    <dimen name="search_page_pad_v">24dp</dimen>
+    <dimen name="search_input_pad_h">20dp</dimen>
+    <dimen name="search_input_pad_v">12dp</dimen>
+    <dimen name="search_input_height">56dp</dimen>
+    <dimen name="search_input_margin_bottom">16dp</dimen>
+    <dimen name="search_btn_width">180dp</dimen>
+    <dimen name="search_btn_height">44dp</dimen>
+
+    <!-- Category View -->
+    <dimen name="category_tag_group_padding">4dp</dimen>
+    <dimen name="category_tag_gap">8dp</dimen>
+
+    <!-- Rank View -->
+    <dimen name="rank_tab_margin_end">10dp</dimen>
+    <dimen name="rank_tab_pad_bottom">12dp</dimen>
+
+    <!-- Detail View -->
+    <dimen name="detail_cover_corner_radius">10dp</dimen>
+    <dimen name="detail_cover_width">110dp</dimen>
+    <dimen name="detail_cover_height">150dp</dimen>
+    <dimen name="detail_cover_margin_end">16dp</dimen>
+    <dimen name="detail_desc_pad_v">12dp</dimen>
+    <dimen name="detail_group_pad_bottom">10dp</dimen>
+    <dimen name="detail_group_btn_min_height">34dp</dimen>
+    <dimen name="detail_group_btn_height">34dp</dimen>
+    <dimen name="detail_group_btn_pad_h">16dp</dimen>
+    <dimen name="detail_group_btn_pad_v">4dp</dimen>
+    <dimen name="detail_group_btn_margin_end">8dp</dimen>
+    <dimen name="detail_grid_btn_height">44dp</dimen>
+    <dimen name="detail_grid_btn_margin">3dp</dimen>
+
+    <!-- Settings View -->
+    <dimen name="settings_input_pad_h">18dp</dimen>
+    <dimen name="settings_input_pad_v">12dp</dimen>
+    <dimen name="settings_input_height">58dp</dimen>
+    <dimen name="settings_input_margin_top">8dp</dimen>
+    <dimen name="settings_input_margin_bottom">14dp</dimen>
+
+    <!-- Series Card & Common UI Defaults -->
+    <dimen name="series_card_margin">8dp</dimen>
+    <dimen name="series_card_width">385dp</dimen>
+    <dimen name="series_card_image_height">230dp</dimen>
+    <dimen name="series_card_progress_height">6dp</dimen>
+    <dimen name="series_card_progress_margin_top">6dp</dimen>
+    <dimen name="series_card_title_pad_h">4dp</dimen>
+    <dimen name="series_card_title_pad_top">6dp</dimen>
+    <dimen name="series_card_title_pad_bottom">2dp</dimen>
+    <dimen name="series_card_badge_pad_h">4dp</dimen>
+    <dimen name="series_card_badge_pad_bottom">4dp</dimen>
+    <dimen name="series_rank_badge_radius">6dp</dimen>
+    <dimen name="common_button_min_height">44dp</dimen>
+    <dimen name="common_pill_button_min_height">36dp</dimen>
+    <dimen name="common_circle_button_size">42dp</dimen>
+</resources>
