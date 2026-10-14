@@ -1,0 +1,38 @@
+{
+  "id": "t-r3-drawer-focus",
+  "createdAt": "2026-10-14T05:38:23.405Z",
+  "updatedAt": "2026-10-14T05:38:23.407Z",
+  "assignee": "antigravity",
+  "title": "R3 选集抽屉 Tab 抢焦修复（D2-F4）",
+  "brief": "详见 .agents/inbox/t-r3-drawer-focus.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "第五轮规划: .agents/shared/round5-fix-plan.md",
+    "发现来源: .agents/shared/discovery-round4-synthesis.md",
+    "第四轮已入库（3af5e82 业务代码、a056538 协作记录）",
+    "修复类任务：可改代码，但严格限定在 brief 授权的文件范围内",
+    "必须提供「修复前失败证据 + 修复后通过证据」"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [
+    "t-r2-tv-focus"
+  ],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-14T05:38:23.405Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-r3-drawer-focus.brief.md",
+  "order": 3,
+  "kind": "fix"
+}
