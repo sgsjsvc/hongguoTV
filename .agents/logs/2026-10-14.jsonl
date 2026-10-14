@@ -82,3 +82,9 @@
 {"at":"2026-10-14T11:26:57.406Z","kind":"task-updated","id":"t-s1-switch-hint","by":"antigravity","status":"done","note":""}
 {"at":"2026-10-14T12:33:18.616Z","kind":"task-updated","id":"t-s2-verify-hint","by":"workbuddy","status":"claimed","note":"claimed"}
 {"at":"2026-10-14T13:36:08.584Z","kind":"task-updated","id":"t-s2-verify-hint","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-14T14:43:24.644Z","kind":"task-created","id":"t-b1-windows-installer","assignee":"codex","title":"B1 Windows 安装包与便携版打包（x64 + arm64）"}
+{"at":"2026-10-14T14:43:24.645Z","kind":"task-updated","id":"t-b1-windows-installer","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T14:43:24.649Z","kind":"task-created","id":"t-b2-web-bundle","assignee":"codex","title":"B2 Web 端脚本启动包打包（5 平台）"}
+{"at":"2026-10-14T14:43:24.650Z","kind":"task-updated","id":"t-b2-web-bundle","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T14:43:24.651Z","kind":"task-created","id":"t-b3-tv-apk","assignee":"codex","title":"B3 TV 端 APK 打包（Android 5.1+ / 4 种 ABI）"}
+{"at":"2026-10-14T14:43:24.652Z","kind":"task-updated","id":"t-b3-tv-apk","by":"dsh","status":"pending","note":"brief ok"}

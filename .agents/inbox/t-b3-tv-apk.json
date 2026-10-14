@@ -1,0 +1,39 @@
+{
+  "id": "t-b3-tv-apk",
+  "createdAt": "2026-10-14T14:43:24.650Z",
+  "updatedAt": "2026-10-14T14:43:24.651Z",
+  "assignee": "codex",
+  "title": "B3 TV 端 APK 打包（Android 5.1+ / 4 种 ABI）",
+  "brief": "详见 .agents/inbox/t-b3-tv-apk.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "用户需求：将当前版本推送 GitHub（已完成），并将三端打包",
+    "  - exe 打包为安装包（NSIS），所有设备免环境可运行",
+    "  - web 用脚本启动，兼容所有设备，免环境",
+    "  - tv 兼容 Android 5.1 以上，兼容所有 CPU 架构",
+    "三端打包任务可并行，文件范围不重叠",
+    "Windows 安装包依赖已由协调者预置（electron/electron-builder/配置/Web包）",
+    "不要 git commit / git push，由协调者统一处理",
+    "当前 shell 是 Windows PowerShell 5.1，不支持 || 与 &&"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-14T14:43:24.650Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-b3-tv-apk.brief.md",
+  "order": 3,
+  "kind": "build"
+}
