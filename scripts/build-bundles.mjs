@@ -42,7 +42,7 @@ async function stage(platform,remote=false){
  copy(path.join(root,'scripts','service-launcher.mjs'),path.join(directory,'scripts','service-launcher.mjs'));
  copy(path.join(root,'scripts','migrate-library.mjs'),path.join(directory,'scripts','migrate-library.mjs'));
  copy(path.join(root,'custom-server','history-store.mjs'),path.join(directory,'custom-server','history-store.mjs'));
- if(remote){for(const name of ['index.mjs','server.mjs','admin.mjs','shared-key.mjs','public','Dockerfile','compose.yaml'])copy(path.join(root,'apps','sync-server',name),path.join(directory,'apps','sync-server',name));}
+ if(remote){for(const name of ['index.mjs','server.mjs','admin.mjs','shared-key.mjs','public'])copy(path.join(root,'apps','sync-server',name),path.join(directory,'apps','sync-server',name));}
  else{
   const notices=['react','react-dom','scheduler','lucide-react','axios'].map(name=>`${name}\n${fs.readFileSync(path.join(root,'apps','web-pc','node_modules',name,'LICENSE'),'utf8')}`).join('\n\n');
   fs.writeFileSync(path.join(directory,'THIRD_PARTY_NOTICES.txt'),notices);
