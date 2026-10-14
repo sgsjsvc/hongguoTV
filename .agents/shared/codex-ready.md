@@ -1,0 +1,65 @@
+# Codex 接入报告
+
+- 身份：`codex`，执行及审查方。
+- 检查时间：2026-10-13 20:28（Asia/Shanghai）。
+- 状态：已接入文件协作总线，待命；本次未修改业务代码。
+- 已读取：`.agents/README.md`、`.agents/QUICKSTART.md`。用户最新指令优先，其次为 QUICKSTART 的本轮边界。
+
+## 可访问目录
+
+- 项目根目录：`F:\Project\hongguoTV`，已实际读取，协作报告可写入。
+- 协作目录：项目内 `.agents/inbox`、`outbox`、`shared`、`state`、`logs`、`archive`。
+- 可读取项目源码、测试、脚本、交接及计划文档；当前仅授权接入检查和报告写入。
+- 附加可访问工作区：`C:\Users\AnLin\.codex\visualizations\2026\10\12\01a12ea6-758d-7c22-9032-2c96e9b8e060`，已确认存在，本次未写入。
+- 本会话实际文件权限并非 README 所述的固定 workspace-write；执行范围仍严格受用户授权约束。
+
+## 可用工具
+
+| 工具 | 本次确认情况 |
+| --- | --- |
+| PowerShell | 可执行读取、检查命令 |
+| Node.js | `node --version` → `v22.20.0` |
+| npm | `npm --version` → `10.9.3` |
+| Git | `git --version` → `2.51.0.windows.1` |
+| ripgrep | `rg --version` → `15.2.0` |
+| 文件协作 CLI | `status`、`ready` 已实际执行成功 |
+| 文件编辑工具 | 可定向创建、修改授权范围内的文件；本次仅创建本报告 |
+| 网络检查与网页检索 | 当前会话提供，接入检查未发起上游业务请求 |
+| Python | 已发现 `F:\software\Anaconda3\python.exe`；本次未验证其运行及依赖 |
+| 浏览器自动化 | 已确认本机 Playwright 包存在；本次未启动浏览器 |
+| Android 工具 | 已确认 ADB 和 JDK 17 文件存在；本轮 TV 不在执行范围，未连接或操作设备 |
+
+工具存在不代表其他 agent 的自动调用适配器已验证。本次未执行 `doctor`、`run`，未调用其他产品的私有会话接口，也未创建外部会话。
+
+## 任务检查
+
+在项目根目录实际执行：
+
+```powershell
+node .agents/cli.mjs status
+node .agents/cli.mjs ready
+```
+
+结果：`total: 0`，`heartbeats: []`，ready 显示 `(空)`；检查时 inbox 无任务文件。因此没有认领、执行或标记完成任何任务。
+
+## 执行前差异快照
+
+`git status --short` 显示以下已存在的业务代码修改：
+
+- `custom-server/index.mjs`
+- `custom-server/vendor/hongguo.cjs`
+- `server/vendor/hongguo.cjs`
+- `shared/content-core/hongguo.js`
+
+检查时 `git diff --stat` 合计为 4 个文件、112 行新增、213 行删除。另有未跟踪的 `.agents/`、播放修复计划及 `scripts/tv-verify.ps1`。
+
+此为已有工作区状态，不是本次接入所产生的业务修改；本次只记录差异摘要，未对这些修改作完整评审，也未认定其测试通过。没有覆盖、回退或清理这些内容。
+
+## 阻塞项与后续约束
+
+1. 当前无分配给 codex 的明确任务，等待 DSH 协调者派发。这不影响接入就绪。
+2. 若后续修改 Web / Windows 的共享取流代码，任务必须明确如何隔离 TV 打包使用的共享引擎；不得假定不改 Android 文件就不会影响 TV。
+3. 现有未提交修改需要协调者确认修改归属与基线，再安排重叠文件的实现任务。
+4. 文件总线不会自动唤醒本会话；需要新的用户消息或已配置的合法调度入口触发检查，不声称持续后台监听。
+
+后续收到明确任务时，重新检查 ready 和任务详情，仅认领 `assignee=codex` 且依赖已完成的任务。开始前检查最新差异；结果记录改动文件、验证命令、实际输出、失败与剩余问题。未分配任务时保持待命，不自行扩展范围。

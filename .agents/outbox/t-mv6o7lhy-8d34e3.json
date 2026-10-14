@@ -1,0 +1,10 @@
+{
+  "id": "t-mv6o7lhy-8d34e3",
+  "agent": "workbuddy",
+  "status": "done",
+  "finishedAt": "2026-10-13T13:41:06.561Z",
+  "title": "T4 独立复核 TV UI 自适应改动",
+  "result": {
+    "summary": "T4复核通过：三档dimens真实分层(97键集合一致/97项单调递增/均值23.9-28.9-33.7dp)，APK覆盖当前源码，本机复跑测试30/0/0/0与lint均通过；onKeyDown逐字节一致、函数与键码集合零丢失、焦点链已迁移至PlayerOverlay且映射一致，未发现功能回归。遗留：P1 SeriesAdapter 3处TvUi.dp(context,N)字面量残留(两方报告扫描盲区)；P2 限定符与真实1080p@320dpi错配可能落基准档；P3 T3测试只比键集合不比值、逻辑测试为测试内重实现。报告：.agents/shared/t-mv6o7lhy-8d34e3-workbuddy.md"
+  }
+}

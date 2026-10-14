@@ -1,0 +1,56 @@
+{
+  "id": "t-u6-rank-tabs",
+  "createdAt": "2026-10-14T01:11:29.855Z",
+  "updatedAt": "2026-10-14T02:54:15.307Z",
+  "assignee": "antigravity",
+  "title": "U6 榜单切换平铺化",
+  "brief": "详见 .agents/inbox/t-u6-rank-tabs.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "本轮规划: .agents/shared/u6-rank-tabs-plan.md",
+    "用户需求：把切换榜单按钮里面的内容平铺到外面",
+    "现状：点击「切换榜单」弹出系统 AlertDialog 单选列表（loadChoices → choice）",
+    "要平铺 4 项：红果热播榜 / 真人剧热播榜 / AI剧热播榜 / 漫剧热播榜",
+    "已有两处同类先例必须参照：ui/DetailScreenView.kt:80-109、ui/EpisodeDrawerView.kt:57,96-98",
+    "榜单类型是异步获取的（repository().rankTypes()），需预取缓存，不可阻塞页面"
+  ],
+  "acceptance": [
+    "榜单页顶部平铺 4 个榜单类型，当前选中项高亮",
+    "不再弹出系统 Dialog",
+    "切换后列表内容确实变化",
+    "焦点落在当前选中项，左右键可移动",
+    "720p 下不溢出",
+    "构建/lint/测试均通过",
+    "证据三件套：截图（两步法）+ dump + 命令原文"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-14T01:16:32.949Z",
+  "result": {
+    "summary": "U6 榜单切换平铺化已完成，平铺展示 4 个榜单 Tab，已消除 Dialog，完成遥控器焦点测试与全套证据三件套"
+  },
+  "history": [
+    {
+      "at": "2026-10-14T01:11:29.856Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T01:16:32.949Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T02:54:15.308Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-u6-rank-tabs.brief.md",
+  "order": 6
+}

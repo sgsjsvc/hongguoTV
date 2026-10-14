@@ -1,0 +1,10 @@
+{
+  "id": "t-u1-fix-layout",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-13T14:17:04.470Z",
+  "title": "U1 修复收藏页按钮拉伸 + SeriesAdapter 尺寸资源化",
+  "result": {
+    "summary": "验收标准全部达成，详见 .agents/shared/t-u1-fix-layout-antigravity.md"
+  }
+}

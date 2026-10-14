@@ -1,0 +1,10 @@
+{
+  "id": "t-d1-playback-discovery",
+  "agent": "codex",
+  "status": "done",
+  "finishedAt": "2026-10-14T04:11:28.073Z",
+  "title": "D1 播放链路与内容引擎 — Bug 发现 + 算法优化",
+  "result": {
+    "summary": "发现报告已提交：.agents/shared/t-d1-playback-discovery-codex.md。10项发现，9项运行核实，2项high；附可复现探针、运行及真实HTTP证据。6项既有测试通过，范围内六份源码哈希一致。建议优先处理并发备用CDN清空地址与传输中途失败不关闭响应。未修改业务代码，待DSH验收。"
+  }
+}

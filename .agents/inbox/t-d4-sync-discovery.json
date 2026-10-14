@@ -1,0 +1,49 @@
+{
+  "id": "t-d4-sync-discovery",
+  "createdAt": "2026-10-14T03:56:00.990Z",
+  "updatedAt": "2026-10-14T04:40:56.125Z",
+  "assignee": "workbuddy",
+  "title": "D4 资料库与同步算法 — Bug 发现 + 优化建议",
+  "brief": "详见 .agents/inbox/t-d4-sync-discovery.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "发现类任务规范: .agents/shared/discovery-spec.md（必读）",
+    "性质：只读发现，禁止修改任何业务代码",
+    "统一交付格式与严重度定义见规范文件",
+    "必须区分「已核实」（有运行证据）与「推测」（仅静态推断）"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "workbuddy",
+  "claimedAt": "2026-10-14T04:02:49.876Z",
+  "result": {
+    "summary": "D4完成：31/31构造场景实跑通过(27 store/HistoryStore + 4真实HTTP端到端)。9条发现全部verified:true——F1 medium importLegacy水位线无视updatedAt(与registerSession策略相反,数据丢失观感); F2 medium 导入桥接循环内逐条snapshot()(实测7.9ms@3000条,万条导入卡死事件循环); F3 low 导入循环无外层事务(注释失实,部分提交可幂等重试); F4 low library_ack无界增长; F5 low snapshot/pending热路径全量计算; F6 low input.at可回退lastTime; F7 low registerSession接受+5min未来startedAt; F8/F9 info seedTarget外来事件转is_local/跨设备同毫秒平局按deviceId。排除'256+积压死锁'假设(E2E-1两tick排干)。报告:.agents/shared/t-d4-sync-discovery-workbuddy.md"
+  },
+  "history": [
+    {
+      "at": "2026-10-14T03:56:00.990Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-14T04:02:49.877Z",
+      "status": "claimed",
+      "by": "workbuddy",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-14T04:40:56.127Z",
+      "status": "done",
+      "by": "workbuddy",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-d4-sync-discovery.brief.md",
+  "order": 4,
+  "kind": "discovery"
+}

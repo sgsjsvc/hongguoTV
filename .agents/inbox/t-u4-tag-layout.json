@@ -1,0 +1,49 @@
+{
+  "id": "t-u4-tag-layout",
+  "createdAt": "2026-10-13T14:26:49.073Z",
+  "updatedAt": "2026-10-13T14:59:06.557Z",
+  "assignee": "antigravity",
+  "title": "U4 补齐 CategoryTagLayout 尺寸资源化",
+  "brief": "详见 .agents/inbox/t-u4-tag-layout.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "本轮规划: .agents/shared/tv-ui-round2-plan.md",
+    "协调者规划疏漏：U1 范围未含 CategoryTagLayout.kt，故当时未改是正确的",
+    "工作区已有未提交改动，不得回退或清理"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [
+    "t-u2-progress-bar"
+  ],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-13T14:54:53.940Z",
+  "result": {
+    "summary": "CategoryTagLayout gap 尺寸资源化已完成：三档 dimens 均配置 category_tag_gap，硬编码扫描全项目归零，单元测试/lint/构建均通过，并在模拟器上完成分类页布局截图验证 (.agents/shared/u4-category.png)"
+  },
+  "history": [
+    {
+      "at": "2026-10-13T14:26:49.074Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-13T14:54:53.941Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-13T14:59:06.558Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-u4-tag-layout.brief.md",
+  "order": 4
+}

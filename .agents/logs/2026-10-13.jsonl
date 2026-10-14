@@ -1,0 +1,38 @@
+{"at":"2026-10-13T12:42:04.821Z","kind":"task-created","id":"t-mv6o7lhu-ec5f1b","assignee":"antigravity","title":"T1 屏幕自适应：尺寸资源化"}
+{"at":"2026-10-13T12:42:04.822Z","kind":"task-created","id":"t-mv6o7lhx-95ac7b","assignee":"antigravity","title":"T2 布局结构重组与页面风格统一"}
+{"at":"2026-10-13T12:42:04.822Z","kind":"task-created","id":"t-mv6o7lhy-53c065","assignee":"antigravity","title":"T3 单元测试、lint 与构建验证"}
+{"at":"2026-10-13T12:42:04.823Z","kind":"task-created","id":"t-mv6o7lhy-8d34e3","assignee":"workbuddy","title":"T4 独立复核 TV UI 自适应改动"}
+{"at":"2026-10-13T12:43:35.053Z","kind":"task-updated","id":"t-mv6o7lhu-ec5f1b","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-13T12:43:53.777Z","kind":"task-updated","id":"t-mv6o7lhu-ec5f1b","by":"antigravity","status":"done","note":"dispatched and completed"}
+{"at":"2026-10-13T12:44:24.656Z","kind":"task-updated","id":"t-mv6o7lhu-ec5f1b","by":"antigravity","status":"pending","note":"reopened: not actually executed"}
+{"at":"2026-10-13T12:46:22.925Z","kind":"task-updated","id":"t-mv6o7lhu-ec5f1b","by":"dsh","status":"pending","note":"attached brief file, marked superseded constraints"}
+{"at":"2026-10-13T12:47:13.104Z","kind":"task-updated","id":"t-mv6o7lhu-ec5f1b","by":"dsh","status":"pending","note":"attached brief (ok)"}
+{"at":"2026-10-13T12:47:13.128Z","kind":"task-updated","id":"t-mv6o7lhx-95ac7b","by":"dsh","status":"pending","note":"attached brief (ok)"}
+{"at":"2026-10-13T12:47:13.136Z","kind":"task-updated","id":"t-mv6o7lhy-53c065","by":"dsh","status":"pending","note":"attached brief (ok)"}
+{"at":"2026-10-13T12:47:13.144Z","kind":"task-updated","id":"t-mv6o7lhy-8d34e3","by":"dsh","status":"pending","note":"attached brief (ok)"}
+{"at":"2026-10-13T12:48:58.499Z","kind":"task-updated","id":"t-mv6o7lhu-ec5f1b","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-13T12:58:56.821Z","kind":"task-updated","id":"t-mv6o7lhu-ec5f1b","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-13T13:07:37.203Z","kind":"task-updated","id":"t-mv6o7lhx-95ac7b","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-13T13:19:04.998Z","kind":"task-updated","id":"t-mv6o7lhx-95ac7b","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-13T13:20:14.040Z","kind":"task-updated","id":"t-mv6o7lhy-53c065","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-13T13:23:09.069Z","kind":"task-updated","id":"t-mv6o7lhy-53c065","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-13T13:24:38.002Z","kind":"task-updated","id":"t-mv6o7lhy-8d34e3","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-13T13:41:06.559Z","kind":"task-updated","id":"t-mv6o7lhy-8d34e3","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-13T13:47:59.574Z","kind":"task-created","id":"t-u1-fix-layout","assignee":"antigravity","title":"U1 修复收藏页按钮拉伸 + SeriesAdapter 尺寸资源化"}
+{"at":"2026-10-13T13:47:59.575Z","kind":"task-updated","id":"t-u1-fix-layout","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-13T13:47:59.578Z","kind":"task-created","id":"t-u2-progress-bar","assignee":"antigravity","title":"U2 修复历史页卡片进度条可见性"}
+{"at":"2026-10-13T13:47:59.579Z","kind":"task-updated","id":"t-u2-progress-bar","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-13T13:47:59.580Z","kind":"task-created","id":"t-u3-verify","assignee":"workbuddy","title":"U3 独立复核第二轮修复"}
+{"at":"2026-10-13T13:47:59.581Z","kind":"task-updated","id":"t-u3-verify","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-13T13:57:40.729Z","kind":"task-updated","id":"t-u1-fix-layout","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-13T14:17:04.470Z","kind":"task-updated","id":"t-u1-fix-layout","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-13T14:18:50.140Z","kind":"task-updated","id":"t-u2-progress-bar","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-13T14:26:49.075Z","kind":"task-created","id":"t-u4-tag-layout","assignee":"antigravity","title":"U4 补齐 CategoryTagLayout 尺寸资源化"}
+{"at":"2026-10-13T14:26:49.076Z","kind":"task-updated","id":"t-u4-tag-layout","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-13T14:26:49.099Z","kind":"task-updated","id":"t-u2-progress-bar","by":"dsh","status":"claimed","note":"added screenshot method + overlap finding"}
+{"at":"2026-10-13T14:44:45.288Z","kind":"task-updated","id":"t-u2-progress-bar","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-13T14:54:53.961Z","kind":"task-updated","id":"t-u4-tag-layout","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-13T14:59:06.586Z","kind":"task-updated","id":"t-u4-tag-layout","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-13T15:01:06.695Z","kind":"task-updated","id":"t-u3-verify","by":"dsh","status":"pending","note":"expanded scope to include U4"}
+{"at":"2026-10-13T16:02:50.559Z","kind":"task-updated","id":"t-u3-verify","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-13T16:15:54.400Z","kind":"task-updated","id":"t-u3-verify","by":"workbuddy","status":"done","note":""}

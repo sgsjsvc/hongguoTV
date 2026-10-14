@@ -1,0 +1,10 @@
+{
+  "id": "t-mv6o7lhy-53c065",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-13T13:23:09.070Z",
+  "title": "T3 单元测试、lint 与构建验证",
+  "result": {
+    "summary": ".agents/shared/t-mv6o7lhy-53c065-antigravity.md"
+  }
+}

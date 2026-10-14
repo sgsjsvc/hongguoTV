@@ -1,0 +1,56 @@
+{
+  "id": "t-mv6o7lhy-53c065",
+  "createdAt": "2026-10-13T12:42:04.822Z",
+  "updatedAt": "2026-10-13T13:23:09.046Z",
+  "assignee": "antigravity",
+  "title": "T3 单元测试、lint 与构建验证",
+  "brief": "为 T1/T2 的改动补单元测试并跑完整验证。\n\n要做的事：\n1. 为尺寸资源与布局辅助逻辑补 JVM 单元测试（离线可跑，不依赖网络或设备）。\n2. 跑 ./gradlew :app:testDebugUnitTest，确保现有 JVM 19 项不减少。\n3. 跑 ./gradlew :app:lintDebug 与 :app:assembleDebug。\n4. 产出可安装的 debug APK。\n\n硬性约束：\n- 不得为通过测试而删减或跳过既有测试。\n- 不修改 shared/content-core/hongguo.js。",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "协作规范: .agents/README.md 与 .agents/QUICKSTART.md",
+    "本轮规划: .agents/shared/tv-ui-plan.md",
+    "范围仅 apps/tv-android/ 的 Kotlin UI 层，禁止修改 shared/content-core/hongguo.js",
+    "当前 git 分支 codex/first-github-push-20261013，工作区已有未提交改动（播放修复），不得回退或清理",
+    "Antigravity 此前已落地：底部选集抽屉(episodeDrawer)、居中 Seek HUD(seekHud)、集数分组 Tab。这些行为必须保持不变。",
+    "依赖 T2 完成"
+  ],
+  "acceptance": [
+    "./gradlew :app:testDebugUnitTest 通过，测试数不少于 19 项",
+    "./gradlew :app:lintDebug 通过",
+    "./gradlew :app:assembleDebug 通过，产出 app/build/outputs/apk/debug/app-debug.apk",
+    "报告含完整命令与原始输出摘要"
+  ],
+  "blockedBy": [
+    "t-mv6o7lhx-95ac7b"
+  ],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-13T13:20:14.012Z",
+  "result": {
+    "summary": ".agents/shared/t-mv6o7lhy-53c065-antigravity.md"
+  },
+  "history": [
+    {
+      "at": "2026-10-13T12:42:04.822Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-13T13:20:14.013Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-13T13:23:09.047Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-mv6o7lhy-53c065.brief.md",
+  "order": 3,
+  "label": "T3 测试构建"
+}

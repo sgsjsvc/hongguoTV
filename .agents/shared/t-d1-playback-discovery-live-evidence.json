@@ -1,0 +1,116 @@
+{
+  "at": "2026-10-14T04:04:14.504Z",
+  "results": [
+    {
+      "path": "/health",
+      "status": 200,
+      "body": {
+        "service": "hongguotv-custom-bridge",
+        "version": "2.3.0",
+        "ok": true
+      }
+    },
+    {
+      "path": "/api/episodes/0/qualities",
+      "status": 200,
+      "body": {
+        "episodeId": "0",
+        "defaultQuality": "1080P",
+        "qualities": [
+          {
+            "key": "1080P",
+            "label": "1080P 超清",
+            "qualityNum": 1080,
+            "codec": "HEVC",
+            "isDefault": true
+          }
+        ]
+      }
+    },
+    {
+      "path": "/api/episodes/7503780574541122622/qualities",
+      "status": 200,
+      "body": {
+        "episodeId": "7503780574541122622",
+        "defaultQuality": "1080P",
+        "qualities": [
+          {
+            "key": "1080P",
+            "label": "1080P 超清",
+            "qualityNum": 1080,
+            "codec": "HEVC",
+            "rawKey": "video_5",
+            "isDefault": true
+          },
+          {
+            "key": "720P",
+            "label": "720P 高清",
+            "qualityNum": 720,
+            "codec": "HEVC",
+            "rawKey": "video_4",
+            "isDefault": false
+          },
+          {
+            "key": "540P",
+            "label": "540P 高清",
+            "qualityNum": 540,
+            "codec": "HEVC",
+            "rawKey": "video_3",
+            "isDefault": false
+          },
+          {
+            "key": "480P",
+            "label": "480P 标清",
+            "qualityNum": 480,
+            "codec": "HEVC",
+            "rawKey": "video_2",
+            "isDefault": false
+          },
+          {
+            "key": "360P",
+            "label": "360P 流畅",
+            "qualityNum": 360,
+            "codec": "HEVC",
+            "rawKey": "video_1",
+            "isDefault": false
+          }
+        ]
+      }
+    }
+  ],
+  "media": [
+    {
+      "quality": "360P",
+      "status": 206,
+      "bytes": 1024,
+      "contentRange": "bytes 0-1023/6524051",
+      "contentType": "video/mp4",
+      "ftyp": true
+    },
+    {
+      "quality": "540P",
+      "status": 206,
+      "bytes": 1024,
+      "contentRange": "bytes 0-1023/9302409",
+      "contentType": "video/mp4",
+      "ftyp": true
+    },
+    {
+      "quality": "720P",
+      "status": 206,
+      "bytes": 1024,
+      "contentRange": "bytes 0-1023/11291532",
+      "contentType": "video/mp4",
+      "ftyp": true
+    },
+    {
+      "quality": "1080P",
+      "status": 206,
+      "bytes": 1024,
+      "contentRange": "bytes 0-1023/22421134",
+      "contentType": "video/mp4",
+      "ftyp": true
+    }
+  ],
+  "mediaCheckedAt": "2026-10-14T04:06:40.816Z"
+}

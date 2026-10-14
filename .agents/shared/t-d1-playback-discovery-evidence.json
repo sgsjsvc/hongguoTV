@@ -1,0 +1,219 @@
+{
+  "at": "2026-10-14T04:48:44.630Z",
+  "sourceHashes": {
+    "shared/content-core/hongguo.js": "bcde0d68e96a2aa6fa87aab597179f7579fc48e7fbb5bee82a3941ad09707fe1",
+    "custom-server/vendor/hongguo.cjs": "f1e82edf944974be626a58e02a77c281e9a9542e27917d3d1f2eb527c0a76ff0",
+    "server/vendor/hongguo.cjs": "f1e82edf944974be626a58e02a77c281e9a9542e27917d3d1f2eb527c0a76ff0",
+    "custom-server/index.mjs": "86a0904d0a60b0a12b89fd755c5b6285b91c330e8de9f84ba3578468b18f5526",
+    "server/provider.mjs": "fa523c8e0ad7731815787319b41d3ad7a11aad057d32814c94ffab0c47fa1b70",
+    "server/http.mjs": "c1fec917dfe340cee4d094f5ef3fd7cf2ca96d702eb08debdbf9d2e99a076de3"
+  },
+  "businessSourceUnchanged": true,
+  "results": [
+    {
+      "name": "range-parser-mismatch",
+      "ok": true,
+      "evidence": {
+        "rows": [
+          {
+            "value": "bytes=0-1,5-6",
+            "engine": [
+              0,
+              1
+            ],
+            "http": null
+          },
+          {
+            "value": "bytes=0-1junk",
+            "engine": [
+              0,
+              1
+            ],
+            "http": null
+          },
+          {
+            "value": "bytes=0-1\r\nExtra: x",
+            "engine": [
+              0,
+              1
+            ],
+            "http": null
+          },
+          {
+            "value": "bytes=-0",
+            "engine": "invalid",
+            "http": null
+          },
+          {
+            "value": "bytes=100-",
+            "engine": "invalid",
+            "http": null
+          },
+          {
+            "value": "bytes=2-1",
+            "engine": "invalid",
+            "http": null
+          },
+          {
+            "value": "bytes=0-999",
+            "engine": [
+              0,
+              99
+            ],
+            "http": [
+              0,
+              99
+            ]
+          },
+          {
+            "value": "bytes=-200",
+            "engine": [
+              0,
+              99
+            ],
+            "http": [
+              0,
+              99
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "concurrent-backup-clears-primary",
+      "ok": true,
+      "evidence": {
+        "targets": [
+          "main",
+          "main",
+          "backup",
+          "backup",
+          ""
+        ],
+        "finalUrl": "",
+        "finalBackup": "",
+        "nextError": "empty URL"
+      }
+    },
+    {
+      "name": "range-offset-not-validated",
+      "ok": true,
+      "evidence": {
+        "requested": "bytes=10-13",
+        "returned": "bytes 0-3/100",
+        "accepted": true,
+        "data": "ABCD"
+      }
+    },
+    {
+      "name": "qualities-fabricate-1080-on-error",
+      "ok": true,
+      "evidence": {
+        "status": 200,
+        "body": {
+          "episodeId": "123",
+          "defaultQuality": "1080P",
+          "qualities": [
+            {
+              "key": "1080P",
+              "label": "1080P 超清",
+              "qualityNum": 1080,
+              "codec": "HEVC",
+              "isDefault": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "backend-midstream-failure-hangs",
+      "ok": true,
+      "evidence": {
+        "customBackend": {
+          "status": 206,
+          "bytes": 1048576,
+          "hung": true
+        },
+        "legacyHttpControl": {
+          "status": 206,
+          "bytes": 1048576,
+          "aborted": true
+        }
+      }
+    },
+    {
+      "name": "cache-capacity-and-request-coalescing",
+      "ok": true,
+      "evidence": {
+        "parallel": {
+          "posts": 12,
+          "gets": 12,
+          "cacheEntries": 1
+        },
+        "after150Distinct": {
+          "videoCache": 151,
+          "streamCache": 150
+        },
+        "note": "Custom backend uses a separate VM from provider cleanup; observations alone do not measure production heap."
+      }
+    },
+    {
+      "name": "decrypt-slice-correctness-and-scan-cost",
+      "ok": true,
+      "evidence": {
+        "sliceAssertions": 6,
+        "counterCarryVerified": true,
+        "samples": 10000,
+        "tailRangeEndReads": 10001,
+        "qualityOrder": [
+          1080,
+          540
+        ]
+      }
+    },
+    {
+      "name": "prepareHeader-coalesces-and-retries",
+      "ok": true,
+      "evidence": {
+        "parallelRequests": 12,
+        "concurrentCalls": 1,
+        "failedPromiseCleared": true,
+        "retryRecovered": true
+      }
+    },
+    {
+      "name": "vendor-comparison",
+      "ok": true,
+      "evidence": {
+        "peers": [
+          {
+            "file": "custom-server/vendor/hongguo.cjs",
+            "changedLines": [
+              138
+            ]
+          },
+          {
+            "file": "server/vendor/hongguo.cjs",
+            "changedLines": [
+              138
+            ]
+          }
+        ],
+        "note": "Only category_$ compatibility differs; playback code is currently identical."
+      }
+    },
+    {
+      "name": "cenc-parser-crosses-track-boundary",
+      "ok": true,
+      "evidence": {
+        "clearTrackBytes": 84,
+        "clearTrackHasSaiz": false,
+        "aloneReturnedNull": true,
+        "withFollowingEncryptedTrackParsedAsEncrypted": true,
+        "borrowedAuxSizes": [
+          8
+        ]
+      }
+    }
+  ]
+}

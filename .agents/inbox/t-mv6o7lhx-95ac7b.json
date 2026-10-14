@@ -1,0 +1,57 @@
+{
+  "id": "t-mv6o7lhx-95ac7b",
+  "createdAt": "2026-10-13T12:42:04.821Z",
+  "updatedAt": "2026-10-13T13:19:04.987Z",
+  "assignee": "antigravity",
+  "title": "T2 布局结构重组与页面风格统一",
+  "brief": "在 T1 完成后，重组 MainActivity.kt（1835 行）并统一各页面布局风格。\n\n要做的事：\n1. 把 UI 构建代码从 MainActivity.kt 拆到 apps/tv-android/app/src/main/java/com/hongguotv/tv/ui/ 下的独立文件（如 HomeScreen.kt、CatalogScreen.kt、DetailScreen.kt、SettingsScreen.kt、SearchScreen.kt、PlayerOverlay.kt）。\n2. 统一各页面的：外边距、标题层级、按钮尺寸、焦点样式。\n3. 抽出重复的布局构建代码为共用函数。\n\n硬性约束：\n- 纯结构重组，不改变任何可见行为。抽屉、Seek HUD、分组 Tab、播放控制行为必须完全不变。\n- 不修改 shared/content-core/hongguo.js。\n- 拆分后每个文件应职责单一、可独立阅读。\n- 保持 API 22 兼容。",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "协作规范: .agents/README.md 与 .agents/QUICKSTART.md",
+    "本轮规划: .agents/shared/tv-ui-plan.md",
+    "范围仅 apps/tv-android/ 的 Kotlin UI 层，禁止修改 shared/content-core/hongguo.js",
+    "当前 git 分支 codex/first-github-push-20261013，工作区已有未提交改动（播放修复），不得回退或清理",
+    "Antigravity 此前已落地：底部选集抽屉(episodeDrawer)、居中 Seek HUD(seekHud)、集数分组 Tab。这些行为必须保持不变。",
+    "依赖 T1 完成（同改 MainActivity.kt，必须串行）"
+  ],
+  "acceptance": [
+    "MainActivity.kt 行数显著下降，UI 构建代码已迁至 ui/ 目录下多个文件",
+    "各页面外边距、标题层级、按钮尺寸、焦点样式统一",
+    "./gradlew :app:assembleDebug 与 :app:lintDebug 均通过",
+    "现有功能无回归：选集抽屉、Seek HUD、集数分组 Tab、播放控制行为与 T1 前一致",
+    "报告写入 .agents/shared/<任务ID>-antigravity.md"
+  ],
+  "blockedBy": [
+    "t-mv6o7lhu-ec5f1b"
+  ],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-13T13:07:37.200Z",
+  "result": {
+    "summary": ".agents/shared/t-mv6o7lhx-95ac7b-antigravity.md"
+  },
+  "history": [
+    {
+      "at": "2026-10-13T12:42:04.821Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-13T13:07:37.200Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-13T13:19:04.988Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-mv6o7lhx-95ac7b.brief.md",
+  "order": 2,
+  "label": "T2 布局重组"
+}

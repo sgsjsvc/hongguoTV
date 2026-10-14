@@ -1,0 +1,10 @@
+{
+  "id": "t-u5-u1-evidence",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-14T01:02:18.861Z",
+  "title": "U5 补齐 U1 收藏页渲染证据闭环",
+  "result": {
+    "summary": "U1 收藏页渲染证据闭环完成：两步法截图已验证标准 PNG 签名，UI dump 提取 bounds [33,128][171,204]（宽度 138px << 1280px 全屏），报告见 .agents/shared/t-u5-u1-evidence-antigravity.md"
+  }
+}

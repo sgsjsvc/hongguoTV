@@ -1,0 +1,24 @@
+{"at":"2026-10-14T00:39:25.065Z","kind":"task-created","id":"t-u5-u1-evidence","assignee":"antigravity","title":"U5 补齐 U1 收藏页渲染证据闭环"}
+{"at":"2026-10-14T00:39:25.067Z","kind":"task-updated","id":"t-u5-u1-evidence","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T00:50:52.505Z","kind":"task-updated","id":"t-u5-u1-evidence","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T01:02:18.861Z","kind":"task-updated","id":"t-u5-u1-evidence","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T01:11:29.857Z","kind":"task-created","id":"t-u6-rank-tabs","assignee":"antigravity","title":"U6 榜单切换平铺化"}
+{"at":"2026-10-14T01:11:29.858Z","kind":"task-updated","id":"t-u6-rank-tabs","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T01:16:32.975Z","kind":"task-updated","id":"t-u6-rank-tabs","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T02:54:15.330Z","kind":"task-updated","id":"t-u6-rank-tabs","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T03:56:00.981Z","kind":"task-created","id":"t-d1-playback-discovery","assignee":"codex","title":"D1 播放链路与内容引擎 — Bug 发现 + 算法优化"}
+{"at":"2026-10-14T03:56:00.982Z","kind":"task-updated","id":"t-d1-playback-discovery","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T03:56:00.986Z","kind":"task-created","id":"t-d2-tv-ui-discovery","assignee":"antigravity","title":"D2 TV 端 UI Bug 发现"}
+{"at":"2026-10-14T03:56:00.987Z","kind":"task-updated","id":"t-d2-tv-ui-discovery","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T03:56:00.988Z","kind":"task-created","id":"t-d3-web-ui-discovery","assignee":"antigravity","title":"D3 Web / PC 端 UI Bug 发现"}
+{"at":"2026-10-14T03:56:00.989Z","kind":"task-updated","id":"t-d3-web-ui-discovery","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T03:56:00.991Z","kind":"task-created","id":"t-d4-sync-discovery","assignee":"workbuddy","title":"D4 资料库与同步算法 — Bug 发现 + 优化建议"}
+{"at":"2026-10-14T03:56:00.992Z","kind":"task-updated","id":"t-d4-sync-discovery","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-14T04:00:27.413Z","kind":"task-updated","id":"t-d1-playback-discovery","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T04:00:36.987Z","kind":"task-updated","id":"t-d2-tv-ui-discovery","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T04:02:49.926Z","kind":"task-updated","id":"t-d4-sync-discovery","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T04:11:28.072Z","kind":"task-updated","id":"t-d1-playback-discovery","by":"codex","status":"done","note":""}
+{"at":"2026-10-14T04:13:01.140Z","kind":"task-updated","id":"t-d2-tv-ui-discovery","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T04:13:20.804Z","kind":"task-updated","id":"t-d3-web-ui-discovery","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-14T04:36:52.708Z","kind":"task-updated","id":"t-d3-web-ui-discovery","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-14T04:40:56.153Z","kind":"task-updated","id":"t-d4-sync-discovery","by":"workbuddy","status":"done","note":""}
