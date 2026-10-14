@@ -77,7 +77,7 @@ const legacyHistory = {
  get: id => libraryStore.snapshot().history.find(item=>item.seriesId===id)||null,
  remove: id => { historyStore.remove(id); libraryStore.write({kind:"history",key:id,op:"delete"}); return {ok:true}; },
  clear: () => { historyStore.clear(); libraryStore.write({kind:"history",key:"*",op:"clear"}); return {ok:true}; },
- importLegacy: value => { const result=historyStore.importLegacy(value); for(const item of historyStore.list()) if(!libraryStore.snapshot().history.some(row=>row.seriesId===item.seriesId)) libraryStore.write({id:`legacy-import:${value.clientId}:${item.seriesId}`,kind:"history",key:item.seriesId,op:"set",at:item.updatedAt,value:item}); return result; }
+ importLegacy: value => { const result=historyStore.importLegacy(value); const bridged=new Set(libraryStore.snapshot().history.map(row=>row.seriesId)); for(const item of historyStore.list()) if(!bridged.has(item.seriesId)) { libraryStore.write({id:`legacy-import:${value.clientId}:${item.seriesId}`,kind:"history",key:item.seriesId,op:"set",at:item.updatedAt,value:item}); bridged.add(item.seriesId); } return result; }
 };
 const handleHistory = createHistoryHandler(legacyHistory);
 librarySync.start();
@@ -677,6 +677,7 @@ const server = http.createServer(async (req, res) => {
       const episodeId = qMatch[1];
       const list = [];
       const seenKeys = new Set();
+      let qualityFailure = hgEngine ? "NO_PLAYABLE_QUALITY" : "ENGINE_UNAVAILABLE";
 
       const labelMap = {
         2160: "4K 超高清",
@@ -718,19 +719,15 @@ const server = http.createServer(async (req, res) => {
             }
           }
         } catch (e) {
+          qualityFailure = "UPSTREAM_UNAVAILABLE";
           console.warn("[Official Qualities Fetch Error]:", e.message);
         }
       }
 
       // 兜底保障
       if (list.length === 0) {
-        list.push({
-          key: "1080P",
-          label: "1080P 超清",
-          qualityNum: 1080,
-          codec: "HEVC",
-          isDefault: true,
-        });
+        return json(res, { episodeId, defaultQuality: null, qualities: [],
+          code: qualityFailure, error: "无法获取可播放的清晰度，请重试" }, 502);
       } else {
         // 按分辨率从高到低排序，最高清晰度设为默认
         list.sort((a, b) => b.qualityNum - a.qualityNum);
@@ -765,9 +762,13 @@ const server = http.createServer(async (req, res) => {
 
       // 走本地解密引擎调度官方 HEVC (bytevc1) 视频流
       if (hgEngine) {
+        const controller = new AbortController();
+        const cancel = () => controller.abort();
+        res.once("close", cancel);
         try {
           const stream = await hgEngine.resolveStream(episodeId, quality);
           const prepared = await hgEngine.prepareHeader(stream);
+          if (res.destroyed || controller.signal.aborted) return;
           const range = byteRange(req.headers.range, prepared.total);
           if (!range) {
             res.writeHead(416, {
@@ -788,14 +789,24 @@ const server = http.createServer(async (req, res) => {
           if (req.headers.range) {
             headers["Content-Range"] = `bytes ${start}-${end}/${prepared.total}`;
           }
+          const chunkSize = 1024 * 1024;
+          // Validate media before advertising success; HEAD only needs the prepared metadata.
+          let firstChunk = null;
+          if (req.method !== "HEAD") {
+            const raw = await hgEngine.remoteRange(stream, start, Math.min(start + chunkSize - 1, end), controller.signal);
+            firstChunk = hgEngine.decryptPartial(raw.data, start, stream.key, prepared);
+          }
+          if (res.destroyed || controller.signal.aborted) return;
           res.writeHead(req.headers.range ? 206 : 200, headers);
           if (req.method === "HEAD") return res.end();
 
-          const chunkSize = 1024 * 1024;
           for (let offset = start; offset <= end && !res.destroyed; offset += chunkSize) {
             const chunkEnd = Math.min(offset + chunkSize - 1, end);
-            const raw = await hgEngine.remoteRange(stream, offset, chunkEnd);
-            const chunk = hgEngine.decryptPartial(raw.data, offset, stream.key, prepared);
+            let chunk = firstChunk;
+            if (offset !== start) {
+              const raw = await hgEngine.remoteRange(stream, offset, chunkEnd, controller.signal);
+              chunk = hgEngine.decryptPartial(raw.data, offset, stream.key, prepared);
+            }
             if (res.destroyed) break;
             if (!res.write(chunk)) {
               await new Promise((resolve) => {
@@ -811,7 +822,15 @@ const server = http.createServer(async (req, res) => {
           }
           return res.end();
         } catch (err) {
+          if (res.destroyed || controller.signal.aborted) return;
+          if (res.headersSent) {
+            res.destroy();
+            return;
+          }
           console.warn(`[Stream Engine Error for ${quality}]:`, err.message);
+        } finally {
+          res.off("close", cancel);
+          controller.abort();
         }
       }
 

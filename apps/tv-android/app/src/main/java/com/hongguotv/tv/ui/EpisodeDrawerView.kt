@@ -4,8 +4,13 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.os.Bundle
 import android.view.Gravity
+import android.view.KeyEvent
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
+import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
@@ -29,6 +34,8 @@ internal class EpisodeDrawerView(
 
     var activeIndex: Int = 0
     var drawerEpisodeGroup: Int = 0
+
+    private var pendingTabFocusIndex: Int? = null
 
     init {
         orientation = VERTICAL
@@ -55,6 +62,43 @@ internal class EpisodeDrawerView(
         })
 
         groupTabsRow = TvUi.row(context)
+        groupTabsRow.setOnHierarchyChangeListener(object : ViewGroup.OnHierarchyChangeListener {
+            override fun onChildViewAdded(parent: View?, child: View?) {
+                if (child is Button) {
+                    child.setOnKeyListener { v, keyCode, event ->
+                        if ((keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER)
+                            && event.action == KeyEvent.ACTION_DOWN) {
+                            val idx = groupTabsRow.indexOfChild(v)
+                            if (idx >= 0) {
+                                pendingTabFocusIndex = idx
+                            }
+                        }
+                        false
+                    }
+                    child.setOnTouchListener { v, event ->
+                        if (event.action == MotionEvent.ACTION_UP) {
+                            val idx = groupTabsRow.indexOfChild(v)
+                            if (idx >= 0) {
+                                pendingTabFocusIndex = idx
+                            }
+                        }
+                        false
+                    }
+                    child.accessibilityDelegate = object : View.AccessibilityDelegate() {
+                        override fun performAccessibilityAction(host: View, action: Int, args: Bundle?): Boolean {
+                            if (action == AccessibilityNodeInfo.ACTION_CLICK) {
+                                val idx = groupTabsRow.indexOfChild(host)
+                                if (idx >= 0) {
+                                    pendingTabFocusIndex = idx
+                                }
+                            }
+                            return super.performAccessibilityAction(host, action, args)
+                        }
+                    }
+                }
+            }
+            override fun onChildViewRemoved(parent: View?, child: View?) {}
+        })
         topRow.addView(groupTabsRow, LayoutParams(0, -2, 1f))
 
         val fullDetailBtn = Button(context).apply {
@@ -89,6 +133,19 @@ internal class EpisodeDrawerView(
         addView(scrollView, LayoutParams(-1, -2))
     }
 
+    override fun requestChildFocus(child: View?, focused: View?) {
+        val pendingIndex = pendingTabFocusIndex
+        if (pendingIndex != null) {
+            pendingTabFocusIndex = null
+            val targetTab = groupTabsRow.getChildAt(pendingIndex)
+            if (targetTab != null) {
+                targetTab.requestFocus()
+                return
+            }
+        }
+        super.requestChildFocus(child, focused)
+    }
+
     fun render(detail: Detail, currentEpisodeIndex: Int) {
         activeIndex = currentEpisodeIndex
         titleView.text = "选集 · 《${detail.series.title}》 (全${detail.episodes.size}集)"
@@ -118,7 +175,7 @@ internal class EpisodeDrawerView(
                     setOnClickListener {
                         drawerEpisodeGroup = g
                         render(detail, activeIndex)
-                        drawerButtons.firstOrNull()?.requestFocus()
+                        groupTabsRow.getChildAt(g)?.requestFocus()
                     }
                     setOnFocusChangeListener { v, f ->
                         v.scaleX = if (f) 1.06f else 1f

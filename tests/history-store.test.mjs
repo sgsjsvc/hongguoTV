@@ -79,6 +79,28 @@ test('legacy import is idempotent, preserves timestamp, and cannot outrank live 
   assert.equal(store.list('tv')[0].updatedAt, payload.items[0].updatedAt);
 });
 
+test('legacy data updated after a clear or tombstone is importable like a fresh registration', t => {
+  const { store } = fixture(t);
+  store.clear('tv');
+  store.importLegacy({ clientId: 'device', source: 'tv', items: [{ seriesId: '90071992547409999', title: 'newer', episodeId: 'e', episodeNumber: 1, positionMs: 1, durationMs: 10, updatedAt: Date.now() + 60000 }] });
+  assert.equal(store.list('tv').length, 1);
+  store.remove('90071992547409999', 'tv');
+  store.importLegacy({ clientId: 'device', source: 'tv', items: [{ seriesId: '90071992547409998', title: 'newer', episodeId: 'e', episodeNumber: 1, positionMs: 1, durationMs: 10, updatedAt: Date.now() + 60000 }] });
+  assert.equal(store.list('tv').length, 1);
+  assert.equal(store.list('tv')[0].seriesId, '90071992547409998');
+  store.importLegacy({ clientId: 'device', source: 'tv', items: [{ seriesId: '90071992547409997', title: 'stale', episodeId: 'e', episodeNumber: 1, positionMs: 1, durationMs: 10, updatedAt: Date.now() - 60000 }] });
+  assert.equal(store.list('tv').length, 1);
+});
+
+test('a claimed future startedAt cannot jump over deletion markers beyond one second of skew', t => {
+  const { store } = fixture(t);
+  store.remove('90071992547409999', 'tv');
+  assert.throws(() => store.registerSession({ ...session('future'), startedAt: Date.now() + 290000 }), e => e.status === 410);
+  assert.throws(() => store.saveProgress(progress('future', 1)), e => e.status === 404);
+  store.registerSession({ ...session('skewed'), startedAt: Date.now() + 500 });
+  assert.equal(store.saveProgress(progress('skewed', 1)).accepted, true);
+});
+
 test('malformed identities and invalid progress are rejected before storage', t => {
   const { store } = fixture(t);
   assert.throws(() => store.registerSession(session('bad', 'phone')), e => e.status === 400);

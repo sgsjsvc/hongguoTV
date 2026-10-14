@@ -65,10 +65,32 @@ const FILTERS = Object.fromEntries(Object.keys(CATEGORY_CONFIG).map((typeId) => 
 const RANK_ROUTE_RE = /^(hot-drama|hot-real-drama|hot-comic-drama|hot-ai-drama)$/;
 const PAGE_SIZE = 24;
 const SEG_SIZE = 1024 * 1024; // proxy 单段回传上限：钳制 Range 防止整文件 base64 撑爆内存
-const pageCache = new Map();
-const streamCache = new Map();
-const videoInfoCache = new Map();
-const appSearchCache = new Map();
+const videoInfoPending = new Map();
+class BoundedCache extends Map {
+    constructor(limit, ttl, invalidate) { super(); this.limit = limit; this.ttl = ttl; this.invalidate = invalidate; }
+    delete(key) { if (this.invalidate) this.invalidate(key); return super.delete(key); }
+    clear() { if (this.invalidate) this.invalidate(null); super.clear(); }
+    get(key) {
+        const value = super.get(key);
+        if (!value) return undefined;
+        if (Date.now() - value.time >= this.ttl) { this.delete(key); return undefined; }
+        super.delete(key); super.set(key, value); return value;
+    }
+    set(key, value) {
+        for (const [id, row] of this) if (Date.now() - row.time >= this.ttl) this.delete(id);
+        super.delete(key); super.set(key, value);
+        while (this.size > this.limit) this.delete(this.keys().next().value);
+        return this;
+    }
+}
+const pageCache = new BoundedCache(100, 180000);
+const streamCache = new BoundedCache(24, 300000);
+const videoInfoCache = new BoundedCache(100, 300000, (id) => {
+    if (id === null) { videoInfoPending.clear(); streamCache.clear(); return; }
+    videoInfoPending.delete(id);
+    for (const key of streamCache.keys()) if (key.startsWith(id + '|')) streamCache.delete(key);
+});
+const appSearchCache = new BoundedCache(100, 300000);
 
 function str(value, fallback = '') { return String(value == null ? fallback : value).trim(); }
 function pageNumber(value) { const n = Number.parseInt(value, 10); return Number.isFinite(n) && n > 0 ? n : 1; }
@@ -486,16 +508,23 @@ function qualityRows(videoList) {
 }
 
 async function fetchVideoInfo(vid) {
-    const cached = videoInfoCache.get(str(vid));
-    if (cached && Date.now() - cached.time < 300000) return cached.value;
-    const model = modelForVideo(await requestVideoModel(vid), vid);
-    const fallback = parseFallback(model.fallback_api);
-    if (!fallback) throw new Error('fallback_api 为空');
-    const outer = jsonBody(await getText(fallback));
-    const info = outer?.video_info?.data || {};
-    const value = { model, info, rows: qualityRows(info.video_list) };
-    videoInfoCache.set(str(vid), { time: Date.now(), value });
-    return value;
+    const id = str(vid); const cached = videoInfoCache.get(id);
+    if (cached) return cached.value;
+    if (videoInfoPending.has(id)) return videoInfoPending.get(id);
+    const request = (async () => {
+        const model = modelForVideo(await requestVideoModel(id), id);
+        const fallback = parseFallback(model.fallback_api);
+        if (!fallback) throw new Error('fallback_api 为空');
+        const outer = jsonBody(await getText(fallback));
+        const info = outer?.video_info?.data || {};
+        return { model, info, rows: qualityRows(info.video_list) };
+    })();
+    videoInfoPending.set(id, request);
+    try {
+        const value = await request;
+        if (videoInfoPending.get(id) === request) videoInfoCache.set(id, { time: Date.now(), value });
+        return value;
+    } finally { if (videoInfoPending.get(id) === request) videoInfoPending.delete(id); }
 }
 
 // ---------- spade URL 解密与 CENC 内容密钥 ----------
@@ -538,29 +567,32 @@ function decryptSpadeUrl(value, seed) {
 
 // ---------- CENC(MP4) 索引解析与分段解密 ----------
 
-function readBox(data, offset) {
-    if (offset < 0 || offset + 8 > data.length) return null;
-    let size = data.readUInt32BE(offset); const type = data.toString('ascii', offset + 4, offset + 8);
-    let header = 8;
+function readBox(data, offset, end = data.length) {
+    if (offset < 0 || offset + 8 > end) return null;
+    let size = data.readUInt32BE(offset); const type = data.toString('ascii', offset + 4, offset + 8); let header = 8;
     if (size === 1) {
-        if (offset + 16 > data.length) return null;
+        if (offset + 16 > end) return null;
         const large = data.readBigUInt64BE(offset + 8); if (large > BigInt(Number.MAX_SAFE_INTEGER)) return null;
         size = Number(large); header = 16;
-    } else if (size === 0) size = data.length - offset;
-    if (size < header || offset + size > data.length) return null;
+    } else if (size === 0) size = end - offset;
+    if (size < header || offset + size > end) return null;
     return { offset, size, type, header, bodyStart: offset + header };
 }
-
-function findBox(data, type, start = 0) {
-    for (let offset = Math.max(0, start); offset + 8 <= data.length; offset += 1) {
-        const box = readBox(data, offset);
-        if (box?.type === type) return box;
+function findBox(data, type, start = 0, end = data.length, depth = 0) {
+    if (depth > 16) throw new Error('MP4 box nesting too deep');
+    for (let offset = Math.max(0, start); offset + 8 <= end;) {
+        const box = readBox(data, offset, end); if (!box) return null;
+        if (box.type === type) return box;
+        if (['moov', 'trak', 'mdia', 'minf', 'stbl'].includes(box.type)) {
+            const child = findBox(data, type, box.bodyStart, box.offset + box.size, depth + 1);
+            if (child) return child;
+        }
+        offset += box.size;
     }
     return null;
 }
-
-function boxBody(data, type, start = 0) {
-    const box = findBox(data, type, start); return box ? data.subarray(box.bodyStart, box.offset + box.size) : null;
+function boxBody(data, type, start = 0, end = data.length) {
+    const box = findBox(data, type, start, end); return box ? data.subarray(box.bodyStart, box.offset + box.size) : null;
 }
 
 function readU64(data, offset) {
@@ -569,25 +601,37 @@ function readU64(data, offset) {
 }
 
 function parseTrack(moov, track) {
-    const stbl = findBox(moov, 'stbl', track.bodyStart); if (!stbl) return null;
-    const stsz = boxBody(moov, 'stsz', stbl.bodyStart); const stsc = boxBody(moov, 'stsc', stbl.bodyStart);
-    const chunkBox = findBox(moov, 'stco', stbl.bodyStart) || findBox(moov, 'co64', stbl.bodyStart);
-    const saiz = boxBody(moov, 'saiz', stbl.bodyStart); const saio = boxBody(moov, 'saio', stbl.bodyStart);
-    if (!stsz || !stsc || !chunkBox || !saiz || !saio || stsz.length < 12 || stsc.length < 8 || saiz.length < 9 || saio.length < 8) return null;
+    const stbl = findBox(moov, 'stbl', track.bodyStart, track.offset + track.size); if (!stbl) return null;
+    const stsz = boxBody(moov, 'stsz', stbl.bodyStart, stbl.offset + stbl.size); const stsc = boxBody(moov, 'stsc', stbl.bodyStart, stbl.offset + stbl.size);
+    const chunkBox = findBox(moov, 'stco', stbl.bodyStart, stbl.offset + stbl.size) || findBox(moov, 'co64', stbl.bodyStart, stbl.offset + stbl.size);
+    const saiz = boxBody(moov, 'saiz', stbl.bodyStart, stbl.offset + stbl.size); const saio = boxBody(moov, 'saio', stbl.bodyStart, stbl.offset + stbl.size);
+    if (!saiz && !saio) {
+        const stsd = boxBody(moov, 'stsd', stbl.bodyStart, stbl.offset + stbl.size);
+        if (stsd && stsd.length >= 8) {
+            const count = stsd.readUInt32BE(4); let offset = 8;
+            for (let i = 0; i < count; i++) {
+                const entry = readBox(stsd, offset); if (!entry) throw new Error('Invalid MP4 sample entry');
+                if (entry.type === 'encv' || entry.type === 'enca') throw new Error('Unsupported CENC index');
+                offset += entry.size;
+            }
+        }
+        return null;
+    }
+    if (!stsz || !stsc || !chunkBox || !saiz || !saio || stsz.length < 12 || stsc.length < 8 || saiz.length < 9 || saio.length < 8) throw new Error('Incomplete MP4 CENC tables');
     const defaultSampleSize = stsz.readUInt32BE(4); const sampleCount = stsz.readUInt32BE(8); const sizes = [];
     if (defaultSampleSize) sizes.push(...Array(sampleCount).fill(defaultSampleSize));
     else for (let i = 0; i < sampleCount && 12 + (i + 1) * 4 <= stsz.length; i += 1) sizes.push(stsz.readUInt32BE(12 + i * 4));
-    if (sizes.length !== sampleCount) return null;
+    if (sizes.length !== sampleCount) throw new Error('Invalid MP4 CENC table');
     const chunkCount = chunkBox.bodyStart + 8 <= chunkBox.offset + chunkBox.size ? moov.readUInt32BE(chunkBox.bodyStart + 4) : 0;
     const offsets = [];
     for (let i = 0; i < chunkCount; i += 1) {
         const at = chunkBox.bodyStart + 8 + i * (chunkBox.type === 'co64' ? 8 : 4);
-        if (at + (chunkBox.type === 'co64' ? 8 : 4) > chunkBox.offset + chunkBox.size) return null;
+        if (at + (chunkBox.type === 'co64' ? 8 : 4) > chunkBox.offset + chunkBox.size) throw new Error('Invalid MP4 CENC table');
         offsets.push(chunkBox.type === 'co64' ? readU64(moov, at) : moov.readUInt32BE(at));
     }
     const entryCount = stsc.readUInt32BE(4); const entries = [];
     for (let i = 0; i < entryCount; i += 1) {
-        const at = 8 + i * 12; if (at + 8 > stsc.length) return null;
+        const at = 8 + i * 12; if (at + 8 > stsc.length) throw new Error('Invalid MP4 CENC table');
         entries.push({ firstChunk: stsc.readUInt32BE(at), samplesPerChunk: stsc.readUInt32BE(at + 4) });
     }
     const samplesPerChunk = offsets.map((_value, index) => {
@@ -596,9 +640,9 @@ function parseTrack(moov, track) {
     const auxDefault = saiz[4]; const auxCount = saiz.readUInt32BE(5); const auxSizes = [];
     if (auxDefault) auxSizes.push(...Array(auxCount).fill(auxDefault));
     else for (let i = 0; i < auxCount && 9 + i < saiz.length; i += 1) auxSizes.push(saiz[9 + i]);
-    if (auxSizes.length !== auxCount) return null;
+    if (auxSizes.length !== auxCount || auxCount !== sampleCount) throw new Error('Invalid MP4 CENC table');
     const saioVersion = saio.readUInt32BE(0) >>> 24; const offsetSize = saioVersion === 1 ? 8 : 4;
-    const saioCount = saio.readUInt32BE(4); if (!saioCount || 8 + offsetSize > saio.length) return null;
+    const saioCount = saio.readUInt32BE(4); if (!saioCount || 8 + offsetSize > saio.length) throw new Error('Invalid MP4 CENC table');
     const auxOffset = offsetSize === 8 ? readU64(saio, 8) : saio.readUInt32BE(8);
     return { sizes, offsets, samplesPerChunk, auxOffset, auxSizes, sampleCount };
 }
@@ -620,7 +664,9 @@ function buildSamples(data, tracks) {
             }
         }
     }
-    return samples.sort((a, b) => a.start - b.start);
+    samples.sort((a, b) => a.start - b.start);
+    for (let i = 1; i < samples.length; i++) if (samples[i - 1].end > samples[i].start) throw new Error('MP4 sample overlap');
+    return samples;
 }
 
 function replaceFourcc(data, from, to) {
@@ -659,7 +705,9 @@ function decryptPartial(data, start, key, prepared) {
     const output = Buffer.from(data); const end = start + output.length;
     if (start < prepared.header.length) prepared.header.copy(output, 0, start, Math.min(end, prepared.header.length));
     if (!key) return output;
-    let index = 0; while (index < prepared.samples.length && prepared.samples[index].end <= start) index += 1;
+    let low = 0; let high = prepared.samples.length;
+    while (low < high) { const mid = Math.floor((low + high) / 2); if (prepared.samples[mid].end <= start) low = mid + 1; else high = mid; }
+    let index = low;
     for (; index < prepared.samples.length; index += 1) {
         const sample = prepared.samples[index]; if (sample.start >= end) break;
         const overlapStart = Math.max(start, sample.start); const overlapEnd = Math.min(end, sample.end); if (overlapStart >= overlapEnd) continue;
@@ -675,40 +723,54 @@ function decryptPartial(data, start, key, prepared) {
 // ---------- 播放流解析与 Range 代理 ----------
 
 async function resolveStream(vid, quality) {
-    const cacheKey = playKey(vid, quality); const cached = streamCache.get(cacheKey); if (cached && Date.now() - cached.time < 300000) return cached.value;
     const { info, rows } = await fetchVideoInfo(vid); const wanted = str(quality, 'auto');
     const selected = rows.find((row) => row.key === wanted || qualityNumber(row.quality) === qualityNumber(wanted)) || rows[0]; if (!selected) throw new Error('没有可用清晰度');
+    const cacheKey = playKey(vid, selected.key); const cached = streamCache.get(cacheKey); if (cached && cached.info === info) return cached.value;
     const seed = Buffer.from(str(info.key_seed), 'base64');
     const decode = (value) => { const text = cleanUrl(value); return text && seed.length ? decryptSpadeUrl(text, seed) : text; };
     // 官方每档同时下发主/备两个不同 CDN 主机，个别主机偶发 DNS 失败，故保留备用地址供重试。
     const url = decode(selected.item.main_url); const backupUrl = decode(selected.item.backup_url || selected.item.backup_url_1);
     const result = { url, backupUrl: backupUrl && backupUrl !== url ? backupUrl : '', quality: qualityLabel(selected.quality || selected.key), key: selected.item.spade_a ? deriveContentKey(selected.item.spade_a) : null };
-    streamCache.set(cacheKey, { time: Date.now(), value: result }); return result;
+    if (videoInfoCache.get(str(vid))?.value?.info === info) streamCache.set(cacheKey, { time: Date.now(), value: result, info });
+    return result;
 }
 
-async function remoteRange(stream, start, end) {
+async function remoteRange(stream, start, end, signal) {
+    // Capture targets before awaiting: another Range request can switch this shared stream.
+    const primaryUrl = stream.url; const backupUrl = stream.backupUrl;
     const attempt = async (target) => {
         const resp = await axios(target, {
             headers: { 'User-Agent': VIDEO_UA, Referer: 'https://novel.snssdk.com/', Range: `bytes=${start}-${end}` },
-            timeout: 30000, responseType: 'arraybuffer',
+            timeout: 30000, responseType: 'arraybuffer', signal,
         });
         let data = Buffer.from(resp.data);
         let total = Number(String(resp.headers['content-range'] || '').match(/\/(\d+)$/)?.[1] || 0);
+        if (resp.status === 206) {
+            const range = /^bytes\s+(\d+)-(\d+)\/(\d+)$/i.exec(str(resp.headers['content-range']));
+            if (!range || Number(range[1]) !== start || Number(range[2]) !== end) throw new Error('媒体 Range 偏移不符');
+            total = Number(range[3]);
+        } else if (resp.status !== 200) throw new Error('媒体 Range 响应状态异常');
         if (resp.status === 200) {
             total ||= Number(resp.headers['content-length'] || data.length);
             data = data.subarray(start, end + 1);
         }
+        const knownTotal = stream.prepared?.total || stream.rangeTotal;
+        if (!Number.isSafeInteger(total) || total <= end || (knownTotal && knownTotal !== total)) throw new Error('媒体 Range 总长度不符');
         const expected = end - start + 1;
         if (data.length !== expected) throw new Error(`媒体 Range 长度异常: ${data.length}/${expected}`);
+        stream.rangeTotal = total;
         return { data, total };
     };
     try {
-        return await attempt(stream.url);
+        return await attempt(primaryUrl);
     } catch (error) {
         // 备用主机可用时粘性切换，后续分片不再重复失败一次。
-        if (!stream.backupUrl) throw error;
-        const result = await attempt(stream.backupUrl);
-        stream.url = stream.backupUrl; stream.backupUrl = '';
+        if (signal?.aborted || !backupUrl) throw error;
+        const result = await attempt(backupUrl);
+        if (stream.url === primaryUrl) {
+            stream.url = backupUrl;
+            if (stream.backupUrl === backupUrl) stream.backupUrl = '';
+        }
         return result;
     }
 }
@@ -736,7 +798,8 @@ async function prepareHeader(stream) {
 }
 
 function parseRangeHeader(value, total) {
-    const match = str(value).match(/^bytes=(\d*)-(\d*)/i); if (!match) return null;
+    if (String(value ?? '') !== str(value)) return 'invalid';
+    const match = str(value).match(/^bytes=(\d*)-(\d*)$/i); if (!match) return str(value) ? 'invalid' : null;
     let start; let end;
     if (!match[1]) { const length = Math.min(total, Number(match[2])); if (!length) return 'invalid'; start = total - length; end = total - 1; }
     else { start = Number(match[1]); end = match[2] ? Number(match[2]) : total - 1; }

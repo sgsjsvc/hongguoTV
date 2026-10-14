@@ -48,3 +48,51 @@ test('transactional local writes queue independently for each remote and remote 
     assert.equal(store.snapshot().history[0].positionMs,54321);
   } finally { store.close(); }
 });
+test('an explicit event timestamp may not rewind lastTime', () => {
+  const store = new LibraryStore(':memory:');
+  try {
+    const first=store.write({kind:'search',key:'a',op:'set',at:1000,value:{query:'a'}});
+    const second=store.write({kind:'search',key:'b',op:'set',at:500,value:{query:'b'}});
+    assert.equal(first.at,1000);
+    assert.equal(second.at,1000);
+    assert.equal(store.getMeta('lastTime'),1000);
+  } finally { store.close(); }
+});
+test('acknowledgement advances the per-target cursor and prunes subsumed rows while pending stays exact', () => {
+  const store = new LibraryStore(':memory:');
+  try {
+    const ids=[];
+    for(let i=0;i<5;i++)ids.push(store.write({kind:'search',key:`q${i}`,op:'set',value:{query:`q${i}`}}).id);
+    store.acknowledge('gap',[ids[1],ids[3]]);
+    assert.deepEqual(store.pending('gap').map(event=>ids.indexOf(event.id)),[0,2,4]);
+    store.acknowledge('gap',[ids[0],ids[2],ids[4]]);
+    assert.equal(store.pending('gap').length,0);
+    assert.equal(store.getMeta('ackCursor:gap'),5);
+    assert.equal(store.db.prepare('SELECT COUNT(*) AS count FROM library_ack WHERE target=?').get('gap').count,0);
+    const later=store.write({kind:'search',key:'q5',op:'set',value:{query:'q5'}});
+    assert.deepEqual(store.pending('gap').map(event=>event.id),[later.id]);
+  } finally { store.close(); }
+});
+test('acknowledgement rows written without a cursor keep pending exact until the cursor migrates', () => {
+  const store = new LibraryStore(':memory:');
+  try {
+    const ids=[];
+    for(let i=0;i<5;i++)ids.push(store.write({kind:'search',key:`q${i}`,op:'set',value:{query:`q${i}`}}).id);
+    store.db.prepare('INSERT INTO library_ack VALUES(?,?)').run('legacy',ids[1]);
+    store.db.prepare('INSERT INTO library_ack VALUES(?,?)').run('legacy',ids[3]);
+    assert.deepEqual(store.pending('legacy').map(event=>ids.indexOf(event.id)),[0,2,4]);
+    store.acknowledge('legacy',[ids[0]]);
+    assert.deepEqual(store.pending('legacy').map(event=>ids.indexOf(event.id)),[2,4]);
+  } finally { store.close(); }
+});
+test('snapshot caching reflects writes and never shares mutable state with callers', () => {
+  const store = new LibraryStore(':memory:');
+  try {
+    store.write({kind:'search',key:'q1',op:'set',value:{query:'q1'}});
+    const first=store.snapshot();
+    first.searchHistory.push('mutated');
+    assert.deepEqual(store.snapshot().searchHistory,['q1']);
+    store.write({kind:'search',key:'q2',op:'set',value:{query:'q2'}});
+    assert.deepEqual(store.snapshot().searchHistory,['q2','q1']);
+  } finally { store.close(); }
+});

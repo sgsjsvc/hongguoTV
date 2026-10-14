@@ -7,7 +7,7 @@
         android:banner="@drawable/tv_launcher_banner" android:theme="@style/TvTheme" android:usesCleartextTraffic="true"
         android:supportsRtl="true" android:enableOnBackInvokedCallback="true">
         <activity android:name=".MainActivity" android:exported="true" android:screenOrientation="landscape"
-            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize">
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode|density">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

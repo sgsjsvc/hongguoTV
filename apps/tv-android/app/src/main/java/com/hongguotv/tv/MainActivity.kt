@@ -51,6 +51,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var topHeader: LinearLayout
     private lateinit var topNavigation: HorizontalScrollView
     private val topNavigationButtons = mutableListOf<Button>()
+    private var actionButtons = listOf<Button>()
     private lateinit var navigation: FrameLayout
 
     // Feed Overlay Elements (Styled according to PC/TV reference UI)
@@ -163,7 +164,12 @@ class MainActivity : ComponentActivity() {
     private fun dp(value: Int) = TvUi.dp(this, value)
     private fun dimen(@androidx.annotation.DimenRes id: Int) = TvUi.dimen(this, id)
 
-    private fun focusPlayback() {
+    private fun focusPlayback(force: Boolean = false) {
+        if (!force) {
+            val hasUserFocus = (::topHeader.isInitialized && topHeader.findFocus() != null) ||
+                               (::feedOverlay.isInitialized && feedOverlay.findFocus() != null)
+            if (hasUserFocus) return
+        }
         if (::playerView.isInitialized) {
             playerView.isFocusable = true
             playerView.isFocusableInTouchMode = true
@@ -266,6 +272,10 @@ class MainActivity : ComponentActivity() {
         topHeader = headerView
         topNavigationButtons.clear()
         topNavigationButtons.addAll(headerView.topNavigationButtons)
+        topNavigationButtons.forEach {
+            it.isFocusable = true
+            it.isFocusableInTouchMode = true
+        }
         root.addView(topHeader, FrameLayout.LayoutParams(-1, dimen(R.dimen.header_height), Gravity.TOP))
     }
 
@@ -336,9 +346,33 @@ class MainActivity : ComponentActivity() {
         timeText = overlay.timeText
         progressBar = overlay.progressBar
 
-        topNavigationButtons.forEach { it.nextFocusDownId = playButton.id }
-        listOf(playButton, nextEpisodeButton, collectionButton, favButton, speedButton, qualityButton).forEach {
-            it.nextFocusUpId = topNavigationButtons.first().id
+        val actions = listOf(playButton, nextEpisodeButton, collectionButton, favButton, speedButton, qualityButton)
+        actionButtons = actions
+        actions.forEach {
+            it.isFocusable = true
+            it.isFocusableInTouchMode = true
+        }
+        topNavigationButtons.forEachIndexed { index, navBtn ->
+            val targetAction = when (index) {
+                0, 1 -> playButton
+                2 -> nextEpisodeButton
+                3 -> collectionButton
+                4 -> favButton
+                5 -> speedButton
+                else -> qualityButton
+            }
+            navBtn.nextFocusDownId = targetAction.id
+        }
+        actions.forEachIndexed { index, actionBtn ->
+            val targetNav = when (index) {
+                0 -> topNavigationButtons.getOrNull(0) ?: topNavigationButtons.first()
+                1 -> topNavigationButtons.getOrNull(2) ?: topNavigationButtons.first()
+                2 -> topNavigationButtons.getOrNull(3) ?: topNavigationButtons.first()
+                3 -> topNavigationButtons.getOrNull(4) ?: topNavigationButtons.first()
+                4 -> topNavigationButtons.getOrNull(5) ?: topNavigationButtons.first()
+                else -> topNavigationButtons.getOrNull(6) ?: topNavigationButtons.last()
+            }
+            actionBtn.nextFocusUpId = targetNav.id
         }
 
         root.addView(feedOverlay, FrameLayout.LayoutParams(-1, -1))
@@ -581,12 +615,20 @@ class MainActivity : ComponentActivity() {
         progressBox.visibility = View.GONE
         scrimTopView.visibility = View.GONE
         scrimBottomView.visibility = View.GONE
-        focusPlayback()
+        focusPlayback(force = true)
     }
 
-    private val hideChrome = Runnable {
+    private val hideChrome: Runnable = Runnable {
         if (!overlayVisible && dialog == null && (screen == Screen.FEED || screen == Screen.FULL)) {
-            hideChromeNow()
+            val focused = currentFocus
+            val isNavFocused = (focused != null && focused != playerView && focused != root) ||
+                               (::topHeader.isInitialized && topHeader.findFocus() != null) ||
+                               (::feedOverlay.isInitialized && feedOverlay.findFocus() != null)
+            if (isNavFocused) {
+                this@MainActivity.handler.postDelayed(hideChrome, 5000)
+            } else {
+                hideChromeNow()
+            }
         }
     }
 
@@ -940,7 +982,7 @@ class MainActivity : ComponentActivity() {
             return
         }
         val generation = navigationGeneration.next(); val snapshot = catalog
-        if (!nextPage) panel(snapshot.title).addView(TvUi.text(this, "加载中…"))
+        if (!nextPage && navigation.childCount == 0) panel(snapshot.title).addView(TvUi.text(this, "加载中…"))
         navigationJob = scope.launch {
             try {
                 val api = repository(); val page = if (nextPage) snapshot.page + 1 else 1
@@ -1281,7 +1323,7 @@ class MainActivity : ComponentActivity() {
                         finish()
                     } else {
                         revealChrome()
-                        collectionButton.requestFocus()
+                        collectionButton.post { collectionButton.requestFocus() }
                     }
                 }
             }
@@ -1330,7 +1372,9 @@ class MainActivity : ComponentActivity() {
                     true
                 } else {
                     revealChrome()
-                    collectionButton.requestFocus()
+                    collectionButton.post {
+                        collectionButton.requestFocus()
+                    }
                     true
                 }
             }
@@ -1393,31 +1437,76 @@ class MainActivity : ComponentActivity() {
                     this@MainActivity.handler.removeCallbacks(hideChrome)
                     this@MainActivity.handler.postDelayed(hideChrome, 5000)
                     if (currentFocus == null || currentFocus == root || currentFocus == playerView) {
-                        collectionButton.requestFocus()
+                        collectionButton.post { collectionButton.requestFocus() }
                         true
                     } else {
                         super.onKeyDown(keyCode, event)
                     }
                 }
             }
-            KeyEvent.KEYCODE_DPAD_UP, KeyEvent.KEYCODE_DPAD_DOWN -> {
+            KeyEvent.KEYCODE_DPAD_UP -> {
                 if (::episodeDrawer.isInitialized && episodeDrawer.visibility == View.VISIBLE) {
                     super.onKeyDown(keyCode, event)
-                } else if (feedOverlay.visibility != View.VISIBLE) {
-                    if (event.repeatCount == 0 && feedMode) {
-                        resumePaused = false
-                        switchFeed(if (keyCode == KeyEvent.KEYCODE_DPAD_UP) -1 else 1,explicitNext=keyCode==KeyEvent.KEYCODE_DPAD_DOWN)
-                    }
-                    true
-                } else {
+                } else if (feedOverlay.visibility == View.VISIBLE) {
                     this@MainActivity.handler.removeCallbacks(hideChrome)
                     this@MainActivity.handler.postDelayed(hideChrome, 5000)
-                    if (currentFocus == null || currentFocus == root || currentFocus == playerView) {
-                        collectionButton.requestFocus()
+                    val actionIdx = actionButtons.indexOf(currentFocus)
+                    if (actionIdx != -1) {
+                        val targetNav = when (actionIdx) {
+                            0 -> topNavigationButtons.getOrNull(0) ?: topNavigationButtons.first()
+                            1 -> topNavigationButtons.getOrNull(1) ?: topNavigationButtons.first()
+                            2 -> topNavigationButtons.getOrNull(2) ?: topNavigationButtons.first()
+                            3 -> topNavigationButtons.getOrNull(3) ?: topNavigationButtons.first()
+                            4 -> topNavigationButtons.getOrNull(4) ?: topNavigationButtons.first()
+                            else -> topNavigationButtons.getOrNull(6) ?: topNavigationButtons.last()
+                        }
+                        targetNav.requestFocus()
+                        true
+                    } else if (currentFocus == null || currentFocus == root || currentFocus == playerView) {
+                        val target = topNavigationButtons.firstOrNull() ?: collectionButton
+                        target.post { target.requestFocus() }
                         true
                     } else {
                         super.onKeyDown(keyCode, event)
                     }
+                } else {
+                    if (event.repeatCount == 0 && feedMode) {
+                        resumePaused = false
+                        switchFeed(-1, explicitNext = false)
+                    }
+                    true
+                }
+            }
+            KeyEvent.KEYCODE_DPAD_DOWN -> {
+                if (::episodeDrawer.isInitialized && episodeDrawer.visibility == View.VISIBLE) {
+                    super.onKeyDown(keyCode, event)
+                } else if (feedOverlay.visibility == View.VISIBLE) {
+                    this@MainActivity.handler.removeCallbacks(hideChrome)
+                    this@MainActivity.handler.postDelayed(hideChrome, 5000)
+                    val navIdx = topNavigationButtons.indexOf(currentFocus)
+                    if (navIdx != -1) {
+                        val targetAction = when (navIdx) {
+                            0 -> playButton
+                            1 -> nextEpisodeButton
+                            2, 3 -> collectionButton
+                            4 -> favButton
+                            5 -> speedButton
+                            else -> qualityButton
+                        }
+                        targetAction.requestFocus()
+                        true
+                    } else if (currentFocus == null || currentFocus == root || currentFocus == playerView) {
+                        collectionButton.post { collectionButton.requestFocus() }
+                        true
+                    } else {
+                        super.onKeyDown(keyCode, event)
+                    }
+                } else {
+                    if (event.repeatCount == 0 && feedMode) {
+                        resumePaused = false
+                        switchFeed(1, explicitNext = true)
+                    }
+                    true
                 }
             }
             else -> super.onKeyDown(keyCode, event)
@@ -1427,6 +1516,9 @@ class MainActivity : ComponentActivity() {
     @android.annotation.SuppressLint("RestrictedApi")
     override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         if (event.keyCode == KeyEvent.KEYCODE_BACK && dialog == null) {
+            if (currentFocus is android.widget.EditText) {
+                return super.dispatchKeyEvent(event)
+            }
             if (event.action == KeyEvent.ACTION_UP && !event.isCanceled) back()
             return true
         }
