@@ -163,3 +163,47 @@ node .agents/cli.mjs show <id> # 查看 assignees 与 competitive 字段
 
 - 分工总览：`.agents/shared/fullscreen-task-split.md`
 - 需求更正：`.agents/shared/fullscreen-requirement-correction.md`
+
+---
+
+## 待办任务（2026-10-15）
+
+| 任务 ID | 标题 | 说明 |
+| --- | --- | --- |
+| `t-w7-release-package` | **W7 Web 与 Windows 端 Release 打包发布** | 用户直接指派 |
+
+### 背景
+
+当前产物**已过期**：
+
+| 产物 | 时间 | 问题 |
+| --- | --- | --- |
+| `release/web/hongguotv-web-win-x64.zip` | 20:43 | 引擎 `hongguo.js` 是 20:49 |
+| `release/windows/红果短剧-1.0.0-x64-setup.exe` | **19:02** | 落后约 2 小时 |
+
+未包含的已完成修复：
+
+- `3a752c0` 修复全部端无法播放（上游 `device_id` 封禁）
+- `cb0e16a` 设备标识防回归 + 诊断脚本
+- `023fd99` 四层防护
+- `e2957b2` 修复 TV 端 `crypto.randomBytes` 兼容
+- `2836803` 全屏快捷键、推荐流全屏头部
+
+### 硬性前置
+
+**必须先 `npm run release:check` 全绿才能打包。**
+
+冒烟测试失败则**不要打包**，先报告问题。
+
+### ⚠️ 两个已知陷阱
+
+1. **不要设置 `HG_ELECTRON_DIST`** —— 设了会强制用 x64 的 Electron，
+   arm64 打包会被 `afterPack` 钩子拦截报「产物架构错误」。
+2. **必须用 `--platforms=win-x64,win-arm64`** 生成 bundle ——
+   只写 `win-x64` 会让 arm64 bundle 目录保留旧引擎。
+
+### 认领方式
+
+```powershell
+node .agents/cli.mjs claim t-w7-release-package codex
+```
