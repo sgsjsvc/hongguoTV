@@ -1,0 +1,46 @@
+{
+  "id": "t-q2-verify-card",
+  "createdAt": "2026-10-15T04:07:50.484Z",
+  "updatedAt": "2026-10-15T04:07:50.485Z",
+  "assignee": "workbuddy",
+  "title": "Q2 卡片空白与自动分页 — 独立复核",
+  "brief": "详见 .agents/inbox/t-q2-verify-card.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "范围：仅 TV 端分类页与排行榜",
+    "用户需求（三项）：",
+    "  1. 分类和排行榜的卡片下面有很多空白，把空白删除掉",
+    "  2. 分页查询改为自动分页查询，不要加载更多按钮",
+    "  3. 自动分页一定要约束好，只有当前数据展示我才进行，避免频繁查询",
+    "实测空白（协调者）：卡片高 572px，内容底 591px，底部空白 92px（16.1%）",
+    "空白根因：SeriesAdapter 用固定高度 series_card_width（键名误导，实为高度），",
+    "  而内容（图片 198dp + 标题 + 集数）仅约 277dp，多出约 53dp",
+    "分页现状：MainActivity.kt:1156 用 addLoadMoreButton 手动点击",
+    "设备分配：antigravity 用 D1（127.0.0.1:16384），workbuddy 用 D3（127.0.0.1:16448）",
+    "环境：本机 DSH 沙箱拒绝 6300 以下 loopback 端口，adb 必须设 ANDROID_ADB_SERVER_PORT=15037",
+    "不要改 shared/content-core/hongguo.js 与 custom-server/（codex 刚修复榜单）",
+    "排行榜保持顶部平铺（U6），分类页保持左侧双列（P1），只改卡片空白与分页"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [
+    "t-q1-card-autopage"
+  ],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-15T04:07:50.484Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-q2-verify-card.brief.md",
+  "order": 2,
+  "kind": "fix"
+}
