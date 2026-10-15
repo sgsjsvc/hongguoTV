@@ -1,0 +1,10 @@
+{
+  "id": "t-a1-hevc-level",
+  "agent": "antigravity",
+  "status": "failed",
+  "finishedAt": "2026-10-15T03:41:10.785Z",
+  "title": "A1 验证 HEVC level_idc 改写能否恢复硬解（MuMu）",
+  "result": {
+    "error": "用户决定废弃：实机验证表明播放实际正常，原「卡住」结论有误，方案 A 验证暂停"
+  }
+}

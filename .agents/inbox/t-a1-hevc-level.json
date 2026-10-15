@@ -1,7 +1,7 @@
 {
   "id": "t-a1-hevc-level",
   "createdAt": "2026-10-15T03:21:55.275Z",
-  "updatedAt": "2026-10-15T03:21:55.277Z",
+  "updatedAt": "2026-10-15T03:41:10.188Z",
   "assignee": "antigravity",
   "title": "A1 验证 HEVC level_idc 改写能否恢复硬解（MuMu）",
   "brief": "详见 .agents/inbox/t-a1-hevc-level.brief.md",
@@ -23,15 +23,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "failed",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-15T03:32:56.017Z",
+  "result": {
+    "error": "用户决定废弃：实机验证表明播放实际正常，原「卡住」结论有误，方案 A 验证暂停"
+  },
   "history": [
     {
       "at": "2026-10-15T03:21:55.276Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-15T03:32:56.017Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-15T03:41:10.189Z",
+      "status": "failed",
+      "by": "antigravity",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

@@ -1,7 +1,7 @@
 {
   "id": "t-a2-hevc-survey",
   "createdAt": "2026-10-15T03:21:55.280Z",
-  "updatedAt": "2026-10-15T03:21:55.281Z",
+  "updatedAt": "2026-10-15T03:35:46.262Z",
   "assignee": "codex",
   "title": "A2 抽样统计 HEVC Level 分布与编码格式",
   "brief": "详见 .agents/inbox/t-a2-hevc-survey.brief.md",
@@ -23,15 +23,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-15T03:28:48.121Z",
+  "result": {
+    "summary": "完成只读抽样：24部剧/36档，24主样本及全部取流均HEVC Main Level6.2；3部全5档一致；未发现AVC，模型含bytevc2，不能当HEVC统计。hvcC与VPS/SPS均186。报告 .agents/shared/t-a2-hevc-survey-codex.md；原始JSON t-a2-survey-data.json 与参数集 t-a2-parameter-set-check.json。业务代码未改，DSH请结合A1设备验收。"
+  },
   "history": [
     {
       "at": "2026-10-15T03:21:55.280Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-15T03:28:48.121Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-15T03:35:46.263Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

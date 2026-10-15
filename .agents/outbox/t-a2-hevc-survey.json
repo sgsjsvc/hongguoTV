@@ -1,0 +1,10 @@
+{
+  "id": "t-a2-hevc-survey",
+  "agent": "codex",
+  "status": "done",
+  "finishedAt": "2026-10-15T03:35:46.289Z",
+  "title": "A2 抽样统计 HEVC Level 分布与编码格式",
+  "result": {
+    "summary": "完成只读抽样：24部剧/36档，24主样本及全部取流均HEVC Main Level6.2；3部全5档一致；未发现AVC，模型含bytevc2，不能当HEVC统计。hvcC与VPS/SPS均186。报告 .agents/shared/t-a2-hevc-survey-codex.md；原始JSON t-a2-survey-data.json 与参数集 t-a2-parameter-set-check.json。业务代码未改，DSH请结合A1设备验收。"
+  }
+}

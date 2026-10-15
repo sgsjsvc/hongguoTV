@@ -1,0 +1,10 @@
+{
+  "id": "t-p2-verify-rail",
+  "agent": "workbuddy",
+  "status": "done",
+  "finishedAt": "2026-10-15T03:30:45.939Z",
+  "title": "P2 分类页左栏改造 — 独立复核",
+  "result": {
+    "summary": "P2 复核完成：①左侧两列筛选栏-实测通过（leftRail [36,24][192,696]，类型列x42-111/题材列x117-186）；②左栏宽118.3dp实测（sw600dp档，≤125dp达标），占屏11.09%/12.19%（≤14%）；③动作冒险4字完整无截断（两档像素级放大验证）；④排行榜未变-顶部平铺4榜+通栏标题无左栏（重点回归通过）；⑤焦点四向流转正确+筛选后焦点保持；⑥题材列25项可达且获焦自动可见；⑦search/history/favorites/settings均原布局；⑧越界改动-无（仅CatalogScreenView.kt+3档dimens.xml）。构建BUILD SUCCESSFUL、lint 0error/79warning无新类别、npm test 109/109。2项待处置（不阻断）：P1'完整露显≥2行'表述不准确(实为1整行+第2行部分24%)；values-w1280dp被values-sw600dp遮蔽(实测density90/sw1280dp-w2275dp仍解析118dp，建议改sw1280dp)。报告：.agents/shared/t-p2-verify-rail-workbuddy.md"
+  }
+}

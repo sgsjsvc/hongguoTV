@@ -15,3 +15,8 @@
 {"at":"2026-10-15T03:21:55.282Z","kind":"task-updated","id":"t-a2-hevc-survey","by":"dsh","status":"pending","note":"brief ok"}
 {"at":"2026-10-15T03:21:55.283Z","kind":"task-created","id":"t-a4-verify-av","assignee":"workbuddy","title":"A4 音画不同步诊断 — 独立复核"}
 {"at":"2026-10-15T03:21:55.284Z","kind":"task-updated","id":"t-a4-verify-av","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-15T03:28:48.129Z","kind":"task-updated","id":"t-a2-hevc-survey","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-15T03:30:45.932Z","kind":"task-updated","id":"t-p2-verify-rail","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-15T03:32:56.067Z","kind":"task-updated","id":"t-a1-hevc-level","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-15T03:35:46.288Z","kind":"task-updated","id":"t-a2-hevc-survey","by":"codex","status":"done","note":""}
+{"at":"2026-10-15T03:41:10.784Z","kind":"task-updated","id":"t-a1-hevc-level","by":"antigravity","status":"failed","note":""}

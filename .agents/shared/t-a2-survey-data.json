@@ -1,0 +1,3998 @@
+{
+  "startedAt": "2026-10-15T03:30:24.613Z",
+  "sourceSHA256": "fa81f05ce204413b529f9b121b4a398dec0b809dfb0fc7ab6a5e642a808cfa63",
+  "method": "4 official ranking pools, round-robin distinct series, first episode; primary highest non-bytevc2 quality; raw CDN bytes 0..262143 plus remaining moov when needed; serial media requests with 750ms pacing",
+  "candidates": [
+    {
+      "route": "hot-drama",
+      "id": "7695704804978330649",
+      "title": "满院亲戚全是上古大妖第五季",
+      "videoId": "7695722622981508121"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7686713195246930968",
+      "title": "首辅娇娘",
+      "videoId": "7686715217652223038"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7692043430955863102",
+      "title": "反向拿捏：和闺蜜穿七零带着婆婆一起离",
+      "videoId": "7692096762072288280"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7693823855940357144",
+      "title": "京夜诱温",
+      "videoId": "7693825728432852030"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7692463987333532697",
+      "title": "魔神人生：弃子问天第一季",
+      "videoId": "7692492494084246552"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7690494161551625241",
+      "title": "灾年逆袭：我靠穿越养全家",
+      "videoId": "7690540219098991641"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7691229866846325822",
+      "title": "妹妹博士毕业宴上，我成了外人",
+      "videoId": "7691231786851912729"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7691938290202577944",
+      "title": "公路求生榜一说她要走到公路尽头",
+      "videoId": "7691941013878754329"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7691615145977449496",
+      "title": "持械入宋：第八季",
+      "videoId": "7691643218680630297"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7694896136963755032",
+      "title": "雾锁情迷",
+      "videoId": "7694898085759028248"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7688646466708966462",
+      "title": "家有五女，穿越来的他连夜搞事业啦",
+      "videoId": "7688677350598265918"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7690596204589091864",
+      "title": "一块钱硬币，玩出万亿商业帝国",
+      "videoId": "7690732791851387966"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7691231671529524249",
+      "title": "分手四年，傅机长失了控",
+      "videoId": "7691233643431201817"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7693516944581872664",
+      "title": "东北后妈，整顿全家",
+      "videoId": "7693569481984969752"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7690865236810681369",
+      "title": "玄门千金，万煞臣服",
+      "videoId": "7690919511142173721"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7689322645132692542",
+      "title": "今天有朵云爱我",
+      "videoId": "7689324776619248665"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7685699444766952473",
+      "title": "帐中香",
+      "videoId": "7685731424871123993"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7691992415585979454",
+      "title": "小奶团回裴家,全家抢着宠!",
+      "videoId": "7692025337282055193"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7694490520436886552",
+      "title": "玫瑰轻颤时",
+      "videoId": "7694492331528948761"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7688651092246154264",
+      "title": "天道余途：苍途问道",
+      "videoId": "7688676493387369534"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7688352674999176254",
+      "title": "总裁是我前女友",
+      "videoId": "7688396347107445822"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7685283486432775192",
+      "title": "你赌我不敢离，我转身起诉",
+      "videoId": "7685285364566592536"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7695709445933763646",
+      "title": "天幕直播：古人每周来我家第四季",
+      "videoId": "7695733077837892670"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7687159019349232702",
+      "title": "药香满院，种田采药赚万金",
+      "videoId": "7687161487843937304"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7687919221593885758",
+      "title": "二嫁有喜",
+      "videoId": "7687921187195735102"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7691228619774905368",
+      "title": "聚宝仙盆之杂灵根才是真BOSS第十三季",
+      "videoId": "7691249364097829913"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7691970759614270488",
+      "title": "一屋烟火，两样人心",
+      "videoId": "7691981953473449022"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7692349564874918937",
+      "title": "禁止闪婚：甜桃烈酒2",
+      "videoId": "7692351417482218521"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7675288927619533886",
+      "title": "咱家剑宗团宠小师妹第五季",
+      "videoId": "7675294603909532696"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7691698632214449177",
+      "title": "嫌我拍卖行卖假货，当场卖你筑基丹",
+      "videoId": "7691760367814331417"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7691276256003771416",
+      "title": "老公入赘那天，婆婆傻了",
+      "videoId": "7691278285690391614"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7693164412823161880",
+      "title": "荒岛上还摆高姿态",
+      "videoId": "7693193739476405273"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7691981591697968153",
+      "title": "90赶海，暴富宠全家！",
+      "videoId": "7692002531672591384"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7690480481220955160",
+      "title": "将军将我贬妻为妾，圣旨赐下后他慌了",
+      "videoId": "7690482390132608025"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7690163276214176792",
+      "title": "万妖图录传第十三季",
+      "videoId": "7690223053078268953"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7686008653844859966",
+      "title": "我李长生重回八零，赶山狩猎养妻女",
+      "videoId": "7686010748832582681"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7687944734748199960",
+      "title": "重回婚闹那天，我救下了嫂子",
+      "videoId": "7687946707836881945"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7693186092358454296",
+      "title": "遇春枯木生：权臣的掌上明珠",
+      "videoId": "7693214126100712473"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7694512704362400793",
+      "title": "绿意萌熹：蛙系萌娃闹翻忧郁老爸3",
+      "videoId": "7694516897382943768"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7692318647607381054",
+      "title": "禁止闪婚：甜桃烈酒",
+      "videoId": "7692320982668676121"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7672595482966772760",
+      "title": "高冷千金的贴身高手",
+      "videoId": "7672598026224929854"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7689391734379269144",
+      "title": "牢狱蒙尘，都市起风云第一季",
+      "videoId": "7689429669245897753"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7683196130645003288",
+      "title": "东北话事人",
+      "videoId": "7683198247380192281"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7695230118729354265",
+      "title": "谁说没灵根不能修仙的？之无灵证道第42季",
+      "videoId": "7695231846442863641"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7696000127256775742",
+      "title": "烬九州：第三十二季",
+      "videoId": "7696005068956388377"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7689850151661210648",
+      "title": "世子凶猛",
+      "videoId": "7689852203665738776"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7687961499481934910",
+      "title": "我本是魔之阴阳魔帝",
+      "videoId": "7688005499974863934"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7689722598527093784",
+      "title": "离婚后才知她是神明第二季",
+      "videoId": "7689726169062591512"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7689303574886501401",
+      "title": "爸妈去世后黄毛弟弟成了我的监护人",
+      "videoId": "7689305447391562776"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7694546714295815193",
+      "title": "大明小县令！",
+      "videoId": "7694560471654861849"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7689393278562602009",
+      "title": "重回1988，我从倒货开始养家致富",
+      "videoId": "7689432047709867033"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7687810990439681086",
+      "title": "坠入秩序之外",
+      "videoId": "7687813053240314904"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7682809595617627161",
+      "title": "秦始皇：朕有华夏全明星阵容",
+      "videoId": "7682855383773219865"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7691989306964970520",
+      "title": "福宝降世之顽郎亦不负流年",
+      "videoId": "7692018282651454526"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7688556769072663577",
+      "title": "每日吸功大法，我从废柴纨绔逆袭成神",
+      "videoId": "7688558900185943102"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7689759731010767896",
+      "title": "末世选择，从解析神明开始成神",
+      "videoId": "7689771661997919256"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7688666572499471422",
+      "title": "穿越六零之我在山洞闷声发家",
+      "videoId": "7688704128549129241"
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7688669642994240537",
+      "title": "天降俏弟媳，大姑子们追着宠",
+      "videoId": "7688671700459719704"
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7693909683811126296",
+      "title": "烛九阴第七季",
+      "videoId": "7693954862228196377"
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7694959541061962777",
+      "title": "绿意萌熹：蛙系萌娃闹翻忧郁老爸4",
+      "videoId": "7694991512173562905"
+    }
+  ],
+  "series": [
+    {
+      "route": "hot-drama",
+      "id": "7695704804978330649",
+      "title": "满院亲戚全是上古大妖第五季",
+      "videoId": "7695722622981508121",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1080",
+          "codec": "bytevc1",
+          "width": 1920,
+          "height": 1080
+        },
+        {
+          "key": "video_4",
+          "quality": "720",
+          "codec": "bytevc1",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "key": "video_3",
+          "quality": "540",
+          "codec": "bytevc1",
+          "width": 960,
+          "height": 540
+        },
+        {
+          "key": "video_2",
+          "quality": "480",
+          "codec": "bytevc1",
+          "width": 854,
+          "height": 480
+        },
+        {
+          "key": "video_1",
+          "quality": "360",
+          "codec": "bytevc1",
+          "width": 640,
+          "height": 360
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1080",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1920,
+          "reportedHeight": 1080,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1920,
+              "height": 1080,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1920,
+                "height": 1080,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 283338,
+          "totalBytes": 9672977,
+          "headerSHA256": "88ff82d9782493edc74c6b619d211ca3ccad873c5069e27290d2699c12d94630",
+          "localFile": "outputs/hevc-survey/7695704804978330649-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1"
+      ],
+      "crossQuality": false,
+      "previousErrors": [
+        {
+          "qualityKey": "video_5",
+          "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+        }
+      ]
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7686713195246930968",
+      "title": "首辅娇娘",
+      "videoId": "7686715217652223038",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1920",
+          "codec": "bytevc1",
+          "width": 1080,
+          "height": 1920
+        },
+        {
+          "key": "video_4",
+          "quality": "1280",
+          "codec": "bytevc1",
+          "width": 720,
+          "height": 1280
+        },
+        {
+          "key": "video_3",
+          "quality": "960",
+          "codec": "bytevc1",
+          "width": 540,
+          "height": 960
+        },
+        {
+          "key": "video_2",
+          "quality": "854",
+          "codec": "bytevc1",
+          "width": 480,
+          "height": 854
+        },
+        {
+          "key": "video_1",
+          "quality": "640",
+          "codec": "bytevc1",
+          "width": 360,
+          "height": 640
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1920",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1080,
+          "reportedHeight": 1920,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1080,
+              "height": 1920,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1080,
+                "height": 1920,
+                "level": 186,
+                "r_frame_rate": "25/1",
+                "avg_frame_rate": "25/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 16975853,
+          "headerSHA256": "0b39c597cc4a946a5d5f3150a93c7dca00e9bce1ec5b972d99e14c7174e7791f",
+          "localFile": "outputs/hevc-survey/7686713195246930968-video_5.bin"
+        },
+        {
+          "qualityKey": "video_4",
+          "qualityLabel": "1280",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 720,
+          "reportedHeight": 1280,
+          "resolvedQuality": "720P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 720,
+              "height": 1280,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 720,
+                "height": 1280,
+                "level": 186,
+                "r_frame_rate": "25/1",
+                "avg_frame_rate": "25/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 9706668,
+          "headerSHA256": "f338edc8383a31f3fad6a71bac238bbcaa8c890e24be94ce4882aaba36047229",
+          "localFile": "outputs/hevc-survey/7686713195246930968-video_4.bin"
+        },
+        {
+          "qualityKey": "video_3",
+          "qualityLabel": "960",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 540,
+          "reportedHeight": 960,
+          "resolvedQuality": "540P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 540,
+              "height": 960,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 540,
+                "height": 960,
+                "level": 186,
+                "r_frame_rate": "25/1",
+                "avg_frame_rate": "25/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 8323583,
+          "headerSHA256": "c5d19460460556e301994de0dc6563aa313f024273d4063015d91e5b3dd2e766",
+          "localFile": "outputs/hevc-survey/7686713195246930968-video_3.bin"
+        },
+        {
+          "qualityKey": "video_2",
+          "qualityLabel": "854",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 480,
+          "reportedHeight": 854,
+          "resolvedQuality": "480P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 480,
+              "height": 854,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 480,
+                "height": 854,
+                "level": 186,
+                "r_frame_rate": "25/1",
+                "avg_frame_rate": "25/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 7697441,
+          "headerSHA256": "e22e1ce1a8427ddbd23d4dc311f189dfda967caed496f3284b52afb60e6357ec",
+          "localFile": "outputs/hevc-survey/7686713195246930968-video_2.bin"
+        },
+        {
+          "qualityKey": "video_1",
+          "qualityLabel": "640",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 360,
+          "reportedHeight": 640,
+          "resolvedQuality": "360P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 360,
+              "height": 640,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 360,
+                "height": 640,
+                "level": 186,
+                "r_frame_rate": "25/1",
+                "avg_frame_rate": "25/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 5509279,
+          "headerSHA256": "d19d4362a8b906049d21da6022c51dfc042b64b9ef0cacf672c677119ce0c86e",
+          "localFile": "outputs/hevc-survey/7686713195246930968-video_1.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1"
+      ],
+      "crossQuality": true
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7692043430955863102",
+      "title": "反向拿捏：和闺蜜穿七零带着婆婆一起离",
+      "videoId": "7692096762072288280",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1080",
+          "codec": "bytevc1",
+          "width": 1920,
+          "height": 1080
+        },
+        {
+          "key": "video_4",
+          "quality": "720",
+          "codec": "bytevc2",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "key": "video_3",
+          "quality": "576",
+          "codec": "bytevc2",
+          "width": 1024,
+          "height": 576
+        },
+        {
+          "key": "video_2",
+          "quality": "480",
+          "codec": "bytevc2",
+          "width": 854,
+          "height": 480
+        },
+        {
+          "key": "video_1",
+          "quality": "360",
+          "codec": "bytevc2",
+          "width": 640,
+          "height": 360
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1080",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1920,
+          "reportedHeight": 1080,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1920,
+              "height": 1080,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1920,
+                "height": 1080,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 11940796,
+          "headerSHA256": "ff254e3e6b63036707e602e51c555ee8c4e6d065f46f272ac8838f2a17716fd2",
+          "localFile": "outputs/hevc-survey/7692043430955863102-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc2",
+        "bytevc2",
+        "bytevc2",
+        "bytevc1",
+        "bytevc2"
+      ],
+      "crossQuality": true
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7693823855940357144",
+      "title": "京夜诱温",
+      "videoId": "7693825728432852030",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1920",
+          "codec": "bytevc1",
+          "width": 1080,
+          "height": 1920
+        },
+        {
+          "key": "video_4",
+          "quality": "1280",
+          "codec": "bytevc2",
+          "width": 720,
+          "height": 1280
+        },
+        {
+          "key": "video_3",
+          "quality": "1024",
+          "codec": "bytevc2",
+          "width": 576,
+          "height": 1024
+        },
+        {
+          "key": "video_2",
+          "quality": "854",
+          "codec": "bytevc2",
+          "width": 480,
+          "height": 854
+        },
+        {
+          "key": "video_1",
+          "quality": "640",
+          "codec": "bytevc2",
+          "width": 360,
+          "height": 640
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1920",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1080,
+          "reportedHeight": 1920,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1080,
+              "height": 1920,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1080,
+                "height": 1920,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 293728,
+          "totalBytes": 10900318,
+          "headerSHA256": "971fcd323963dc0888b6f59b44453b6e266c0d8fa85e9c2a71313362fb36ad4c",
+          "localFile": "outputs/hevc-survey/7693823855940357144-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc2",
+        "bytevc2",
+        "bytevc2",
+        "bytevc2",
+        "bytevc1"
+      ],
+      "crossQuality": false,
+      "previousErrors": [
+        {
+          "qualityKey": "video_5",
+          "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+        }
+      ]
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7692463987333532697",
+      "title": "魔神人生：弃子问天第一季",
+      "videoId": "7692492494084246552",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1080",
+          "codec": "bytevc1",
+          "width": 1882,
+          "height": 1080
+        },
+        {
+          "key": "video_4",
+          "quality": "720",
+          "codec": "bytevc2",
+          "width": 1254,
+          "height": 720
+        },
+        {
+          "key": "video_3",
+          "quality": "576",
+          "codec": "bytevc2",
+          "width": 1004,
+          "height": 576
+        },
+        {
+          "key": "video_2",
+          "quality": "480",
+          "codec": "bytevc2",
+          "width": 836,
+          "height": 480
+        },
+        {
+          "key": "video_1",
+          "quality": "360",
+          "codec": "bytevc2",
+          "width": 628,
+          "height": 360
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1080",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1882,
+          "reportedHeight": 1080,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1882,
+              "height": 1080,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1882,
+                "height": 1080,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 263651,
+          "totalBytes": 24607976,
+          "headerSHA256": "87022e0217395bb677e13a40cea408a276474fd4799f4151cc7bd7fd9f9be116",
+          "localFile": "outputs/hevc-survey/7692463987333532697-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc2",
+        "bytevc1",
+        "bytevc2",
+        "bytevc2",
+        "bytevc2"
+      ],
+      "crossQuality": false,
+      "previousErrors": [
+        {
+          "qualityKey": "video_5",
+          "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+        }
+      ]
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7690494161551625241",
+      "title": "灾年逆袭：我靠穿越养全家",
+      "videoId": "7690540219098991641",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1920",
+          "codec": "bytevc1",
+          "width": 1080,
+          "height": 1920
+        },
+        {
+          "key": "video_4",
+          "quality": "1280",
+          "codec": "bytevc1",
+          "width": 720,
+          "height": 1280
+        },
+        {
+          "key": "video_3",
+          "quality": "960",
+          "codec": "bytevc1",
+          "width": 540,
+          "height": 960
+        },
+        {
+          "key": "video_2",
+          "quality": "854",
+          "codec": "bytevc1",
+          "width": 480,
+          "height": 854
+        },
+        {
+          "key": "video_1",
+          "quality": "640",
+          "codec": "bytevc1",
+          "width": 360,
+          "height": 640
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1920",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1080,
+          "reportedHeight": 1920,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1080,
+              "height": 1920,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1080,
+                "height": 1920,
+                "level": 186,
+                "r_frame_rate": "24/1",
+                "avg_frame_rate": "24/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 9094306,
+          "headerSHA256": "216e4f881a849c61336713646f1f6070f2edeb1fde53598ef274f1ac923692c4",
+          "localFile": "outputs/hevc-survey/7690494161551625241-video_5.bin"
+        },
+        {
+          "qualityKey": "video_4",
+          "qualityLabel": "1280",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 720,
+          "reportedHeight": 1280,
+          "resolvedQuality": "720P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 720,
+              "height": 1280,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 720,
+                "height": 1280,
+                "level": 186,
+                "r_frame_rate": "24/1",
+                "avg_frame_rate": "24/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 5452784,
+          "headerSHA256": "abcf1847f54f1c266c2b6df8237d60bf5307f04b272c15251cfa229f1a11533c",
+          "localFile": "outputs/hevc-survey/7690494161551625241-video_4.bin"
+        },
+        {
+          "qualityKey": "video_3",
+          "qualityLabel": "960",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 540,
+          "reportedHeight": 960,
+          "resolvedQuality": "540P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 540,
+              "height": 960,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 540,
+                "height": 960,
+                "level": 186,
+                "r_frame_rate": "24/1",
+                "avg_frame_rate": "24/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 4948874,
+          "headerSHA256": "82954910787f3e05797856f9b7d1e0c94eff39c64e9da6af92ebe05834c5a36e",
+          "localFile": "outputs/hevc-survey/7690494161551625241-video_3.bin"
+        },
+        {
+          "qualityKey": "video_2",
+          "qualityLabel": "854",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 480,
+          "reportedHeight": 854,
+          "resolvedQuality": "480P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 480,
+              "height": 854,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 480,
+                "height": 854,
+                "level": 186,
+                "r_frame_rate": "24/1",
+                "avg_frame_rate": "24/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 5019281,
+          "headerSHA256": "47edd0d1b9e422ff88ab2d2f1f81eaac8a403e0043ab4982fae8b3927fb92437",
+          "localFile": "outputs/hevc-survey/7690494161551625241-video_2.bin"
+        },
+        {
+          "qualityKey": "video_1",
+          "qualityLabel": "640",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 360,
+          "reportedHeight": 640,
+          "resolvedQuality": "360P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 360,
+              "height": 640,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 360,
+                "height": 640,
+                "level": 186,
+                "r_frame_rate": "24/1",
+                "avg_frame_rate": "24/1"
+              },
+              {
+                "codec_name": "aac",
+                "profile": "LC",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 3753439,
+          "headerSHA256": "ccc0861939be2467a6092846e9b897c36945bfdef2ff1c96b020a857ebdfa217",
+          "localFile": "outputs/hevc-survey/7690494161551625241-video_1.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1"
+      ],
+      "crossQuality": true
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7691229866846325822",
+      "title": "妹妹博士毕业宴上，我成了外人",
+      "videoId": "7691231786851912729",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1920",
+          "codec": "bytevc1",
+          "width": 1080,
+          "height": 1920
+        },
+        {
+          "key": "video_4",
+          "quality": "1280",
+          "codec": "bytevc1",
+          "width": 720,
+          "height": 1280
+        },
+        {
+          "key": "video_3",
+          "quality": "960",
+          "codec": "bytevc1",
+          "width": 540,
+          "height": 960
+        },
+        {
+          "key": "video_2",
+          "quality": "854",
+          "codec": "bytevc1",
+          "width": 480,
+          "height": 854
+        },
+        {
+          "key": "video_1",
+          "quality": "640",
+          "codec": "bytevc1",
+          "width": 360,
+          "height": 640
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1920",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1080,
+          "reportedHeight": 1920,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1080,
+              "height": 1920,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1080,
+                "height": 1920,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 11609609,
+          "headerSHA256": "1a6baf05dabb8acff67691895058b4d35cbf2bfb35e6176aeb7d8f0ee62e7dd9",
+          "localFile": "outputs/hevc-survey/7691229866846325822-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1"
+      ],
+      "crossQuality": false
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7691938290202577944",
+      "title": "公路求生榜一说她要走到公路尽头",
+      "videoId": "7691941013878754329",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1080",
+          "codec": "bytevc1",
+          "width": 1882,
+          "height": 1080
+        },
+        {
+          "key": "video_3",
+          "quality": "496",
+          "codec": "bytevc1",
+          "width": 864,
+          "height": 496
+        },
+        {
+          "key": "video_4",
+          "quality": "496",
+          "codec": "bytevc1",
+          "width": 864,
+          "height": 496
+        },
+        {
+          "key": "video_2",
+          "quality": "480",
+          "codec": "bytevc1",
+          "width": 836,
+          "height": 480
+        },
+        {
+          "key": "video_1",
+          "quality": "360",
+          "codec": "bytevc1",
+          "width": 628,
+          "height": 360
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_3",
+          "qualityLabel": "496",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 864,
+          "reportedHeight": 496,
+          "resolvedQuality": "496P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 864,
+              "height": 496,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 864,
+                "height": 496,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "profile": "LC",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 9468785,
+          "headerSHA256": "a0b2078f33606ba6348230c4687fe2aee94231b141a233d7b93de41d34ada94e",
+          "localFile": "outputs/hevc-survey/7691938290202577944-video_3.bin"
+        },
+        {
+          "qualityKey": "video_4",
+          "qualityLabel": "496",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 864,
+          "reportedHeight": 496,
+          "resolvedQuality": "496P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 864,
+              "height": 496,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 864,
+                "height": 496,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "profile": "LC",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 9658750,
+          "headerSHA256": "bba0d15d16ca6c2d20f7e01de5296c030ab9a7e39000f3edd7385598e7ea2beb",
+          "localFile": "outputs/hevc-survey/7691938290202577944-video_4.bin"
+        },
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1080",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1882,
+          "reportedHeight": 1080,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1882,
+              "height": 1080,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1882,
+                "height": 1080,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 288019,
+          "totalBytes": 18826300,
+          "headerSHA256": "62886441e388c773b25234351bbf78fd7e43db4bd577d038db085c3a8e3998bf",
+          "localFile": "outputs/hevc-survey/7691938290202577944-video_5.bin"
+        },
+        {
+          "qualityKey": "video_2",
+          "qualityLabel": "480",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 836,
+          "reportedHeight": 480,
+          "resolvedQuality": "480P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 836,
+              "height": 480,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 836,
+                "height": 480,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 287998,
+          "totalBytes": 7912691,
+          "headerSHA256": "7a5e3f2d03fb252419832f2688cd3b1eb0f0761fb12238e7ef6882d986372cc8",
+          "localFile": "outputs/hevc-survey/7691938290202577944-video_2.bin"
+        },
+        {
+          "qualityKey": "video_1",
+          "qualityLabel": "360",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 628,
+          "reportedHeight": 360,
+          "resolvedQuality": "360P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 628,
+              "height": 360,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 628,
+                "height": 360,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 287986,
+          "totalBytes": 6053504,
+          "headerSHA256": "ac2230c410f187ed35f6e198ea2c9db98dc54a1d5b0939384b3c7b41edf08b0a",
+          "localFile": "outputs/hevc-survey/7691938290202577944-video_1.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1"
+      ],
+      "crossQuality": true,
+      "previousErrors": [
+        {
+          "qualityKey": "video_5",
+          "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+        },
+        {
+          "qualityKey": "video_2",
+          "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+        },
+        {
+          "qualityKey": "video_1",
+          "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+        }
+      ]
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7691615145977449496",
+      "title": "持械入宋：第八季",
+      "videoId": "7691643218680630297",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1920",
+          "codec": "bytevc1",
+          "width": 1080,
+          "height": 1920
+        },
+        {
+          "key": "video_4",
+          "quality": "1280",
+          "codec": "bytevc1",
+          "width": 720,
+          "height": 1280
+        },
+        {
+          "key": "video_3",
+          "quality": "960",
+          "codec": "bytevc1",
+          "width": 540,
+          "height": 960
+        },
+        {
+          "key": "video_2",
+          "quality": "854",
+          "codec": "bytevc1",
+          "width": 480,
+          "height": 854
+        },
+        {
+          "key": "video_1",
+          "quality": "640",
+          "codec": "bytevc1",
+          "width": 360,
+          "height": 640
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1920",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1080,
+          "reportedHeight": 1920,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1080,
+              "height": 1920,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1080,
+                "height": 1920,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 9027704,
+          "headerSHA256": "6cd5fba87553cb791906363e39a39a57669c6a11e810e368d41b304a5733c0e2",
+          "localFile": "outputs/hevc-survey/7691615145977449496-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1"
+      ],
+      "crossQuality": false
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7694896136963755032",
+      "title": "雾锁情迷",
+      "videoId": "7694898085759028248",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1920",
+          "codec": "bytevc1",
+          "width": 1080,
+          "height": 1920
+        },
+        {
+          "key": "video_4",
+          "quality": "1280",
+          "codec": "bytevc1",
+          "width": 720,
+          "height": 1280
+        },
+        {
+          "key": "video_3",
+          "quality": "960",
+          "codec": "bytevc1",
+          "width": 540,
+          "height": 960
+        },
+        {
+          "key": "video_2",
+          "quality": "854",
+          "codec": "bytevc1",
+          "width": 480,
+          "height": 854
+        },
+        {
+          "key": "video_1",
+          "quality": "640",
+          "codec": "bytevc1",
+          "width": 360,
+          "height": 640
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1920",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1080,
+          "reportedHeight": 1920,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1080,
+              "height": 1920,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1080,
+                "height": 1920,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 294204,
+          "totalBytes": 10356885,
+          "headerSHA256": "3223e9a796d7e4819b49b02dada1132a856fcbcc0e7bdadfa81623a80aeb1ee5",
+          "localFile": "outputs/hevc-survey/7694896136963755032-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1"
+      ],
+      "crossQuality": false,
+      "previousErrors": [
+        {
+          "qualityKey": "video_5",
+          "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+        }
+      ]
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7688646466708966462",
+      "title": "家有五女，穿越来的他连夜搞事业啦",
+      "videoId": "7688677350598265918",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1080",
+          "codec": "bytevc1",
+          "width": 1920,
+          "height": 1080
+        },
+        {
+          "key": "video_4",
+          "quality": "720",
+          "codec": "bytevc2",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "key": "video_3",
+          "quality": "576",
+          "codec": "bytevc2",
+          "width": 1024,
+          "height": 576
+        },
+        {
+          "key": "video_2",
+          "quality": "480",
+          "codec": "bytevc2",
+          "width": 854,
+          "height": 480
+        },
+        {
+          "key": "video_1",
+          "quality": "360",
+          "codec": "bytevc2",
+          "width": 640,
+          "height": 360
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1080",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1920,
+          "reportedHeight": 1080,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1920,
+              "height": 1080,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1920,
+                "height": 1080,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 488990,
+          "totalBytes": 37728618,
+          "headerSHA256": "c82715732d7bf90830ec912d87d61235551dbe32359beb311c85d8e7b9354eda",
+          "localFile": "outputs/hevc-survey/7688646466708966462-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc2",
+        "bytevc2",
+        "bytevc2",
+        "bytevc2"
+      ],
+      "crossQuality": false,
+      "previousErrors": [
+        {
+          "qualityKey": "video_5",
+          "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+        }
+      ]
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7690596204589091864",
+      "title": "一块钱硬币，玩出万亿商业帝国",
+      "videoId": "7690732791851387966",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1920",
+          "codec": "bytevc1",
+          "width": 1080,
+          "height": 1920
+        },
+        {
+          "key": "video_4",
+          "quality": "1280",
+          "codec": "bytevc2",
+          "width": 720,
+          "height": 1280
+        },
+        {
+          "key": "video_3",
+          "quality": "1024",
+          "codec": "bytevc2",
+          "width": 576,
+          "height": 1024
+        },
+        {
+          "key": "video_2",
+          "quality": "854",
+          "codec": "bytevc2",
+          "width": 480,
+          "height": 854
+        },
+        {
+          "key": "video_1",
+          "quality": "640",
+          "codec": "bytevc2",
+          "width": 360,
+          "height": 640
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1920",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1080,
+          "reportedHeight": 1920,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1080,
+              "height": 1920,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1080,
+                "height": 1920,
+                "level": 186,
+                "r_frame_rate": "25/1",
+                "avg_frame_rate": "25/1"
+              },
+              {
+                "codec_name": "aac",
+                "profile": "LC",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 8453511,
+          "headerSHA256": "60caa1b0be629c0a2c4c9560c34082d24e78d8e31990049696a26ec77c9c7d13",
+          "localFile": "outputs/hevc-survey/7690596204589091864-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc2",
+        "bytevc2",
+        "bytevc2",
+        "bytevc1",
+        "bytevc2"
+      ],
+      "crossQuality": false
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7691231671529524249",
+      "title": "分手四年，傅机长失了控",
+      "videoId": "7691233643431201817",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1920",
+          "codec": "bytevc1",
+          "width": 1080,
+          "height": 1920
+        },
+        {
+          "key": "video_4",
+          "quality": "1280",
+          "codec": "bytevc1",
+          "width": 720,
+          "height": 1280
+        },
+        {
+          "key": "video_3",
+          "quality": "960",
+          "codec": "bytevc1",
+          "width": 540,
+          "height": 960
+        },
+        {
+          "key": "video_2",
+          "quality": "854",
+          "codec": "bytevc1",
+          "width": 480,
+          "height": 854
+        },
+        {
+          "key": "video_1",
+          "quality": "640",
+          "codec": "bytevc1",
+          "width": 360,
+          "height": 640
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1920",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1080,
+          "reportedHeight": 1920,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1080,
+              "height": 1920,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1080,
+                "height": 1920,
+                "level": 186,
+                "r_frame_rate": "25/1",
+                "avg_frame_rate": "25/1"
+              },
+              {
+                "codec_name": "aac",
+                "profile": "LC",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 5093375,
+          "headerSHA256": "62c52a7d35012f7ddd01bf4729a2443ef991b4be07b77d390b89725c3fcef8c1",
+          "localFile": "outputs/hevc-survey/7691231671529524249-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1"
+      ],
+      "crossQuality": false
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7693516944581872664",
+      "title": "东北后妈，整顿全家",
+      "videoId": "7693569481984969752",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1080",
+          "codec": "bytevc1",
+          "width": 1920,
+          "height": 1080
+        },
+        {
+          "key": "video_4",
+          "quality": "720",
+          "codec": "bytevc2",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "key": "video_3",
+          "quality": "576",
+          "codec": "bytevc2",
+          "width": 1024,
+          "height": 576
+        },
+        {
+          "key": "video_2",
+          "quality": "480",
+          "codec": "bytevc2",
+          "width": 854,
+          "height": 480
+        },
+        {
+          "key": "video_1",
+          "quality": "360",
+          "codec": "bytevc2",
+          "width": 640,
+          "height": 360
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1080",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1920,
+          "reportedHeight": 1080,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1920,
+              "height": 1080,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1920,
+                "height": 1080,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "profile": "LC",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 9916344,
+          "headerSHA256": "e8251e1949d4b314b9064b727c2c89c49d9d1bff5012f3f1cf3ac95058afed23",
+          "localFile": "outputs/hevc-survey/7693516944581872664-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc2",
+        "bytevc2",
+        "bytevc2",
+        "bytevc2",
+        "bytevc1"
+      ],
+      "crossQuality": true
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7690865236810681369",
+      "title": "玄门千金，万煞臣服",
+      "videoId": "7690919511142173721",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1920",
+          "codec": "bytevc1",
+          "width": 1080,
+          "height": 1920
+        },
+        {
+          "key": "video_4",
+          "quality": "1280",
+          "codec": "bytevc1",
+          "width": 720,
+          "height": 1280
+        },
+        {
+          "key": "video_3",
+          "quality": "960",
+          "codec": "bytevc1",
+          "width": 540,
+          "height": 960
+        },
+        {
+          "key": "video_2",
+          "quality": "854",
+          "codec": "bytevc1",
+          "width": 480,
+          "height": 854
+        },
+        {
+          "key": "video_1",
+          "quality": "640",
+          "codec": "bytevc1",
+          "width": 360,
+          "height": 640
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1920",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1080,
+          "reportedHeight": 1920,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1080,
+              "height": 1920,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1080,
+                "height": 1920,
+                "level": 186,
+                "r_frame_rate": "25/1",
+                "avg_frame_rate": "25/1"
+              },
+              {
+                "codec_name": "aac",
+                "profile": "LC",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 7804137,
+          "headerSHA256": "8350dcef63a8feee7ce8560827ac8c60db4ee717cafdd1543cefb2565d82cf86",
+          "localFile": "outputs/hevc-survey/7690865236810681369-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1"
+      ],
+      "crossQuality": false
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7689322645132692542",
+      "title": "今天有朵云爱我",
+      "videoId": "7689324776619248665",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1920",
+          "codec": "bytevc1",
+          "width": 1080,
+          "height": 1920
+        },
+        {
+          "key": "video_4",
+          "quality": "1280",
+          "codec": "bytevc2",
+          "width": 720,
+          "height": 1280
+        },
+        {
+          "key": "video_3",
+          "quality": "1024",
+          "codec": "bytevc2",
+          "width": 576,
+          "height": 1024
+        },
+        {
+          "key": "video_2",
+          "quality": "854",
+          "codec": "bytevc2",
+          "width": 480,
+          "height": 854
+        },
+        {
+          "key": "video_1",
+          "quality": "640",
+          "codec": "bytevc2",
+          "width": 360,
+          "height": 640
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1920",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1080,
+          "reportedHeight": 1920,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1080,
+              "height": 1920,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1080,
+                "height": 1920,
+                "level": 186,
+                "r_frame_rate": "25/1",
+                "avg_frame_rate": "25/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 11240707,
+          "headerSHA256": "196c724937e04cd58fa220e4d9111d9ccee18821126c41f1440affa32281f0c9",
+          "localFile": "outputs/hevc-survey/7689322645132692542-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc2",
+        "bytevc2",
+        "bytevc1",
+        "bytevc2",
+        "bytevc2"
+      ],
+      "crossQuality": false
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7685699444766952473",
+      "title": "帐中香",
+      "videoId": "7685731424871123993",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1080",
+          "codec": "bytevc1",
+          "width": 1920,
+          "height": 1080
+        },
+        {
+          "key": "video_4",
+          "quality": "720",
+          "codec": "bytevc1",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "key": "video_3",
+          "quality": "540",
+          "codec": "bytevc1",
+          "width": 960,
+          "height": 540
+        },
+        {
+          "key": "video_2",
+          "quality": "480",
+          "codec": "bytevc1",
+          "width": 854,
+          "height": 480
+        },
+        {
+          "key": "video_1",
+          "quality": "360",
+          "codec": "bytevc1",
+          "width": 640,
+          "height": 360
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1080",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1920,
+          "reportedHeight": 1080,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1920,
+              "height": 1080,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1920,
+                "height": 1080,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 373818,
+          "totalBytes": 21930574,
+          "headerSHA256": "8c5d2958a9c90674577b3871038809c5b11bd9d4981268ba4e8b2f9686f584d9",
+          "localFile": "outputs/hevc-survey/7685699444766952473-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1"
+      ],
+      "crossQuality": false,
+      "previousErrors": [
+        {
+          "qualityKey": "video_5",
+          "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+        }
+      ]
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7691992415585979454",
+      "title": "小奶团回裴家,全家抢着宠!",
+      "videoId": "7692025337282055193",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1920",
+          "codec": "bytevc1",
+          "width": 1080,
+          "height": 1920
+        },
+        {
+          "key": "video_4",
+          "quality": "1280",
+          "codec": "bytevc1",
+          "width": 720,
+          "height": 1280
+        },
+        {
+          "key": "video_3",
+          "quality": "960",
+          "codec": "bytevc1",
+          "width": 540,
+          "height": 960
+        },
+        {
+          "key": "video_2",
+          "quality": "854",
+          "codec": "bytevc1",
+          "width": 480,
+          "height": 854
+        },
+        {
+          "key": "video_1",
+          "quality": "640",
+          "codec": "bytevc1",
+          "width": 360,
+          "height": 640
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1920",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1080,
+          "reportedHeight": 1920,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1080,
+              "height": 1920,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1080,
+                "height": 1920,
+                "level": 186,
+                "r_frame_rate": "24/1",
+                "avg_frame_rate": "24/1"
+              },
+              {
+                "codec_name": "aac",
+                "profile": "LC",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 7440885,
+          "headerSHA256": "9d6cdad11d745193e45d87b857857c02e364d48ba529cf4dc202dd59de1cfca9",
+          "localFile": "outputs/hevc-survey/7691992415585979454-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1"
+      ],
+      "crossQuality": false
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7694490520436886552",
+      "title": "玫瑰轻颤时",
+      "videoId": "7694492331528948761",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1920",
+          "codec": "bytevc1",
+          "width": 1080,
+          "height": 1920
+        },
+        {
+          "key": "video_4",
+          "quality": "1280",
+          "codec": "bytevc1",
+          "width": 720,
+          "height": 1280
+        },
+        {
+          "key": "video_3",
+          "quality": "960",
+          "codec": "bytevc1",
+          "width": 540,
+          "height": 960
+        },
+        {
+          "key": "video_2",
+          "quality": "854",
+          "codec": "bytevc1",
+          "width": 480,
+          "height": 854
+        },
+        {
+          "key": "video_1",
+          "quality": "640",
+          "codec": "bytevc1",
+          "width": 360,
+          "height": 640
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1920",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1080,
+          "reportedHeight": 1920,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1080,
+              "height": 1920,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1080,
+                "height": 1920,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 297678,
+          "totalBytes": 15267194,
+          "headerSHA256": "7511c05fe21aaff3ee01e347fad47a862e239cc8345122e470f960b32e86bbe9",
+          "localFile": "outputs/hevc-survey/7694490520436886552-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1"
+      ],
+      "crossQuality": false,
+      "previousErrors": [
+        {
+          "qualityKey": "video_5",
+          "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+        }
+      ]
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7688651092246154264",
+      "title": "天道余途：苍途问道",
+      "videoId": "7688676493387369534",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1080",
+          "codec": "bytevc1",
+          "width": 1920,
+          "height": 1080
+        },
+        {
+          "key": "video_4",
+          "quality": "496",
+          "codec": "bytevc1",
+          "width": 882,
+          "height": 496
+        },
+        {
+          "key": "video_3",
+          "quality": "496",
+          "codec": "bytevc1",
+          "width": 882,
+          "height": 496
+        },
+        {
+          "key": "video_2",
+          "quality": "480",
+          "codec": "bytevc1",
+          "width": 854,
+          "height": 480
+        },
+        {
+          "key": "video_1",
+          "quality": "360",
+          "codec": "bytevc1",
+          "width": 640,
+          "height": 360
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1080",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1920,
+          "reportedHeight": 1080,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1920,
+              "height": 1080,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1920,
+                "height": 1080,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "profile": "LC",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 12052633,
+          "headerSHA256": "d3764f5b2e751fe505c6ff4eec1d4c0fa2222109ef5c64fc73d9bf03404ee728",
+          "localFile": "outputs/hevc-survey/7688651092246154264-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1",
+        "bytevc1"
+      ],
+      "crossQuality": false
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7688352674999176254",
+      "title": "总裁是我前女友",
+      "videoId": "7688396347107445822",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1920",
+          "codec": "bytevc1",
+          "width": 1080,
+          "height": 1920
+        },
+        {
+          "key": "video_4",
+          "quality": "1280",
+          "codec": "bytevc2",
+          "width": 720,
+          "height": 1280
+        },
+        {
+          "key": "video_3",
+          "quality": "1024",
+          "codec": "bytevc2",
+          "width": 576,
+          "height": 1024
+        },
+        {
+          "key": "video_2",
+          "quality": "854",
+          "codec": "bytevc2",
+          "width": 480,
+          "height": 854
+        },
+        {
+          "key": "video_1",
+          "quality": "640",
+          "codec": "bytevc2",
+          "width": 360,
+          "height": 640
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1920",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1080,
+          "reportedHeight": 1920,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1080,
+              "height": 1920,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1080,
+                "height": 1920,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "profile": "LC",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 4209548,
+          "headerSHA256": "71d7851b01d6e3ecc0265682cb0f19819e501916db746bf590d228fa9bc15552",
+          "localFile": "outputs/hevc-survey/7688352674999176254-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc2",
+        "bytevc2",
+        "bytevc2",
+        "bytevc2"
+      ],
+      "crossQuality": false
+    },
+    {
+      "route": "hot-real-drama",
+      "id": "7685283486432775192",
+      "title": "你赌我不敢离，我转身起诉",
+      "videoId": "7685285364566592536",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1920",
+          "codec": "bytevc1",
+          "width": 1080,
+          "height": 1920
+        },
+        {
+          "key": "video_4",
+          "quality": "1280",
+          "codec": "bytevc2",
+          "width": 720,
+          "height": 1280
+        },
+        {
+          "key": "video_3",
+          "quality": "1024",
+          "codec": "bytevc2",
+          "width": 576,
+          "height": 1024
+        },
+        {
+          "key": "video_2",
+          "quality": "854",
+          "codec": "bytevc2",
+          "width": 480,
+          "height": 854
+        },
+        {
+          "key": "video_1",
+          "quality": "640",
+          "codec": "bytevc2",
+          "width": 360,
+          "height": 640
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1920",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1080,
+          "reportedHeight": 1920,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1080,
+              "height": 1920,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1080,
+                "height": 1920,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "profile": "LC",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 6294498,
+          "headerSHA256": "cb0ccd176e89e6272b85f87530f1fad3c5075b2bcfb102430ca7e49742591f7f",
+          "localFile": "outputs/hevc-survey/7685283486432775192-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc2",
+        "bytevc2",
+        "bytevc2",
+        "bytevc2"
+      ],
+      "crossQuality": false
+    },
+    {
+      "route": "hot-comic-drama",
+      "id": "7695709445933763646",
+      "title": "天幕直播：古人每周来我家第四季",
+      "videoId": "7695733077837892670",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1080",
+          "codec": "bytevc1",
+          "width": 1920,
+          "height": 1080
+        },
+        {
+          "key": "video_4",
+          "quality": "720",
+          "codec": "bytevc2",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "key": "video_3",
+          "quality": "576",
+          "codec": "bytevc2",
+          "width": 1024,
+          "height": 576
+        },
+        {
+          "key": "video_2",
+          "quality": "480",
+          "codec": "bytevc2",
+          "width": 854,
+          "height": 480
+        },
+        {
+          "key": "video_1",
+          "quality": "360",
+          "codec": "bytevc2",
+          "width": 640,
+          "height": 360
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1080",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1920,
+          "reportedHeight": 1080,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1920,
+              "height": 1080,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1920,
+                "height": 1080,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 422734,
+          "totalBytes": 28189736,
+          "headerSHA256": "1d0dc246896b2550d7354c2bc732ca8fe049980352d7e6f0b73374885c04703f",
+          "localFile": "outputs/hevc-survey/7695709445933763646-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc2",
+        "bytevc2",
+        "bytevc2",
+        "bytevc1",
+        "bytevc2"
+      ],
+      "crossQuality": false,
+      "previousErrors": [
+        {
+          "qualityKey": "video_5",
+          "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+        }
+      ]
+    },
+    {
+      "route": "hot-ai-drama",
+      "id": "7687159019349232702",
+      "title": "药香满院，种田采药赚万金",
+      "videoId": "7687161487843937304",
+      "available": [
+        {
+          "key": "video_5",
+          "quality": "1080",
+          "codec": "bytevc1",
+          "width": 1920,
+          "height": 1080
+        },
+        {
+          "key": "video_4",
+          "quality": "720",
+          "codec": "bytevc2",
+          "width": 1280,
+          "height": 720
+        },
+        {
+          "key": "video_3",
+          "quality": "576",
+          "codec": "bytevc2",
+          "width": 1024,
+          "height": 576
+        },
+        {
+          "key": "video_2",
+          "quality": "480",
+          "codec": "bytevc2",
+          "width": 854,
+          "height": 480
+        },
+        {
+          "key": "video_1",
+          "quality": "360",
+          "codec": "bytevc2",
+          "width": 640,
+          "height": 360
+        }
+      ],
+      "samples": [
+        {
+          "qualityKey": "video_5",
+          "qualityLabel": "1080",
+          "reportedCodec": "bytevc1",
+          "reportedWidth": 1920,
+          "reportedHeight": 1080,
+          "resolvedQuality": "1080P",
+          "tracks": [
+            {
+              "sampleEntry": "encv",
+              "originalFormat": "hvc1",
+              "codec": "HEVC",
+              "width": 1920,
+              "height": 1080,
+              "hvcC": {
+                "boxOffset": 539,
+                "payloadOffset": 547,
+                "profileIdc": 1,
+                "tierFlag": 0,
+                "levelIdc": 186,
+                "level": 6.2,
+                "levelByteOffset": 559
+              }
+            },
+            {
+              "sampleEntry": "enca",
+              "originalFormat": "mp4a",
+              "codec": "AAC",
+              "width": null,
+              "height": null,
+              "hvcC": null
+            }
+          ],
+          "ffprobe": {
+            "programs": [],
+            "stream_groups": [],
+            "streams": [
+              {
+                "codec_name": "hevc",
+                "profile": "Main",
+                "codec_type": "video",
+                "width": 1920,
+                "height": 1080,
+                "level": 186,
+                "r_frame_rate": "30/1",
+                "avg_frame_rate": "30/1"
+              },
+              {
+                "codec_name": "aac",
+                "codec_type": "audio",
+                "r_frame_rate": "0/0",
+                "avg_frame_rate": "0/0"
+              }
+            ]
+          },
+          "ffprobeExit": 0,
+          "bytes": 262144,
+          "totalBytes": 8394799,
+          "headerSHA256": "f2307e059f0f437d3898c8b467a0f547ed562d0e0d30579e49a11006c29e1233",
+          "localFile": "outputs/hevc-survey/7687159019349232702-video_5.bin"
+        }
+      ],
+      "errors": [],
+      "modelCodecInventory": [
+        "bytevc1",
+        "bytevc2",
+        "bytevc2",
+        "bytevc2",
+        "bytevc2"
+      ],
+      "crossQuality": false
+    }
+  ],
+  "failures": [
+    {
+      "seriesId": "7695704804978330649",
+      "qualityKey": "video_5",
+      "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+    },
+    {
+      "seriesId": "7693823855940357144",
+      "qualityKey": "video_5",
+      "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+    },
+    {
+      "seriesId": "7692463987333532697",
+      "qualityKey": "video_5",
+      "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+    },
+    {
+      "seriesId": "7691938290202577944",
+      "qualityKey": "video_5",
+      "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+    },
+    {
+      "seriesId": "7691938290202577944",
+      "qualityKey": "video_2",
+      "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+    },
+    {
+      "seriesId": "7691938290202577944",
+      "qualityKey": "video_1",
+      "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+    },
+    {
+      "seriesId": "7694896136963755032",
+      "qualityKey": "video_5",
+      "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+    },
+    {
+      "seriesId": "7688646466708966462",
+      "qualityKey": "video_5",
+      "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+    },
+    {
+      "seriesId": "7685699444766952473",
+      "qualityKey": "video_5",
+      "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+    },
+    {
+      "seriesId": "7694490520436886552",
+      "qualityKey": "video_5",
+      "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+    },
+    {
+      "seriesId": "7695709445933763646",
+      "qualityKey": "video_5",
+      "error": "No validated video stsd/hvcC/avcC in first 256KiB"
+    }
+  ],
+  "finishedAt": "2026-10-15T03:34:00.861Z",
+  "remainingCrossRoutes": [],
+  "completeCrossSeries": [
+    "7686713195246930968",
+    "7690494161551625241",
+    "7691938290202577944"
+  ]
+}
