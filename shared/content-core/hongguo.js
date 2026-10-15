@@ -28,13 +28,38 @@ const APP_UA = 'com.phoenix.read/72232 (Linux; U; Android 16; zh_CN; 25053RT47C;
 // 设备标识必须【每次请求】重新生成：上游对同一 device_id 只放行一次 video_model 请求，
 // 重复使用会返回 HTTP 200 + 空体（静默封禁，不是错误码）。
 // 实测：同一 device_id 第 1 次 Code=0，第 2 次起全为空体；每请求换新设备则次次成功。
-// 用 crypto.randomBytes 而非 Math.random，且落在 16 位十进制区间（与真实 device_id 量级一致）。
+//
+// 【跨端约束】本文件同时运行在 Node 与 TV 的 QuickJS 中。
+// TV 的 engine-host.js 只注入了 createHash / createDecipheriv，没有 randomBytes，
+// 因此这里不能直接依赖 crypto.randomBytes（曾因此让 TV 端抛 TypeError）。
+// 随机源按可用性降级，保证任何环境都能产出互不相同的 16 位十进制 ID。
+let deviceSequence = 0;
+function deviceEntropy() {
+    // 优先：真随机（Node 与提供 randomBytes 的环境）
+    try {
+        if (typeof crypto.randomBytes === 'function') {
+            const bytes = crypto.randomBytes(8);
+            let value = 0n;
+            for (const byte of bytes) value = (value << 8n) | BigInt(byte);
+            return value;
+        }
+    } catch { /* 落到下面的哈希方案 */ }
+    // 回退：用可用的哈希把「时间 + 计数 + 随机数」揉成一个 64 位量
+    const seed = `${Date.now()}|${deviceSequence}|${Math.random()}|${typeof performance !== 'undefined' && performance.now ? performance.now() : 0}`;
+    try {
+        const digest = crypto.createHash('md5').update(seed).digest();
+        let value = 0n;
+        for (let i = 0; i < 8; i += 1) value = (value << 8n) | BigInt(digest[i]);
+        return value;
+    } catch {
+        // 最后兜底：纯数值（仍保证递增，不会重复）
+        return BigInt(Date.now()) * 1000n + BigInt(deviceSequence % 1000);
+    }
+}
 function randomDeviceId() {
-    const bytes = crypto.randomBytes(8);
-    let value = 0n;
-    for (const byte of bytes) value = (value << 8n) | BigInt(byte);
+    deviceSequence += 1;
     // 1e15 ~ 9.99e15，与真实 device_id 量级一致
-    return String(1000000000000000n + (value % 9000000000000000n));
+    return String(1000000000000000n + (deviceEntropy() % 9000000000000000n));
 }
 // 静态设备画像（机型、系统、版本等），不含会触发风控的标识
 const DEVICE_PROFILE = {

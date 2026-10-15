@@ -23,11 +23,11 @@ const VENDORS = [
   path.join(root, "server", "vendor", "hongguo.cjs"),
 ];
 
-function loadEngine(file = ENGINE) {
+function loadEngine(file = ENGINE, cryptoOverride = null) {
   const source = fs.readFileSync(file, "utf8");
   const context = vm.createContext({
     require: (name) => {
-      if (name === "node:crypto") return crypto;
+      if (name === "node:crypto") return cryptoOverride || crypto;
       throw new Error("Unsupported module: " + name);
     },
     Buffer,
@@ -43,6 +43,50 @@ function loadEngine(file = ENGINE) {
   );
   return { api: context.api, source };
 }
+
+// TV 的 QuickJS 宿主只注入 createHash / createDecipheriv（见 apps/tv-android/.../engine-host.js），
+// 没有 randomBytes。引擎必须在这种环境下同样可用。
+function tvLikeCrypto() {
+  return {
+    createHash: (alg) => crypto.createHash(alg),
+    createDecipheriv: (alg, key, iv) => crypto.createDecipheriv(alg, key, iv),
+  };
+}
+
+// ---------- 跨端兼容：TV 环境不得依赖 Node 专有 API ----------
+
+test("TV 环境: crypto 无 randomBytes 时引擎仍可加载", () => {
+  assert.doesNotThrow(
+    () => loadEngine(ENGINE, tvLikeCrypto()),
+    "引擎在 TV 环境加载失败——曾因直接调用 crypto.randomBytes 抛 TypeError"
+  );
+});
+
+test("TV 环境: 无 randomBytes 时仍能生成互不相同的设备", () => {
+  const { api } = loadEngine(ENGINE, tvLikeCrypto());
+  const ids = new Set();
+  for (let i = 0; i < 50; i += 1) ids.add(api.freshDevice().device_id);
+  assert.equal(ids.size, 50, "TV 环境下 device_id 出现重复");
+});
+
+test("TV 环境: 设备 ID 格式与 Node 环境一致（16 位十进制）", () => {
+  const { api } = loadEngine(ENGINE, tvLikeCrypto());
+  for (let i = 0; i < 10; i += 1) {
+    assert.match(api.freshDevice().device_id, /^\d{16}$/);
+  }
+});
+
+test("engine: 不得直接依赖 crypto.randomBytes（TV 未提供）", () => {
+  const { source } = loadEngine();
+  // 允许通过 typeof 探测后使用，但不允许无条件直接调用
+  const direct = /crypto\.randomBytes\s*\(/.test(source);
+  if (direct) {
+    assert.ok(
+      /typeof\s+crypto\.randomBytes\s*===\s*['"]function['"]/.test(source),
+      "直接调用 crypto.randomBytes 会让 TV 端抛 TypeError；必须先做能力探测"
+    );
+  }
+});
 
 // ---------- 静态检查：不得出现硬编码设备标识 ----------
 
