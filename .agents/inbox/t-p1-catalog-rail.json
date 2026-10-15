@@ -1,0 +1,40 @@
+{
+  "id": "t-p1-catalog-rail",
+  "createdAt": "2026-10-15T02:09:38.321Z",
+  "updatedAt": "2026-10-15T02:09:38.323Z",
+  "assignee": "antigravity",
+  "title": "P1 分类页左侧双列筛选栏改造",
+  "brief": "详见 .agents/inbox/t-p1-catalog-rail.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "规划: .agents/shared/catalog-side-panel-plan.md",
+    "范围：仅 TV 端，仅分类页。排行榜不动。",
+    "用户需求：分类列表改左侧列表显示，两列（类型列 + 题材列），不可折叠，宽度尽可能小",
+    "实测问题：顶部筛选区占 232px，网格只剩 488px，仅 1 行卡片可见",
+    "目标：筛选区垂直占用 232px -> 0，网格 488px -> 720px",
+    "左栏规格：118dp（占屏约 12%），按钮 11sp，题材列可滚动",
+    "最高风险：焦点流转（左栏 <-> 网格、类型列 <-> 题材列）",
+    "重点回归项：排行榜必须保持 U6 顶部平铺，不得改动",
+    "环境注意：本机 adb 端口 5037 被 xray 进程占用，daemon 可能无法启动"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-15T02:09:38.321Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-p1-catalog-rail.brief.md",
+  "order": 1,
+  "kind": "fix"
+}
