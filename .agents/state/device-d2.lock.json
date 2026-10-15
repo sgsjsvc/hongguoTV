@@ -1,0 +1,14 @@
+{
+  "deviceId": "D2",
+  "agent": "codex",
+  "address": "127.0.0.1:16416",
+  "adbServerPort": 15037,
+  "status": "claimed-connected",
+  "androidVersion": "15",
+  "apiLevel": 35,
+  "physicalSize": "1080x1920",
+  "density": 280,
+  "allocation": ".agents/shared/device-allocation.md",
+  "authorization": "用户指令：领取分配的模拟器",
+  "note": "ADB 已验证在线。未安装应用、改分辨率或操作其他设备；等待明确测试任务。"
+}

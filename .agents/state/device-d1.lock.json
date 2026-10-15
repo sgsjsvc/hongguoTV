@@ -1,0 +1,16 @@
+{
+  "deviceId": "D1",
+  "agent": "antigravity",
+  "address": "127.0.0.1:16384",
+  "adbServerPort": 15037,
+  "status": "claimed-ready",
+  "androidVersion": "12",
+  "apiLevel": 32,
+  "physicalSize": "720x1280",
+  "overrideSize": "1280x720",
+  "density": 240,
+  "installedPackage": "com.hongguotv.tv",
+  "allocation": ".agents/shared/device-allocation.md",
+  "authorization": "用户指令：领取分配的模拟器",
+  "note": "ADB 已验证在线，横屏 1280x720 已配置，应用已安装就绪。等待明确的 UI 与交互测试任务。"
+}

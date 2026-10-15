@@ -103,7 +103,7 @@ try {
       }),
     });
     vm.runInContext(
-      source + "\nthis.api = {fetchVideoInfo, resolveStream, qualityLabel, qualityNumber, prepareHeader, remoteRange, decryptPartial};",
+      source + "\nthis.api = {fetchVideoInfo, resolveStream, qualityLabel, qualityNumber, prepareHeader, remoteRange, decryptPartial, rankData};",
       context,
       { timeout: 5000 }
     );
@@ -288,55 +288,9 @@ async function fetchOfficialCategory(type = "real-drama", tag = "", page = 1) {
 
 // 3. 官方排行榜 HTML 数据流提取器 (前 100 名分页解析)
 function extractRankFromHtml(html) {
-  // 方式 1: 直接匹配 data-fn-args 属性值
-  const attrRegex = /data-fn-args="([\s\S]*?)"\s*>/g;
-  let match;
-  while ((match = attrRegex.exec(html)) !== null) {
-    try {
-      const raw = match[1];
-      if (!raw.includes("rankList")) continue;
-      const decoded = raw.replace(/&quot;/g, '"');
-      const arr = JSON.parse(decoded);
-      const contentObj = arr[1]?.find((x) => x.key === "content");
-      if (contentObj) {
-        const rawArg = contentObj?.routerDataFnArgs?.[0];
-        const parsed = typeof rawArg === "string" ? JSON.parse(rawArg) : rawArg;
-        if (parsed && Array.isArray(parsed.rankList) && parsed.rankList.length > 0) {
-          return parsed;
-        }
-      }
-    } catch (_) {}
-  }
-
-  // 方式 2: 遍历 script 标签兜底解析
-  const scripts = html.match(/<script[\s\S]*?<\/script>/g) || [];
-  for (const s of scripts) {
-    if (s.includes("rankList")) {
-      const idx = s.indexOf('data-fn-args="');
-      if (idx !== -1) {
-        const start = idx + 'data-fn-args="'.length;
-        const end = s.indexOf('">', start);
-        if (end !== -1 && end > start) {
-          const raw = s.slice(start, end);
-          const decoded = raw.replace(/&quot;/g, '"');
-          try {
-            const arr = JSON.parse(decoded);
-            const contentObj = arr[1]?.find((x) => x.key === "content");
-            const rawArg = contentObj?.routerDataFnArgs?.[0];
-            if (rawArg) {
-              const parsed = typeof rawArg === "string" ? JSON.parse(rawArg) : rawArg;
-              if (parsed && Array.isArray(parsed.rankList) && parsed.rankList.length > 0) {
-                return parsed;
-              }
-            }
-          } catch (e) {
-            console.error("Parse rank JSON error:", e.message);
-          }
-        }
-      }
-    }
-  }
-  return null;
+  // Share the same streamed-page contract as the standalone TV engine.
+  try { return hgEngine?.rankData(html) || null; }
+  catch { return null; }
 }
 
 // 4. 抓取官方排行榜单页 (支持 4 大榜单，1~5 页，每页 20 部，共 100 部)

@@ -172,12 +172,24 @@ function decodeHtml(value) {
 }
 
 function rankData(html) {
-    const match = html.match(/data-fn-name="r"[^>]*data-fn-args="([^"]+)"/);
-    if (!match) throw new Error('榜单页面没有数据');
-    const args = jsonBody(decodeHtml(match[1]));
-    const payload = Array.isArray(args) ? args[2] : null;
-    if (!payload?.isSuccess || !Array.isArray(payload.rankList)) throw new Error('榜单数据格式错误');
-    return payload;
+    // Official pages stream content through mergeLoaderData; older pages used r.
+    // Inspect each script independently: attribute order and unrelated chunks may vary.
+    const scripts = str(html).match(/<script\b[^>]*>/gi) || [];
+    for (const script of scripts) {
+        const name = script.match(/\bdata-fn-name=["']([^"']+)["']/)?.[1];
+        if (name !== 'mergeLoaderData' && name !== 'r') continue;
+        const encoded = script.match(/\bdata-fn-args=(["'])([\s\S]*?)\1/)?.[2];
+        if (!encoded) continue;
+        try {
+            const args = jsonBody(decodeHtml(encoded));
+            if (!Array.isArray(args)) continue;
+            const content = Array.isArray(args[1]) ? args[1].find(item => item?.key === 'content') : null;
+            const raw = name === 'mergeLoaderData' ? content?.routerDataFnArgs?.[0] : args[2];
+            const payload = typeof raw === 'string' ? jsonBody(raw) : raw;
+            if (payload?.isSuccess && Array.isArray(payload.rankList)) return payload;
+        } catch (_) { /* Another stream chunk may contain the valid rank payload. */ }
+    }
+    throw new Error('榜单页面没有有效数据');
 }
 
 function rankItemToCard(item) {
