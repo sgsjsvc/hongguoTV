@@ -145,6 +145,8 @@ class MainActivity : ComponentActivity() {
     private var catalog = Catalog("", "")
     private var catalogScroll: android.os.Parcelable? = null
     private var catalogGrid: RecyclerView? = null
+    private var loadingCatalogMore = false
+    private var loadCatalogMoreFailed = false
     private var selectedCategory = "real-drama"
     private var selectedTag = ""
     private var categoryTypes = emptyList<Pair<String, String>>()
@@ -1016,6 +1018,8 @@ class MainActivity : ComponentActivity() {
     private fun openCatalog(title: String, source: String) {
         stopForNavigation(Screen.CATALOG); catalog = Catalog(title, source); catalogScroll = null
         categoryFilterFocus = null
+        loadingCatalogMore = false
+        loadCatalogMoreFailed = false
         if (source == "favorites") { catalog.rows = store.favorites(); catalog.ended = true; renderCatalog() }
         else if (source == "history") { selectedHistory = null; loadHistory() }
         else loadCatalog(false)
@@ -1044,6 +1048,10 @@ class MainActivity : ComponentActivity() {
     private fun loadCatalog(nextPage: Boolean) {
         if (navigationJob?.isActive == true || (nextPage && catalog.ended)) {
             return
+        }
+        if (!nextPage) {
+            loadingCatalogMore = false
+            loadCatalogMoreFailed = false
         }
         val generation = navigationGeneration.next(); val snapshot = catalog
         if (!nextPage && navigation.childCount == 0) panel(snapshot.title).addView(TvUi.text(this, "加载中…"))
@@ -1077,12 +1085,19 @@ class MainActivity : ComponentActivity() {
                 ensureActive(); if (!navigationGeneration.isCurrent(generation) || screen != Screen.CATALOG) return@launch
                 val merged = if (nextPage) PlaybackPolicy.mergeUnique(snapshot.rows, rows) else rows
                 snapshot.ended = rows.isEmpty() || (nextPage && merged.size == snapshot.rows.size) || (snapshot.source == "category" && officialLastPage>0 && page>=officialLastPage) || (snapshot.source == "rank" && page >= 5)
-                snapshot.rows = merged; snapshot.page = page; renderCatalog()
+                snapshot.rows = merged; snapshot.page = page
+                loadingCatalogMore = false
+                loadCatalogMoreFailed = false
+                renderCatalog()
             } catch (cancelled: CancellationException) { throw cancelled }
             catch (error: Exception) {
+                loadingCatalogMore = false
+                if (nextPage) {
+                    loadCatalogMoreFailed = true
+                }
                 if (navigationGeneration.isCurrent(generation)) {
                     val column = panel(snapshot.title); column.addView(TvUi.text(this@MainActivity, error.message ?: "加载失败"))
-                    column.addView(TvUi.button(this@MainActivity, "重试") { navigationJob = null; loadCatalog(nextPage) }.apply { requestFocus() })
+                    column.addView(TvUi.button(this@MainActivity, "重试") { navigationJob = null; loadCatalogMoreFailed = false; loadCatalog(nextPage) }.apply { requestFocus() })
                 }
             }
         }
@@ -1109,6 +1124,9 @@ class MainActivity : ComponentActivity() {
                 categoryFilterFocus = key
                 if (kind == "type") { selectedCategory = id; selectedTag = "" } else selectedTag = id
                 catalog.page = 1; catalog.focusedId = null; catalogScroll = null
+                catalog.ended = false
+                loadingCatalogMore = false
+                loadCatalogMoreFailed = false
                 navigationJob = null; loadCatalog(false)
             },
             onRankSelected = { slug ->
@@ -1117,6 +1135,9 @@ class MainActivity : ComponentActivity() {
                     catalog.page = 1
                     catalog.focusedId = null
                     catalogScroll = null
+                    catalog.ended = false
+                    loadingCatalogMore = false
+                    loadCatalogMoreFailed = false
                     navigationJob = null
                     loadCatalog(false)
                 }
@@ -1147,18 +1168,12 @@ class MainActivity : ComponentActivity() {
                         if (it.durationMs > 0) it.positionMs.toFloat() / it.durationMs else 0f
                     }
                 } else null
-            }
+            },
+            onNearBottom = { triggerAutoPage() }
         )
 
         catalogGrid = catalogView.gridView
         val manager = catalogView.manager
-
-        if (!catalog.ended && catalog.rows.isNotEmpty() && manager != null) {
-            catalogView.addLoadMoreButton("加载更多 · 第 ${catalog.page} 页") {
-                catalogScroll = manager.onSaveInstanceState()
-                loadCatalog(true)
-            }
-        }
 
         navigation.addView(catalogView, FrameLayout.LayoutParams(-1, -1))
 
@@ -1177,6 +1192,21 @@ class MainActivity : ComponentActivity() {
                 filter?.requestFocus() ?: rankBtn?.requestFocus() ?: tool?.requestFocus() ?: (manager.findViewByPosition(index)?.requestFocus() ?: grid.requestFocus())
             }
         }
+    }
+
+    private fun triggerAutoPage() {
+        if (catalog.ended || navigationJob?.isActive == true || loadingCatalogMore || loadCatalogMoreFailed) {
+            return
+        }
+        val manager = catalogGrid?.layoutManager as? GridLayoutManager ?: return
+        val total = manager.itemCount
+        val lastVisible = manager.findLastVisibleItemPosition()
+        if (total <= 0 || lastVisible < total - 5) {
+            return
+        }
+        loadingCatalogMore = true
+        catalogScroll = manager.onSaveInstanceState()
+        loadCatalog(nextPage = true)
     }
 
     private fun loadChoices(title: String, fetch: suspend () -> List<Pair<String, String>>, selected: (String) -> Unit) {

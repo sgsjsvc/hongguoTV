@@ -41,7 +41,8 @@ internal class CatalogScreenView(
     val onSeriesClick: (Series, GridLayoutManager) -> Unit,
     val onSeriesFocused: (Series) -> Unit,
     val onSubtitleProvider: (Series) -> String = { it.badge },
-    val onProgressProvider: (Series) -> Float? = { null }
+    val onProgressProvider: (Series) -> Float? = { null },
+    val onNearBottom: (() -> Unit)? = null
 ) : LinearLayout(context) {
 
     var gridView: RecyclerView? = null
@@ -292,8 +293,27 @@ internal class CatalogScreenView(
                 onSeriesClick(series, gridManager)
             }, { series ->
                 onSeriesFocused(series)
+                if (onNearBottom != null) {
+                    val pos = rows.indexOf(series)
+                    if (pos >= 0 && pos >= rows.size - 5) {
+                        onNearBottom.invoke()
+                    }
+                }
             }, onSubtitleProvider, onProgressProvider)
             contentTarget.addView(grid, LayoutParams(-1, 0, 1f))
+
+            if (onNearBottom != null) {
+                grid.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(rv: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(rv, dx, dy)
+                        val total = gridManager.itemCount
+                        val lastVisible = gridManager.findLastVisibleItemPosition()
+                        if (total > 0 && lastVisible >= total - 5) {
+                            onNearBottom.invoke()
+                        }
+                    }
+                })
+            }
 
             if (source == "category") {
                 // Link tag buttons to jump into grid on RIGHT

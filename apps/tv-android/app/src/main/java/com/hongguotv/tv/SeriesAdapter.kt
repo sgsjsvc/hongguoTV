@@ -41,7 +41,7 @@ internal class SeriesAdapter(
             setPadding(cardMargin, cardMargin, cardMargin, cardMargin)
             layoutParams = RecyclerView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                TvUi.dimen(context, R.dimen.series_card_width)
+                ViewGroup.LayoutParams.WRAP_CONTENT
             ).apply {
                 setMargins(cardMargin, cardMargin, cardMargin, cardMargin)
             }
