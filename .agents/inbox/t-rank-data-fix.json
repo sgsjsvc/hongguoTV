@@ -1,13 +1,14 @@
 {
   "id": "t-rank-data-fix",
   "createdAt": "2026-10-15T02:51:08.989Z",
-  "updatedAt": "2026-10-15T02:51:09.070Z",
+  "updatedAt": "2026-10-15T02:56:58.362Z",
   "assignee": "codex",
   "title": "用户直派：修复榜单获取并反馈 DSH",
   "brief": "修复官网 mergeLoaderData 榜单格式兼容；保持旧格式；不覆盖 TV UI 差异。",
   "context": [
     "2026-10-15 用户直接授权，不需等待协调者派发",
-    "隔离：仅修改共享引擎及两份 vendor 的 rankData 函数，新增相关测试。TV UI 不改。"
+    "隔离：仅修改共享引擎及两份 vendor 的 rankData 函数，新增相关测试。TV UI 不改。",
+    "实测扩展：custom-server/index.mjs 的重复解析也漏掉延迟 r，改为复用 hgEngine.rankData；未触碰 TV UI。"
   ],
   "acceptance": [
     "新旧格式和异常格式测试",
@@ -17,10 +18,12 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "claimed",
+  "status": "done",
   "claimedBy": "codex",
   "claimedAt": "2026-10-15T02:51:09.070Z",
-  "result": null,
+  "result": {
+    "summary": "DSH请验收：榜单官网流式格式兼容已修复，共享与Web/电脑后端统一解析；16专项+109回归通过，实网四榜20页400条匹配，HTTP20页通过，Android/Web构建通过。报告 .agents/shared/t-rank-data-fix-codex.md；新APK outputs/tv-android/hongguotv-rank-fix-debug.apk 尚未安装，请统一部署。"
+  },
   "history": [
     {
       "at": "2026-10-15T02:51:08.990Z",
@@ -32,6 +35,12 @@
       "status": "claimed",
       "by": "codex",
       "note": "claimed"
+    },
+    {
+      "at": "2026-10-15T02:56:58.363Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
     }
   ]
 }

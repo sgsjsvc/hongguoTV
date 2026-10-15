@@ -1,0 +1,41 @@
+{
+  "id": "t-a1-hevc-level",
+  "createdAt": "2026-10-15T03:21:55.275Z",
+  "updatedAt": "2026-10-15T03:21:55.277Z",
+  "assignee": "antigravity",
+  "title": "A1 验证 HEVC level_idc 改写能否恢复硬解（MuMu）",
+  "brief": "详见 .agents/inbox/t-a1-hevc-level.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "规划: .agents/shared/av-sync-task-plan.md",
+    "诊断: .agents/shared/av-sync-diagnosis.md",
+    "现象：用户反馈「声音慢于画面」，实机表现为画面卡住",
+    "根因（dsh 已实测）：上游视频 HEVC level_idc=186（Level 6.2），应为 120（Level 4.0）",
+    "后果：所有硬解器拒绝 -> 回退 SoftwareRenderer 软解 -> 音画不同步",
+    "两个设备均复现：MuMu（Qualcomm）与实机（Amlogic）",
+    "所有画质档位（含 360P）都是 6.2，降画质无法规避",
+    "设备分工：antigravity 用 MuMu（127.0.0.1:16384），dsh 用实机（192.168.1.120:5555）",
+    "环境：本机 DSH 沙箱拒绝绑定 6300 以下 loopback 端口，adb 必须设 ANDROID_ADB_SERVER_PORT=15037",
+    "注意：codex 已改榜单解析逻辑（未提交），不要回退"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-15T03:21:55.276Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-a1-hevc-level.brief.md",
+  "order": 1,
+  "kind": "fix"
+}

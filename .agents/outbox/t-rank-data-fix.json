@@ -1,0 +1,10 @@
+{
+  "id": "t-rank-data-fix",
+  "agent": "codex",
+  "status": "done",
+  "finishedAt": "2026-10-15T02:56:58.364Z",
+  "title": "用户直派：修复榜单获取并反馈 DSH",
+  "result": {
+    "summary": "DSH请验收：榜单官网流式格式兼容已修复，共享与Web/电脑后端统一解析；16专项+109回归通过，实网四榜20页400条匹配，HTTP20页通过，Android/Web构建通过。报告 .agents/shared/t-rank-data-fix-codex.md；新APK outputs/tv-android/hongguotv-rank-fix-debug.apk 尚未安装，请统一部署。"
+  }
+}

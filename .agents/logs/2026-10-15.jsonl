@@ -7,3 +7,11 @@
 {"at":"2026-10-15T02:35:57.568Z","kind":"task-updated","id":"t-p2-verify-rail","by":"workbuddy","status":"claimed","note":"claimed"}
 {"at":"2026-10-15T02:51:08.991Z","kind":"task-created","id":"t-rank-data-fix","assignee":"codex","title":"用户直派：修复榜单获取并反馈 DSH"}
 {"at":"2026-10-15T02:51:09.108Z","kind":"task-updated","id":"t-rank-data-fix","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-15T02:56:58.240Z","kind":"task-updated","id":"t-rank-data-fix","by":"codex","status":"claimed","note":"同一榜单故障的跨端根因修复"}
+{"at":"2026-10-15T02:56:58.364Z","kind":"task-updated","id":"t-rank-data-fix","by":"codex","status":"done","note":""}
+{"at":"2026-10-15T03:21:55.277Z","kind":"task-created","id":"t-a1-hevc-level","assignee":"antigravity","title":"A1 验证 HEVC level_idc 改写能否恢复硬解（MuMu）"}
+{"at":"2026-10-15T03:21:55.278Z","kind":"task-updated","id":"t-a1-hevc-level","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-15T03:21:55.281Z","kind":"task-created","id":"t-a2-hevc-survey","assignee":"codex","title":"A2 抽样统计 HEVC Level 分布与编码格式"}
+{"at":"2026-10-15T03:21:55.282Z","kind":"task-updated","id":"t-a2-hevc-survey","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-15T03:21:55.283Z","kind":"task-created","id":"t-a4-verify-av","assignee":"workbuddy","title":"A4 音画不同步诊断 — 独立复核"}
+{"at":"2026-10-15T03:21:55.284Z","kind":"task-updated","id":"t-a4-verify-av","by":"dsh","status":"pending","note":"brief ok"}
