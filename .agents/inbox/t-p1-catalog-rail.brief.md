@@ -17,25 +17,48 @@
 
 ---
 
-## 二、要解决的问题（实测证据）
+## 二、要解决的问题（MuMu 实测证据）
 
-### 实测数据（`emulator-5554`，1280×720）
+### 实测环境
 
-来源：`outputs/debug/official-tv-category.xml` 与截图 `.agents/shared/u4-category.png`
+| 项 | 值 |
+| --- | --- |
+| 设备 | **MuMu 模拟器** `127.0.0.1:16384` |
+| 系统 | Android 12（API 32） |
+| 分辨率 | **1280×720**（`wm size` 已调整）@240dpi |
+| 逻辑尺寸 | 853×480 dp |
+
+### 实测坐标（1280×720 像素）
+
+来源：`outputs/debug/mumu-cat.xml` + 截图 `outputs/debug/mumu-category-final.png`
 
 | 区域 | y 范围 | 高度 |
 | --- | --- | --- |
 | 标题「分类」 | 24–64 | 40px |
-| 一级类型（真人剧/漫剧/AI剧） | 64–120 | 56px |
-| **题材标签（25 个）** | **120–232** | **112px** |
-| 网格卡片 | 240–585 | 345px |
+| 一级类型（3 个） | 88–136 | 48px |
+| 题材第 1 行（12 个） | 170–218 | 48px |
+| 题材第 2 行（12 个） | 250–322 | 72px |
+| **题材第 3 行（仅「剧情」1 个）** | **330–378** | **48px** |
+| 加载更多按钮 | 624 | — |
 
-**筛选区占 232px**，网格可用高度仅 **488px** —— 只能显示 **1 行完整卡片**。
+### 问题量化
+
+```
+筛选区占 378px（52.5% 屏高）
+网格仅剩 720 - 378 = 342px
+卡片单行高 345px
+→ 342px < 345px，卡片被裁切
+```
+
+**额外问题**：题材第 3 行只有「剧情」**1 个孤立标签**，浪费整行 48px。
 
 ### 截图确认
 
-- 题材标签占 **3 行**，第三行只有「剧情」**一个孤立标签**
-- 网格只露出 **1 行**，底部被裁切
+`outputs/debug/mumu-category-final.png` 显示：
+
+- 题材标签占 **3 行**，第三行只有「剧情」
+- 网格只露出 **1 行**卡片，底部被裁切
+- 「加载更多」按钮占据屏幕下方
 
 ### 根因
 
@@ -67,7 +90,14 @@
 └────────┴────────┴───────────────────────┘
 ```
 
-**收益**：筛选区垂直占用 232px → **0**，网格可用高度 488px → **720px**。
+### 收益（按 MuMu 实测修正）
+
+| 指标 | 改造前（实测） | 改造后 |
+| --- | --- | --- |
+| 筛选区垂直占用 | **378px** | **0** |
+| 网格可用高度 | **342px** | **720px** |
+| 可见卡片行数 | 1 行（被裁切） | **2 行** |
+| 提升 | — | **+110%** |
 
 ---
 
@@ -246,30 +276,66 @@ filter?.requestFocus() ?: rankBtn?.requestFocus() ?: tool?.requestFocus()
 
 ## 九、证据要求（三件套）
 
-**必须提供**：
+### ⚠️ 环境准备（重要）
 
-1. **分类页改造后截图**（720p，显示左栏 + 网格 ≥2 行）
-2. **排行榜截图**（证明未变）
+**adb 默认端口 5037 在本机被 DSH 沙箱拒绝**（`EACCES`，沙箱 loopback 端口下限约 6300）。
+**必须**改用高位端口：
+
+```powershell
+$env:ANDROID_ADB_SERVER_PORT = "15037"
+$adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
+& $adb start-server      # 应显示 daemon started successfully
+& $adb devices
+```
+
+**MuMu 连接**：
+
+```powershell
+& $adb connect 127.0.0.1:16384
+& $adb -s 127.0.0.1:16384 shell wm size 1280x720   # 调整为横屏 720p
+```
+
+### 已验证有效的导航序列
+
+```powershell
+$d = "127.0.0.1:16384"
+& $adb -s $d shell input keyevent 82   # MENU 唤出 chrome
+Start-Sleep -Seconds 3
+& $adb -s $d shell input keyevent 19   # UP → 焦点直接落在「分类」
+Start-Sleep -Seconds 2
+& $adb -s $d shell input keyevent 23   # ENTER 进入分类页
+Start-Sleep -Seconds 12
+```
+
+**注意**：UP 之后焦点**已经是「分类」**，**不要再按 RIGHT**（会跳到「榜单」）。
+
+### 必须提供
+
+1. **分类页改造后截图**（MuMu 1280×720，显示左栏 + 网格 ≥2 行）
+2. **排行榜截图**（证明未变，仍为顶部平铺）
 3. **UI dump**（验证左栏坐标与宽度）
 4. **焦点流转验证**（LEFT/RIGHT 的 dump 前后对比）
 
 ```powershell
-# 冷启动 + 唤出 chrome
-adb -s emulator-5554 shell am force-stop com.hongguotv.tv
-adb -s emulator-5554 shell am start -n com.hongguotv.tv/.MainActivity
-Start-Sleep -Seconds 20
-adb -s emulator-5554 shell input keyevent 20
-
 # 截图两步法（禁止 shell 重定向）
-adb -s emulator-5554 shell screencap -p /sdcard/s.png
-adb -s emulator-5554 pull /sdcard/s.png .agents/shared/<命名>.png
+& $adb -s $d shell screencap -p /sdcard/s.png
+& $adb -s $d pull /sdcard/s.png .agents/shared/<命名>.png
+& $adb -s $d shell rm /sdcard/s.png
 
 # dump
-adb -s emulator-5554 shell uiautomator dump /sdcard/u.xml
-adb -s emulator-5554 pull /sdcard/u.xml .agents/shared/<命名>.xml
+& $adb -s $d shell uiautomator dump /sdcard/u.xml
+& $adb -s $d pull /sdcard/u.xml .agents/shared/<命名>.xml
 ```
 
 **校验 PNG 签名**必须为 `89-50-4E-47-0D-0A-1A-0A`。
+
+### dump 大小可判断页面（经验）
+
+| 大小 | 页面 |
+| --- | --- |
+| ≈ 4430 字节 | 播放页（chrome 隐藏） |
+| ≈ 15700 字节 | 播放页 + 完整 chrome |
+| ≈ 20800 字节 | 分类页 |
 
 ---
 
@@ -277,10 +343,12 @@ adb -s emulator-5554 pull /sdcard/u.xml .agents/shared/<命名>.xml
 
 | 陷阱 | 说明 |
 | --- | --- |
-| `input tap` 无效 | 触摸被播放器吞掉，须用 DPAD |
-| 冷启动唤 chrome | 按一次 DOWN（不要用 MENU） |
-| chrome 自动隐藏 | 隐藏后 DPAD 语义切换 |
-| **本机 adb 端口冲突** | **5037 被 `xray` 进程占用**，`adb` daemon 可能无法启动。若遇到，需先释放端口或用其他设备 |
+| `input tap` 无效 | 触摸被播放器吞掉，**必须用 DPAD** |
+| chrome 自动隐藏 | 5 秒后隐藏，需及时操作 |
+| UP 后勿按 RIGHT | 焦点已在「分类」，RIGHT 会跳到「榜单」 |
+| **adb 端口 5037 被拒** | **必须设 `ANDROID_ADB_SERVER_PORT=15037`** |
+| MuMu 端口 | **16384**（非标准 5554/5555） |
+| 分辨率 | MuMu 默认竖屏，需 `wm size 1280x720` |
 
 ---
 

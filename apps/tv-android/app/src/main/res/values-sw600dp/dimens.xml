@@ -142,4 +142,12 @@
     <dimen name="switch_hint_min_width">270dp</dimen>
     <dimen name="switch_hint_badge_pad_h">9dp</dimen>
     <dimen name="switch_hint_badge_pad_v">2dp</dimen>
+
+    <!-- Catalog Side Rail -->
+    <dimen name="catalog_rail_width">118dp</dimen>
+    <dimen name="catalog_rail_pad">5dp</dimen>
+    <dimen name="catalog_rail_gap">5dp</dimen>
+    <dimen name="catalog_rail_btn_height">32dp</dimen>
+    <dimen name="catalog_rail_btn_text">11sp</dimen>
+    <dimen name="catalog_rail_label_text">10sp</dimen>
 </resources>

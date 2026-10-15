@@ -2,15 +2,20 @@ package com.hongguotv.tv.ui
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
+import android.text.TextUtils
+import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hongguotv.tv.ArtworkLoader
-import com.hongguotv.tv.CategoryTagLayout
 import com.hongguotv.tv.R
 import com.hongguotv.tv.Series
 import com.hongguotv.tv.SeriesAdapter
@@ -46,6 +51,7 @@ internal class CatalogScreenView(
 
     val tools: LinearLayout
     var loadMoreButton: Button? = null
+    private var rightArea: LinearLayout? = null
 
     init {
         orientation = VERTICAL
@@ -54,34 +60,176 @@ internal class CatalogScreenView(
         val padV = TvUi.dimen(context, R.dimen.search_page_pad_v)
         setPadding(padH, padV, padH, padV)
 
-        addView(TvUi.title(context, title))
-
-        tools = TvUi.row(context)
+        val contentTarget: ViewGroup
 
         if (source == "category") {
-            fun filters(values: List<Pair<String, String>>, kind: String, selected: String) {
-                val groupPad = TvUi.dimen(context, R.dimen.category_tag_group_padding)
-                val group = CategoryTagLayout(context).apply { setPadding(groupPad, groupPad, groupPad, groupPad) }
-                values.forEach { (id, label) ->
-                    val key = "分类筛选：$kind:$id"
-                    val button = TvUi.pillButton(context, label, active = id == selected) {
-                        onFilterSelected(key, kind, id)
-                    }.apply {
-                        contentDescription = key
-                        isSelected = id == selected
-                        minWidth = 0
-                        minimumWidth = 0
-                        setTextColor(if (isSelected) Color.WHITE else TvUi.TEXT_MUTED)
-                        background = TvUi.pillBackground(isSelected, TvUi.PANEL, TvUi.BORDER_SUBTLE)
-                    }
-                    categoryButtons += button
-                    group.addView(button)
-                }
-                addView(group, LayoutParams(-1, -2))
+            // Horizontal row containing: Left side dual-rail + Right content area
+            val contentRow = LinearLayout(context).apply {
+                orientation = HORIZONTAL
             }
-            filters(categoryTypes, "type", selectedCategory)
-            filters(listOf("" to "全部题材") + categoryTags, "tag", selectedTag)
+            addView(contentRow, LayoutParams(-1, 0, 1f))
+
+            val railWidth = TvUi.dimen(context, R.dimen.catalog_rail_width)
+            val railPad = TvUi.dimen(context, R.dimen.catalog_rail_pad)
+            val railGap = TvUi.dimen(context, R.dimen.catalog_rail_gap)
+            val btnHeight = TvUi.dimen(context, R.dimen.catalog_rail_btn_height)
+            val btnTextSizePx = context.resources.getDimension(R.dimen.catalog_rail_btn_text)
+            val labelTextSizePx = context.resources.getDimension(R.dimen.catalog_rail_label_text)
+
+            val leftRail = LinearLayout(context).apply {
+                orientation = HORIZONTAL
+                setPadding(railPad, railPad, railPad, railPad)
+                background = TvUi.surface(0xcc0b0f19.toInt(), TvUi.BORDER_SUBTLE, radius = 16f, strokeWidth = 1)
+            }
+
+            // Column 1: Type Column (不滚动)
+            val typeCol = LinearLayout(context).apply {
+                orientation = VERTICAL
+                val typeLabel = TextView(context).apply {
+                    text = "类型"
+                    setTextSize(TypedValue.COMPLEX_UNIT_PX, labelTextSizePx)
+                    setTextColor(TvUi.TEXT_DIM)
+                    setTypeface(typeface, Typeface.BOLD)
+                    gravity = Gravity.CENTER
+                    setPadding(0, 0, 0, railGap)
+                }
+                addView(typeLabel, LayoutParams(-1, -2))
+            }
+
+            val typeButtons = mutableListOf<Button>()
+            categoryTypes.forEach { (id, label) ->
+                val isSelected = (id == selectedCategory)
+                val key = "分类筛选：type:$id"
+                val btn = Button(context).apply {
+                    this.id = View.generateViewId()
+                    text = label
+                    isAllCaps = false
+                    isSingleLine = true
+                    maxLines = 1
+                    ellipsize = TextUtils.TruncateAt.END
+                    setTextSize(TypedValue.COMPLEX_UNIT_PX, btnTextSizePx)
+                    setPadding(TvUi.dp(context, 2), 0, TvUi.dp(context, 2), 0)
+                    gravity = Gravity.CENTER
+                    minWidth = 0
+                    minimumWidth = 0
+                    minHeight = 0
+                    minimumHeight = 0
+                    this.isSelected = isSelected
+                    contentDescription = key
+                    setTextColor(if (isSelected) Color.WHITE else TvUi.TEXT_MUTED)
+                    background = TvUi.pillBackground(isSelected, TvUi.PANEL, TvUi.BORDER_SUBTLE, radius = 14f)
+                    setOnClickListener {
+                        onFilterSelected(key, "type", id)
+                    }
+                    setOnFocusChangeListener { v, f ->
+                        v.scaleX = if (f) 1.05f else 1f
+                        v.scaleY = if (f) 1.05f else 1f
+                    }
+                    nextFocusLeftId = this.id
+                }
+                categoryButtons += btn
+                typeButtons += btn
+                typeCol.addView(btn, LayoutParams(-1, btnHeight).apply {
+                    bottomMargin = railGap
+                })
+            }
+            leftRail.addView(typeCol, LayoutParams(0, -1, 1f))
+
+            // Column 2: Tag Column (带垂直滚动)
+            val tagCol = LinearLayout(context).apply {
+                orientation = VERTICAL
+                val tagLabel = TextView(context).apply {
+                    text = "题材"
+                    setTextSize(TypedValue.COMPLEX_UNIT_PX, labelTextSizePx)
+                    setTextColor(TvUi.TEXT_DIM)
+                    setTypeface(typeface, Typeface.BOLD)
+                    gravity = Gravity.CENTER
+                    setPadding(0, 0, 0, railGap)
+                }
+                addView(tagLabel, LayoutParams(-1, -2))
+            }
+
+            val tagScroll = ScrollView(context).apply {
+                this.id = View.generateViewId()
+                isVerticalScrollBarEnabled = false
+            }
+            val tagListLayout = LinearLayout(context).apply {
+                orientation = VERTICAL
+            }
+            tagScroll.addView(tagListLayout, ViewGroup.LayoutParams(-1, -2))
+            tagCol.addView(tagScroll, LayoutParams(-1, 0, 1f))
+
+            val tagButtons = mutableListOf<Button>()
+            val allTags = listOf("" to "全部题材") + categoryTags
+            allTags.forEach { (id, label) ->
+                val isSelected = (id == selectedTag)
+                val key = "分类筛选：tag:$id"
+                val btn = Button(context).apply {
+                    this.id = View.generateViewId()
+                    text = label
+                    isAllCaps = false
+                    isSingleLine = true
+                    maxLines = 1
+                    ellipsize = TextUtils.TruncateAt.END
+                    setTextSize(TypedValue.COMPLEX_UNIT_PX, btnTextSizePx)
+                    setPadding(TvUi.dp(context, 2), 0, TvUi.dp(context, 2), 0)
+                    gravity = Gravity.CENTER
+                    minWidth = 0
+                    minimumWidth = 0
+                    minHeight = 0
+                    minimumHeight = 0
+                    this.isSelected = isSelected
+                    contentDescription = key
+                    setTextColor(if (isSelected) Color.WHITE else TvUi.TEXT_MUTED)
+                    background = TvUi.pillBackground(isSelected, TvUi.PANEL, TvUi.BORDER_SUBTLE, radius = 14f)
+                    setOnClickListener {
+                        onFilterSelected(key, "tag", id)
+                    }
+                    setOnFocusChangeListener { v, f ->
+                        v.scaleX = if (f) 1.05f else 1f
+                        v.scaleY = if (f) 1.05f else 1f
+                        if (f) {
+                            v.post {
+                                val targetY = v.top - tagScroll.height / 2 + v.height / 2
+                                tagScroll.smoothScrollTo(0, targetY.coerceAtLeast(0))
+                            }
+                        }
+                    }
+                }
+                categoryButtons += btn
+                tagButtons += btn
+                tagListLayout.addView(btn, LayoutParams(-1, btnHeight).apply {
+                    bottomMargin = railGap
+                })
+            }
+            leftRail.addView(tagCol, LayoutParams(0, -1, 1f).apply {
+                marginStart = railGap
+            })
+
+            contentRow.addView(leftRail, LayoutParams(railWidth, -1))
+
+            // Right content area
+            val rightCol = LinearLayout(context).apply {
+                orientation = VERTICAL
+            }
+            rightArea = rightCol
+            val rightMarginStart = TvUi.dp(context, 10)
+            contentRow.addView(rightCol, LayoutParams(0, -1, 1f).apply {
+                marginStart = rightMarginStart
+            })
+
+            val titleView = TvUi.title(context, title).apply {
+                setPadding(TvUi.dp(context, 4), 0, TvUi.dp(context, 4), TvUi.dp(context, 4))
+            }
+            rightCol.addView(titleView, LayoutParams(-1, -2))
+            contentTarget = rightCol
+        } else {
+            // Rank, history, favorites: preserve original layout
+            addView(TvUi.title(context, title))
+            contentTarget = this
         }
+
+        tools = TvUi.row(context)
 
         if (source == "rank") {
             if (rankTypes.size > 1) {
@@ -117,7 +265,7 @@ internal class CatalogScreenView(
         if (source == "history") {
             tools.addView(TvUi.pillButton(context, "刷新") { onRefreshHistory() })
         }
-        addView(tools)
+        contentTarget.addView(tools)
 
         val initialFocusView: View? = if (source == "rank") {
             rankButtons.firstOrNull { it.isSelected } ?: rankButtons.firstOrNull()
@@ -126,15 +274,16 @@ internal class CatalogScreenView(
         } else null
 
         if (rows.isEmpty()) {
-            addView(TvUi.text(context, "暂时没有内容"))
+            contentTarget.addView(TvUi.text(context, "暂时没有内容"))
             val returnBtn = TvUi.pillButton(context, "返回推荐", active = true) { onReturnFeed() }
-            addView(returnBtn, LayoutParams(-2, -2))
+            contentTarget.addView(returnBtn, LayoutParams(-2, -2))
             val focusBtn = initialFocusView ?: returnBtn
             post { focusBtn.requestFocus() }
         } else {
             val gridManager = GridLayoutManager(context, 5)
             manager = gridManager
             val grid = RecyclerView(context).apply {
+                this.id = View.generateViewId()
                 layoutManager = gridManager
                 descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
             }
@@ -144,14 +293,24 @@ internal class CatalogScreenView(
             }, { series ->
                 onSeriesFocused(series)
             }, onSubtitleProvider, onProgressProvider)
-            addView(grid, LayoutParams(-1, 0, 1f))
+            contentTarget.addView(grid, LayoutParams(-1, 0, 1f))
+
+            if (source == "category") {
+                // Link tag buttons to jump into grid on RIGHT
+                categoryButtons.forEach { btn ->
+                    if (btn.contentDescription?.startsWith("分类筛选：tag:") == true) {
+                        btn.nextFocusRightId = grid.id
+                    }
+                }
+            }
         }
     }
 
     fun addLoadMoreButton(text: String, onClick: () -> Unit): Button {
         val btn = TvUi.pillButton(context, text) { onClick() }
         loadMoreButton = btn
-        addView(btn)
+        val target: ViewGroup = if (source == "category" && rightArea != null) rightArea!! else this
+        target.addView(btn)
         return btn
     }
 }

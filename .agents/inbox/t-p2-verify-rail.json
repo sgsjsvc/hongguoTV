@@ -1,7 +1,7 @@
 {
   "id": "t-p2-verify-rail",
   "createdAt": "2026-10-15T02:09:38.326Z",
-  "updatedAt": "2026-10-15T02:09:38.344Z",
+  "updatedAt": "2026-10-15T02:35:57.541Z",
   "assignee": "workbuddy",
   "title": "P2 分类页左栏改造 — 独立复核",
   "brief": "详见 .agents/inbox/t-p2-verify-rail.brief.md",
@@ -24,15 +24,21 @@
     "t-p1-catalog-rail"
   ],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
+  "status": "claimed",
+  "claimedBy": "workbuddy",
+  "claimedAt": "2026-10-15T02:35:57.541Z",
   "result": null,
   "history": [
     {
       "at": "2026-10-15T02:09:38.326Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-15T02:35:57.541Z",
+      "status": "claimed",
+      "by": "workbuddy",
+      "note": "claimed"
     }
   ],
   "dispatch": "file-bus",

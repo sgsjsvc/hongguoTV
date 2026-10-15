@@ -2,3 +2,8 @@
 {"at":"2026-10-15T02:09:38.324Z","kind":"task-updated","id":"t-p1-catalog-rail","by":"dsh","status":"pending","note":"brief ok"}
 {"at":"2026-10-15T02:09:38.344Z","kind":"task-created","id":"t-p2-verify-rail","assignee":"workbuddy","title":"P2 分类页左栏改造 — 独立复核"}
 {"at":"2026-10-15T02:09:38.345Z","kind":"task-updated","id":"t-p2-verify-rail","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-15T02:16:45.819Z","kind":"task-updated","id":"t-p1-catalog-rail","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-15T02:33:45.966Z","kind":"task-updated","id":"t-p1-catalog-rail","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-15T02:35:57.568Z","kind":"task-updated","id":"t-p2-verify-rail","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-15T02:51:08.991Z","kind":"task-created","id":"t-rank-data-fix","assignee":"codex","title":"用户直派：修复榜单获取并反馈 DSH"}
+{"at":"2026-10-15T02:51:09.108Z","kind":"task-updated","id":"t-rank-data-fix","by":"codex","status":"claimed","note":"claimed"}

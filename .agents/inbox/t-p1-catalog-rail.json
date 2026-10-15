@@ -1,7 +1,7 @@
 {
   "id": "t-p1-catalog-rail",
   "createdAt": "2026-10-15T02:09:38.321Z",
-  "updatedAt": "2026-10-15T02:09:38.323Z",
+  "updatedAt": "2026-10-15T02:33:45.942Z",
   "assignee": "antigravity",
   "title": "P1 分类页左侧双列筛选栏改造",
   "brief": "详见 .agents/inbox/t-p1-catalog-rail.brief.md",
@@ -22,15 +22,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-15T02:16:45.798Z",
+  "result": {
+    "summary": ".agents/shared/t-p1-catalog-rail-antigravity.md"
+  },
   "history": [
     {
       "at": "2026-10-15T02:09:38.321Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-15T02:16:45.798Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-15T02:33:45.943Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

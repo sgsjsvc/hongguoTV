@@ -1,0 +1,37 @@
+{
+  "id": "t-rank-data-fix",
+  "createdAt": "2026-10-15T02:51:08.989Z",
+  "updatedAt": "2026-10-15T02:51:09.070Z",
+  "assignee": "codex",
+  "title": "用户直派：修复榜单获取并反馈 DSH",
+  "brief": "修复官网 mergeLoaderData 榜单格式兼容；保持旧格式；不覆盖 TV UI 差异。",
+  "context": [
+    "2026-10-15 用户直接授权，不需等待协调者派发",
+    "隔离：仅修改共享引擎及两份 vendor 的 rankData 函数，新增相关测试。TV UI 不改。"
+  ],
+  "acceptance": [
+    "新旧格式和异常格式测试",
+    "官网四榜分页实际验证",
+    "回归测试与构建",
+    "通过 outbox 与共享报告反馈 DSH"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "claimed",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-15T02:51:09.070Z",
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-15T02:51:08.990Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-15T02:51:09.070Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    }
+  ]
+}
