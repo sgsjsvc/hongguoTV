@@ -1,7 +1,7 @@
 {
   "id": "t-q3-paging-fix",
   "createdAt": "2026-10-15T05:25:04.874Z",
-  "updatedAt": "2026-10-15T05:25:04.876Z",
+  "updatedAt": "2026-10-15T05:51:00.591Z",
   "assignee": "antigravity",
   "title": "Q3 分页查询与选中状态修复",
   "brief": "详见 .agents/inbox/t-q3-paging-fix.brief.md",
@@ -27,15 +27,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-15T05:28:27.933Z",
+  "result": {
+    "summary": ".agents/shared/t-q3-paging-fix-antigravity.md"
+  },
   "history": [
     {
       "at": "2026-10-15T05:25:04.875Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-15T05:28:27.934Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-15T05:51:00.592Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

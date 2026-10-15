@@ -35,3 +35,13 @@
 {"at":"2026-10-15T05:25:04.877Z","kind":"task-updated","id":"t-q3-paging-fix","by":"dsh","status":"pending","note":"brief ok"}
 {"at":"2026-10-15T05:25:04.880Z","kind":"task-created","id":"t-q4-verify-paging","assignee":"workbuddy","title":"Q4 分页与选中状态修复 — 独立复核"}
 {"at":"2026-10-15T05:25:04.881Z","kind":"task-updated","id":"t-q4-verify-paging","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-15T05:28:27.961Z","kind":"task-updated","id":"t-q3-paging-fix","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-15T05:51:00.620Z","kind":"task-updated","id":"t-q3-paging-fix","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-15T06:02:45.029Z","kind":"task-updated","id":"t-q4-verify-paging","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-15T06:42:57.974Z","kind":"task-updated","id":"t-q4-verify-paging","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-15T06:46:45.356Z","kind":"task-created","id":"t-w1-port-autoincrement","assignee":"codex","title":"W1 端口自动递增（避免占用导致启动失败）"}
+{"at":"2026-10-15T06:46:45.357Z","kind":"task-updated","id":"t-w1-port-autoincrement","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-15T06:46:45.360Z","kind":"task-created","id":"t-w2-web-fullscreen","assignee":"antigravity","title":"W2 Web 端全屏修复与按钮"}
+{"at":"2026-10-15T06:46:45.361Z","kind":"task-updated","id":"t-w2-web-fullscreen","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-15T06:46:45.383Z","kind":"task-created","id":"t-w3-electron-fullscreen","assignee":"codex","title":"W3 Electron 端窗口级全屏"}
+{"at":"2026-10-15T06:46:45.385Z","kind":"task-updated","id":"t-w3-electron-fullscreen","by":"dsh","status":"pending","note":"brief ok"}

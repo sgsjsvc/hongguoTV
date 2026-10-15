@@ -1,0 +1,46 @@
+{
+  "id": "t-w3-electron-fullscreen",
+  "createdAt": "2026-10-15T06:46:45.362Z",
+  "updatedAt": "2026-10-15T06:46:45.384Z",
+  "assignee": "codex",
+  "title": "W3 Electron 端窗口级全屏",
+  "brief": "详见 .agents/inbox/t-w3-electron-fullscreen.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "用户需求：解决 web 端和电脑端视频不能全屏的问题；添加全屏按钮；先解决端口占用问题",
+    "接口约定（W2/W3 共用，必读）: .agents/shared/fullscreen-interface.md",
+    "全屏根因（协调者实测）：",
+    "  - Electron 中窗口失焦后 requestFullscreen 抛 TypeError: Permissions check failed",
+    "  - 实测：第1次成功，第2-10次全失败；调用 Page.bringToFront 后恢复",
+    "  - 结论：渲染进程 fullscreen 受窗口焦点限制，需用主进程 win.setFullScreen()",
+    "  - 另一缺陷：原生全屏成功但 React isFullscreen 未同步（elementsWithFullscreenClass=0）",
+    "端口问题根因：",
+    "  - custom-server/index.mjs:801 与 apps/sync-server/index.mjs:14 的 listen 无 error 处理",
+    "  - 端口占用时 Node 抛 EADDRINUSE 直接崩溃",
+    "  - scripts/service-launcher.mjs:38,46 端口写死",
+    "  - Electron 已用 PORT:'0'（系统分配），是最佳实践范例",
+    "并行边界：W2 只改 apps/web-pc/src/，W3 只改 apps/web-pc/electron/，互不重叠",
+    "W1 与 W2/W3 文件不重叠，可同时进行",
+    "环境：本机 DSH 沙箱拒绝 6300 以下 loopback 端口；adb 需设 ANDROID_ADB_SERVER_PORT=15037"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-15T06:46:45.362Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-w3-electron-fullscreen.brief.md",
+  "order": 3,
+  "kind": "fix"
+}

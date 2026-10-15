@@ -1,0 +1,10 @@
+{
+  "id": "t-q4-verify-paging",
+  "agent": "workbuddy",
+  "status": "done",
+  "finishedAt": "2026-10-15T06:42:57.981Z",
+  "title": "Q4 分页与选中状态修复 — 独立复核",
+  "result": {
+    "summary": "不通过(Fail)：5/6缺陷已修复(缺陷2仅部分修复)，但引入严重新缺陷——分页重复追加(榜单页显示Top1..120，真实仅100条，多20条重复；徽标偏移+20；同行位置非连续)。7条约束全通过(4请求/并发1)。无越界改动、无调试日志残留。报告：.agents/shared/t-q4-verify-paging-workbuddy.md"
+  }
+}
