@@ -1454,6 +1454,19 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    private fun switchFullEpisode(direction: Int, repeatCount: Int) {
+        if (repeatCount != 0) return
+        val detail = activeDetail ?: return
+        val index = PlaybackPolicy.remoteEpisodeIndex(activeIndex, detail.episodes.size, direction, repeatCount)
+        if (index == null) {
+            Toast.makeText(this, if (direction < 0) "已经是第一集" else "已经是最后一集", Toast.LENGTH_SHORT).show()
+            return
+        }
+        saveProgress()
+        resumePaused = false
+        loadEpisode(index, showSwitchHint = true)
+    }
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (dialog != null || (screen != Screen.FEED && screen != Screen.FULL)) return super.onKeyDown(keyCode, event)
         return when (keyCode) {
@@ -1598,6 +1611,8 @@ class MainActivity : ComponentActivity() {
                     if (event.repeatCount == 0 && feedMode) {
                         resumePaused = false
                         switchFeed(-1, explicitNext = false)
+                    } else if (!feedMode && screen == Screen.FULL) {
+                        switchFullEpisode(-1, event.repeatCount)
                     }
                     true
                 }
@@ -1630,6 +1645,8 @@ class MainActivity : ComponentActivity() {
                     if (event.repeatCount == 0 && feedMode) {
                         resumePaused = false
                         switchFeed(1, explicitNext = true)
+                    } else if (!feedMode && screen == Screen.FULL) {
+                        switchFullEpisode(1, event.repeatCount)
                     }
                     true
                 }

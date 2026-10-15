@@ -92,4 +92,18 @@ class TvUiLayoutTest {
         assertEquals("sw600dp should define the exact same dimen keys as base", baseNames, sw600Names)
         assertEquals("w1280dp should define the exact same dimen keys as base", baseNames, w1280Names)
     }
+
+    @Test
+    fun catalogGridFocusSearchPreventsEscapingVertically() {
+        val catalogFile = File("src/main/java/com/hongguotv/tv/ui/CatalogScreenView.kt").let {
+            if (it.exists()) it else File("app/src/main/java/com/hongguotv/tv/ui/CatalogScreenView.kt")
+        }
+        assertTrue("CatalogScreenView.kt must exist", catalogFile.exists())
+        val content = catalogFile.readText()
+        assertTrue("Must override focusSearch on grid", content.contains("override fun focusSearch(focused: View, direction: Int): View?"))
+        assertTrue("Must intercept FOCUS_DOWN", content.contains("direction == View.FOCUS_DOWN"))
+        assertTrue("Must check isDescendant", content.contains("!isDescendant(this, next)"))
+        assertTrue("Must retain focus on focused view when next is outside grid", content.contains("return focused"))
+        assertTrue("Must trigger onNearBottom when pressing DOWN at bottom", content.contains("onNearBottom?.invoke()"))
+    }
 }

@@ -504,12 +504,12 @@ export default function App() {
       )}
 
       {/* 顶部通用导航栏 */}
-      <Header
+      {!(tab === "recommend" && !activeSeries && playback.isFullscreen) && <Header
         tab={tab}
         activeSeries={activeSeries}
         favoritesCount={library.favorites.length}
         onNavigate={handleNavigate}
-      />
+      />}
 
       {library.historyStorageWarning && (
         <div role="alert" className="bg-amber-950 text-amber-200 px-5 py-2">

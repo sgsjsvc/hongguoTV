@@ -11,7 +11,7 @@ const net = require('node:net');
   const port = await new Promise(resolve => { const server = net.createServer(); server.listen(0, '127.0.0.1', () => { const port = server.address().port; server.close(() => resolve(port)); }); });
   let app, child, page;
   try {
-    child = spawn(path.resolve('outputs/windows/win-unpacked/红果短剧.exe'), ['--disable-gpu', `--remote-debugging-port=${port}`], { env, windowsHide: true, stdio: 'ignore' });
+    child = spawn(path.resolve(process.env.HG_DESKTOP_TEST_EXECUTABLE || 'outputs/windows/win-unpacked/红果短剧.exe'), ['--disable-gpu', `--remote-debugging-port=${port}`], { env, windowsHide: true, stdio: 'ignore' });
     const deadline = Date.now() + 45000;
     while (Date.now() < deadline) {
       try { if ((await fetch(`http://127.0.0.1:${port}/json/version`)).ok) break; } catch {}

@@ -290,7 +290,22 @@ internal class CatalogScreenView(
         } else {
             val gridManager = GridLayoutManager(context, 5)
             manager = gridManager
-            val grid = RecyclerView(context).apply {
+            val grid = object : RecyclerView(context) {
+                override fun focusSearch(focused: View, direction: Int): View? {
+                    val next = super.focusSearch(focused, direction)
+                    if (direction == View.FOCUS_DOWN) {
+                        if (next == null || !isDescendant(this, next)) {
+                            onNearBottom?.invoke()
+                            return focused
+                        }
+                    } else if (direction == View.FOCUS_UP && source == "category") {
+                        if (next == null || !isDescendant(this, next)) {
+                            return focused
+                        }
+                    }
+                    return next
+                }
+            }.apply {
                 this.id = View.generateViewId()
                 layoutManager = gridManager
                 descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
@@ -358,5 +373,14 @@ internal class CatalogScreenView(
 
     fun setLoadingMore(loading: Boolean) {
         loadingIndicator?.visibility = if (loading) View.VISIBLE else View.GONE
+    }
+
+    private fun isDescendant(parent: View, child: View?): Boolean {
+        var p = child?.parent
+        while (p is View) {
+            if (p === parent) return true
+            p = p.parent
+        }
+        return false
     }
 }

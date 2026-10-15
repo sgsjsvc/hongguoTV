@@ -4,6 +4,11 @@ import java.net.URI
 import java.util.concurrent.atomic.AtomicLong
 
 object PlaybackPolicy {
+    fun remoteEpisodeIndex(index: Int, count: Int, direction: Int, repeatCount: Int): Int? {
+        if (repeatCount != 0 || direction !in listOf(-1, 1) || index !in 0 until count) return null
+        return (index + direction).takeIf { it in 0 until count }
+    }
+
     fun canSaveProgress(expectedEpisodeId: String, currentMediaId: String?): Boolean =
         expectedEpisodeId.isNotBlank() && expectedEpisodeId == currentMediaId
 

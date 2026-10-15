@@ -82,6 +82,22 @@ export function useKeyboardShortcuts({
       const video = playback.videoRef.current;
       if (!video) return;
 
+      if ((playback.isFullscreen || document.fullscreenElement) &&
+          (e.key === "ArrowUp" || e.key === "ArrowDown")) {
+        e.preventDefault();
+        // Holding an arrow must not race through several episodes.
+        if (e.repeat) return;
+        const step = e.key === "ArrowUp" ? -1 : 1;
+        const nextIndex = currentEpisodeIndex + step;
+        if (nextIndex < 0 || nextIndex >= activeSeries.episodes.length) {
+          showToast(step < 0 ? "已经是第一集" : "已经是最后一集");
+          return;
+        }
+        setCurrentEpisodeIndex((index) => Math.max(0, Math.min(activeSeries.episodes.length - 1, index + step)));
+        showToast(step < 0 ? "切换上一集" : "切换下一集");
+        return;
+      }
+
       switch (e.key) {
         case " ":
         case "Spacebar":

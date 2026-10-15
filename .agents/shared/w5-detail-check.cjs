@@ -3,6 +3,7 @@ const {spawn}=require('node:child_process');
 const {chromium}=require('node:module').createRequire('C:/Users/AnLin/AppData/Local/npm-cache/_npx/31e32ef8478fbf80/node_modules/playwright/package.json')('playwright');
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const desktop=process.argv.includes('--desktop'),mode=desktop?'desktop':'web';
+const recommendHeader=process.argv.includes('--recommend-header');
 if(!desktop){
  // Disable Playwright's focus emulation on its original CDP session; a second
  // CDP session cannot undo the first session's fullscreen suppression.
@@ -29,7 +30,7 @@ const server=http.createServer((req,res)=>{
   else if(pathname.startsWith('/api/library/history/'))result={item:null};
   else if(pathname===`/api/series/${series.id}`)result=detail;
   else if(pathname.endsWith('/qualities'))result={qualities:[{key:'1080P',label:'1080P',qualityNum:1080,codec:'H.264'}]};
-  else if(pathname.startsWith('/api/recommend')||pathname.endsWith('/related')||pathname.includes('/search'))result={items:[]};
+  else if(pathname.startsWith('/api/recommend')||pathname.endsWith('/related')||pathname.includes('/search'))result={items:recommendHeader&&pathname.startsWith('/api/recommend')?[series]:[],page:1};
   else if(pathname.endsWith('/seasons'))result={seasons:[]};
   res.setHeader('Content-Type','application/json');res.end(JSON.stringify(result));req.resume();return;
  }
@@ -45,23 +46,50 @@ async function inspector(port){let url;for(let i=0;i<150;i++){try{url=(await(awa
  try{
   if(desktop){
    const port=await freePort(28500),inspectPort=await freePort(28700);const env={...process.env,HG_DESKTOP_PROFILE:path.resolve('outputs/w5-tests/desktop-profile')};delete env.ELECTRON_RUN_AS_NODE;
-   child=spawn(path.resolve('outputs/w5-desktop/win-unpacked/红果短剧.exe'),[`--remote-debugging-port=${port}`,`--inspect=${inspectPort}`],{env,windowsHide:true,stdio:'ignore'});
+   child=spawn(path.resolve(process.env.HG_DESKTOP_TEST_EXECUTABLE||'outputs/w5-desktop/win-unpacked/红果短剧.exe'),[`--remote-debugging-port=${port}`,`--inspect=${inspectPort}`],{env,windowsHide:true,stdio:'ignore'});
    debug=await inspector(inspectPort);for(let i=0;i<150;i++){try{await fetch(`http://127.0.0.1:${port}/json/version`);break;}catch{}await sleep(100);}
    browser=await chromium.connectOverCDP(`http://127.0.0.1:${port}`);for(let i=0;i<200;i++){page=browser.contexts()[0].pages().find(p=>p.url().startsWith('hongguotv://app'));if(page)break;await sleep(100);}assert.ok(page);
    await debug.eval(`(()=>{const e=process.mainModule.require('electron');e.protocol.unhandle('hongguotv');e.protocol.handle('hongguotv',request=>{const u=new URL(request.url);return e.net.fetch(${JSON.stringify(origin)}+u.pathname+u.search,{method:request.method,headers:request.headers,bypassCustomProtocolHandlers:true});});return true;})()`);
-   await page.reload();
+   if(process.argv.includes('--episode-shortcuts'))await page.goto(origin);
+   else await page.reload();
   }else{
    browser=await chromium.launch({channel:'chrome',headless:false,args:['--start-maximized','--autoplay-policy=no-user-gesture-required']});
    const context=await browser.newContext({viewport:null});page=await context.newPage();await page.goto(origin);
    await (await context.newCDPSession(page)).send('Emulation.setFocusEmulationEnabled',{enabled:false});
   }
-  await page.bringToFront();await page.getByRole('button',{name:'立即观看',exact:true}).click();await page.waitForFunction(()=>document.querySelector('video')?.readyState>=2);
+  await page.bringToFront();
+  if(recommendHeader){
+   await page.getByRole('button',{name:'推荐',exact:true}).click();await page.waitForFunction(()=>document.querySelector('video')?.readyState>=2);
+   assert.equal(await page.locator('header').count(),1);
+   await page.getByRole('button',{name:'全屏',exact:true}).click();await page.getByRole('button',{name:'退出全屏',exact:true}).waitFor();await sleep(300);
+   const headerCount=await page.locator('header').count();assert.equal(headerCount,0,'Header must be absent in recommendation fullscreen');
+   await page.screenshot({path:`.agents/shared/recommend-header-${mode}-fullscreen.png`});
+   await page.keyboard.press('Escape');await page.locator('header').waitFor();assert.equal(await page.locator('video').count(),1);
+   await page.getByRole('button',{name:'全屏',exact:true}).click();await page.waitForFunction(()=>!document.querySelector('header'));await page.getByRole('button',{name:'退出全屏',exact:true}).click();await page.locator('header').waitFor();
+   const result={mode,hiddenInFullscreen:true,restoredOnEscape:true,restoredOnButton:true,videoPreserved:true};fs.writeFileSync(`.agents/shared/recommend-header-${mode}-results.json`,JSON.stringify(result,null,2));console.log(JSON.stringify(result));return;
+  }
+  await page.getByRole('button',{name:'立即观看',exact:true}).click();await page.waitForFunction(()=>document.querySelector('video')?.readyState>=2);
   await page.evaluate(()=>{const video=document.querySelector('video');video.pause();window.w5Ended=0;video.addEventListener('ended',()=>window.w5Ended++);});
   if(desktop)await debug.eval("(()=>{const e=process.mainModule.require('electron');globalThis.w5Other=new e.BrowserWindow({width:300,height:150,show:true});globalThis.w5Other.loadURL('about:blank');globalThis.w5Other.focus();return true;})()");
   if(!desktop){await page.bringToFront();await sleep(200);}
   await page.getByRole('button',{name:'全屏',exact:true}).first().click();
   await page.waitForFunction(()=>document.querySelector('video')?.parentElement.classList.contains('fixed'));
   await sleep(1500);
+  if(process.argv.includes('--episode-shortcuts')){
+   const expectEpisode=async n=>{await page.waitForFunction(n=>document.querySelector('video')?.src.includes(`/100${n}/stream`),n);await page.waitForFunction(()=>document.querySelector('video')?.readyState>=2);await page.evaluate(()=>document.querySelector('video').pause());};
+   const arrow=async key=>{await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.press(key);};
+   await expectEpisode(1);
+   await arrow('ArrowUp');await page.getByText('已经是第一集',{exact:true}).waitFor();await expectEpisode(1);
+   await arrow('ArrowDown');await expectEpisode(2);
+   await arrow('ArrowDown');await expectEpisode(3);
+   await arrow('ArrowDown');await page.getByText('已经是最后一集',{exact:true}).waitFor();await expectEpisode(3);
+   await arrow('ArrowUp');await expectEpisode(2);
+   assert.equal(await page.evaluate(()=>document.querySelector('video').parentElement.classList.contains('fixed')),true);
+   await page.keyboard.press('Escape');await page.waitForFunction(()=>!document.querySelector('video').parentElement.classList.contains('fixed'));
+   await arrow('ArrowDown');await expectEpisode(2);await page.getByText('音量: 90%',{exact:true}).waitFor();
+   const result={mode,fullscreenPreviousNext:true,boundaries:true,fullscreenPreserved:true,windowedVolumePreserved:true,controlledMedia:true};
+   fs.writeFileSync(`.agents/shared/episode-shortcuts-${mode}-results.json`,JSON.stringify(result,null,2));console.log(JSON.stringify(result));return;
+  }
   const geometry=await page.evaluate(()=>{const v=document.querySelector('video'),p=v.parentElement,b=p.getBoundingClientRect();return {viewport:[innerWidth,innerHeight],screen:[screen.width,screen.height],outer:[outerWidth,outerHeight],focused:document.hasFocus(),player:{x:b.x,y:b.y,width:b.width,height:b.height,position:getComputedStyle(p).position},domFullscreen:!!document.fullscreenElement,desktop:!!window.hongguotvDesktop};});
   const beforeFile=`.agents/shared/t-w5-${mode}-fullscreen.png`;await page.locator('video').dispatchEvent('mousemove');await page.waitForFunction(()=>getComputedStyle(document.querySelector('video').parentElement.querySelector('div.absolute.top-0')).opacity==='1');await page.screenshot({path:beforeFile});
   fs.writeFileSync(`.agents/shared/t-w5-${mode}-geometry.json`,JSON.stringify(geometry,null,2));console.log('geometry',JSON.stringify(geometry));
@@ -78,7 +106,7 @@ async function inspector(port){let url;for(let i=0;i<150;i++){try{url=(await(awa
   await page.getByRole('button',{name:'全屏',exact:true}).first().click();await page.getByText(desktop?'切换桌面全屏失败，请先点击窗口激活':'全屏失败，请先点击播放窗口再试',{exact:true}).waitFor();
   const result={mode,controlledMedia:true,geometry,continued,idle,escapeKeepsPlayer:true,errorToast:true,requests};fs.writeFileSync(`.agents/shared/t-w5-${mode}-results.json`,JSON.stringify(result,null,2));console.log(JSON.stringify({mode,passed:true}));
  }catch(error){
-  if(page&&!page.isClosed()){console.log('failureDetails',JSON.stringify(await page.evaluate(()=>({body:document.body.innerText.slice(-600),video:[...document.querySelectorAll('video')].map(v=>({src:v.src,readyState:v.readyState,error:v.error?{code:v.error.code,message:v.error.message}:null,networkState:v.networkState}))})).catch(()=>({}))));await page.screenshot({path:`.agents/shared/t-w5-${mode}-failure.png`}).catch(()=>{});}
+  if(page&&!page.isClosed()){console.log('failureDetails',JSON.stringify(await page.evaluate(()=>({body:document.body.innerText.slice(-600),video:[...document.querySelectorAll('video')].map(v=>({src:v.src,readyState:v.readyState,error:v.error?{code:v.error.code,message:v.error.message}:null,networkState:v.networkState}))})).catch(()=>({}))));await page.screenshot({path:`.agents/shared/${recommendHeader?'recommend-header':'t-w5'}-${mode}-failure.png`}).catch(()=>{});}
   console.log('fixtureRequests',JSON.stringify(requests));throw error;
  }finally{
   if(debug){await debug.eval("(()=>{if(globalThis.w5Other&&!globalThis.w5Other.isDestroyed())globalThis.w5Other.destroy();return true;})()").catch(()=>{});debug.socket.close();}

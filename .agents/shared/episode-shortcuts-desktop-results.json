@@ -1,0 +1,8 @@
+{
+  "mode": "desktop",
+  "fullscreenPreviousNext": true,
+  "boundaries": true,
+  "fullscreenPreserved": true,
+  "windowedVolumePreserved": true,
+  "controlledMedia": true
+}

@@ -1,0 +1,7 @@
+{
+  "mode": "web",
+  "hiddenInFullscreen": true,
+  "restoredOnEscape": true,
+  "restoredOnButton": true,
+  "videoPreserved": true
+}

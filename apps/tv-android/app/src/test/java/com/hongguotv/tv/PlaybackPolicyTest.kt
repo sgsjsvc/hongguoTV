@@ -6,6 +6,16 @@ import org.junit.Test
 class PlaybackPolicyTest {
     private fun series(id: String) = Series(id, id)
 
+    @Test fun remoteEpisodeArrowsStayWithinSeriesAndIgnoreLongPress() {
+        assertEquals(0, PlaybackPolicy.remoteEpisodeIndex(1, 3, -1, 0))
+        assertEquals(2, PlaybackPolicy.remoteEpisodeIndex(1, 3, 1, 0))
+        assertNull(PlaybackPolicy.remoteEpisodeIndex(0, 3, -1, 0))
+        assertNull(PlaybackPolicy.remoteEpisodeIndex(2, 3, 1, 0))
+        assertNull(PlaybackPolicy.remoteEpisodeIndex(0, 0, 1, 0))
+        assertNull(PlaybackPolicy.remoteEpisodeIndex(1, 3, 1, 1))
+        assertNull(PlaybackPolicy.remoteEpisodeIndex(1, 3, -1, 8))
+    }
+
     @Test fun progressIsSavedOnlyForTheMediaCurrentlyLoaded() {
         assertFalse(PlaybackPolicy.canSaveProgress("new-episode", "old-episode"))
         assertFalse(PlaybackPolicy.canSaveProgress("new-episode", null))

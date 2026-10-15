@@ -67,3 +67,4 @@
 {"at":"2026-10-15T09:30:50.021Z","kind":"task-updated","id":"t-w5-detail-fullscreen","by":"codex","status":"done","note":""}
 {"at":"2026-10-15T10:20:59.565Z","kind":"task-created","id":"t-w6-verify-fullscreen","assignee":"workbuddy","title":"W6 W4/W5 全屏成果 — 独立复核"}
 {"at":"2026-10-15T10:20:59.566Z","kind":"task-updated","id":"t-w6-verify-fullscreen","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-15T12:01:26.294Z","kind":"direct-user-task-completed","by":"codex","title":"推荐全屏隐藏顶部导航，退出恢复","report":".agents/shared/recommend-fullscreen-header-codex.md","web":true,"desktop":true}
