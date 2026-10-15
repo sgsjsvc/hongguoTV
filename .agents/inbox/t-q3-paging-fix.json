@@ -1,0 +1,45 @@
+{
+  "id": "t-q3-paging-fix",
+  "createdAt": "2026-10-15T05:25:04.874Z",
+  "updatedAt": "2026-10-15T05:25:04.876Z",
+  "assignee": "antigravity",
+  "title": "Q3 分页查询与选中状态修复",
+  "brief": "详见 .agents/inbox/t-q3-paging-fix.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "用户需求：优化分页查询方案。现在的分页有问题，选中有问题，查询后的选中状态有问题等等，去发现问题并修复",
+    "背景：Q1 刚把分页改为自动加载（滚动到底自动翻页），引入了一系列焦点/选中状态问题",
+    "协调者已定位 6 个缺陷：",
+    "  1(严重) 分页后整树重建，左栏题材列滚动位置丢失（实测从顶部跳到中间）",
+    "  2(严重) Top N 徽标序号失效（SeriesAdapter.kt:116 用 position<10，第2页恒false）",
+    "  3(中) catalogScroll 与 index 互斥，焦点恢复失败回退到 grid",
+    "  4(中) categoryFilterFocus 用完即清空（MainActivity.kt:1186），分页后焦点不回筛选按钮",
+    "  5(低) 分页无加载指示",
+    "  6(低) 死代码：addLoadMoreButton、series_card_width",
+    "必须保持 Q1 的 7 条分页约束（C1-C7），修复焦点时勿破坏",
+    "设备分配：antigravity 用 D1（127.0.0.1:16384），workbuddy 用 D3（127.0.0.1:16448）",
+    "环境：本机 DSH 沙箱拒绝 6300 以下 loopback 端口，adb 必须设 ANDROID_ADB_SERVER_PORT=15037",
+    "范围：仅 TV 端；排行榜保持顶部平铺（U6），分类页保持左侧双列（P1）",
+    "不要改 shared/content-core/hongguo.js 与 custom-server/"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-15T05:25:04.875Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-q3-paging-fix.brief.md",
+  "order": 1,
+  "kind": "fix"
+}
