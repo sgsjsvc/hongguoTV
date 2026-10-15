@@ -141,38 +141,82 @@ $adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
 
 ## 六、设备特性差异（影响验证结论）
 
+> ⚠️ **本节已于 2026-10-15 勘误**。原版按「可用宽度」判断档位，**结论有误**。
+> 勘误依据：workbuddy 的实测（`.agents/shared/device-dimens-bucket-correction.md`）
+> 与协调者在真机的 `am get-config` 复核。
+
 | 特性 | D1 | D2 | D3 | REAL |
 | --- | --- | --- | --- | --- |
 | Android 版本 | 12 | **15** | 12 | **5.1.1** |
-| 分辨率 | 720p | 1080p | 1080p | 720p |
-| 逻辑宽 | 853dp | 617dp | 617dp | 1280dp |
-| **命中的 dimens 档** | **sw600dp** | **sw600dp** | **sw600dp** | **w1280dp** |
-| 解码器 | Qualcomm | Qualcomm | Qualcomm | **Amlogic** |
-| 硬解 HEVC | 部分 | 部分 | 部分 | 部分 |
+| 物理分辨率 | 720p | 1080p | 1080p | 720p |
+| density | 240 | 280 | 280 | **160** |
+| **最小宽度（sw）** | **480dp** | **617dp**（原生）<br>411dp（调 720p 后） | 同 D2 | **720dp** |
+| **命中的 dimens 档** | **`values`** | `values` / `sw600dp`（看配置） | 同 D2 | **`sw600dp`** |
 
-### 关键：dimens 档位差异
+### 🔴 关键更正：档位由「最小宽度」决定，不是「可用宽度」
 
-| 档位 | 触发条件 | 命中设备 |
-| --- | --- | --- |
-| `values` | 最小宽度 < 600dp | 无 |
-| `values-sw600dp` | 最小宽度 ≥ 600dp | D1、D2、D3 |
-| `values-w1280dp` | **可用宽度 ≥ 1280dp** | **REAL** |
-
-**REAL 是唯一命中 `w1280dp` 档的设备** —— 验证最高档 dimens 必须用它。
-
-### 分辨率调整注意
-
-D1/D2/D3 的 `wm size 1280x720` 只改**物理像素**，**不改 density**：
-
-- D1：1280/1.5 = **853dp** 宽 → 命中 sw600dp
-- D2/D3：1280/1.75 = **731dp** 宽 → 仍命中 sw600dp
-
-**要让 D2/D3 命中 w1280dp**，需同时降 density：
+**判定口径**：
 
 ```powershell
-& $adb -s 127.0.0.1:16416 shell wm size 1280x720
-& $adb -s 127.0.0.1:16416 shell wm density 160   # 使逻辑宽度达 1280dp
+adb shell am get-config
+# 看输出中的 sw<N>dp 字段，例如：
+#   sw480dp  → 命中 values
+#   sw720dp  → 命中 values-sw600dp
 ```
+
+**资源匹配规则**（Android 官方）：
+
+1. 先淘汰不满足限定符的目录
+2. 按限定符类型的**优先级顺序**逐个比较
+3. **`smallestWidth`(sw) 的优先级高于 `available width`(w)**
+
+**推论（重要）**：
+
+> 只要设备的最小宽度 ≥ 600dp，`values-w1280dp` 就**永远不会生效** ——
+> 它被 `values-sw600dp` **遮蔽**（因为 `values-w1280dp` 未声明 sw，在 sw 比较阶段被判为更泛化）。
+
+### 各设备实测档位
+
+| 设备与配置 | 逻辑尺寸 | 最小宽度 | **实际命中档** | 依据 |
+| --- | --- | --- | --- | --- |
+| D1 `1280x720` @240dpi | 853×480dp | 480dp | **`values`** | 实测（leftRail 156px ÷1.5 = 104dp = `values` 值） |
+| D2/D3 `1280x720` @280dpi | 731×411dp | 411dp | **`values`** | D3 实测 |
+| D2/D3 原生 `1080x1920` @280dpi | 617×1097dp | **617dp** | **`values-sw600dp`** | 推导 |
+| D3 `1280x720` @**192dpi** | 1066×600dp | **600dp** | **`values-sw600dp`** | 实测（leftRail 142px = 118.3dp） |
+| **REAL `1280x720` @160dpi** | 1280×720dp | **720dp** | **`values-sw600dp`** | `am get-config` 确认 `sw720dp` |
+| D1 `1280x720` @90dpi | 2275×1280dp | 1280dp | **`values-sw600dp`** | 实测（**非** w1280dp，遮蔽实证） |
+
+### 让模拟器落在 sw600dp 档（TV 目标档）
+
+**仅改 `wm size` 不够**，还需降 density：
+
+```powershell
+# 720p 要达 sw600dp，需 density ≤ 192（720/600 = 1.2）
+& $adb -s 127.0.0.1:16416 shell wm size 1280x720
+& $adb -s 127.0.0.1:16416 shell wm density 192
+```
+
+**验证**：`am get-config` 应显示 `sw600dp`。
+
+### ⚠️ `values-w1280dp` 形同虚设
+
+由于上述遮蔽效应，**`values-w1280dp` 目录在 sw≥600dp 的设备上永不生效**。
+
+**建议**（已记录，待统筹）：将目录改名为 **`values-sw1280dp`**（与 sw600dp 同族，优先级可比）。
+该改动涉及全部 dimens 键，宜单独立项。
+
+---
+
+## 六之二、分辨率调整注意（已更正）
+
+`wm size 1280x720` **只改物理像素，不改 density**：
+
+| 设备 | 调整后逻辑尺寸 | 最小宽度 | 命中档 |
+| --- | --- | --- | --- |
+| D1 (240dpi) | 853×480dp | 480dp | `values` |
+| D2/D3 (280dpi) | 731×411dp | 411dp | `values` |
+
+**要命中 `sw600dp`**，需 `wm density 192`（见上）。
 
 ---
 
