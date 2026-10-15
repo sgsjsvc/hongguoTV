@@ -1,7 +1,7 @@
 {
   "id": "t-q5-fix-dup-append",
   "createdAt": "2026-10-15T06:49:21.066Z",
-  "updatedAt": "2026-10-15T06:54:25.240Z",
+  "updatedAt": "2026-10-15T07:06:37.847Z",
   "assignee": "antigravity",
   "title": "Q5 修复分页重复追加",
   "brief": "详见 .agents/inbox/t-q5-fix-dup-append.brief.md",
@@ -35,15 +35,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-15T06:57:06.116Z",
+  "result": {
+    "summary": ".agents/shared/t-q5-fix-dup-append-antigravity.md"
+  },
   "history": [
     {
       "at": "2026-10-15T06:49:21.067Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-15T06:57:06.116Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-15T07:06:37.848Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

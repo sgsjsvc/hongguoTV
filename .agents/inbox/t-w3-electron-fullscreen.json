@@ -1,7 +1,7 @@
 {
   "id": "t-w3-electron-fullscreen",
   "createdAt": "2026-10-15T06:46:45.362Z",
-  "updatedAt": "2026-10-15T06:46:45.384Z",
+  "updatedAt": "2026-10-15T07:14:04.551Z",
   "assignee": "codex",
   "title": "W3 Electron 端窗口级全屏",
   "brief": "详见 .agents/inbox/t-w3-electron-fullscreen.brief.md",
@@ -28,15 +28,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-15T06:56:52.188Z",
+  "result": {
+    "summary": "W3完成：原生全屏IPC/preload、串行异步状态与通知、Esc/F11、销毁清理；修复Windows事件早于状态的实测竞态。最终x64安装/便携包构建通过，失焦全屏/10轮toggle/屏幕尺寸/取消订阅/父HG_PORT隔离实测通过，已关自有进程。报告 .agents/shared/t-w3-electron-fullscreen-codex.md"
+  },
   "history": [
     {
       "at": "2026-10-15T06:46:45.362Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-15T06:56:52.188Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-15T07:14:04.552Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

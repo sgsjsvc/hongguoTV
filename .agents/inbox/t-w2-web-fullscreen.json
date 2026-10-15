@@ -1,7 +1,7 @@
 {
   "id": "t-w2-web-fullscreen",
   "createdAt": "2026-10-15T06:46:45.359Z",
-  "updatedAt": "2026-10-15T06:46:45.361Z",
+  "updatedAt": "2026-10-15T07:23:27.165Z",
   "assignee": "antigravity",
   "title": "W2 Web 端全屏修复与按钮",
   "brief": "详见 .agents/inbox/t-w2-web-fullscreen.brief.md",
@@ -28,15 +28,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-15T06:56:59.729Z",
+  "result": {
+    "summary": ".agents/shared/t-w2-web-fullscreen-antigravity.md"
+  },
   "history": [
     {
       "at": "2026-10-15T06:46:45.359Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-15T06:56:59.729Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-15T07:23:27.166Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

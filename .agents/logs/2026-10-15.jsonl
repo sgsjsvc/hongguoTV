@@ -48,3 +48,13 @@
 {"at":"2026-10-15T06:49:21.068Z","kind":"task-created","id":"t-q5-fix-dup-append","assignee":"antigravity","title":"Q5 修复分页重复追加"}
 {"at":"2026-10-15T06:49:21.070Z","kind":"task-updated","id":"t-q5-fix-dup-append","by":"dsh","status":"pending","note":"brief ok"}
 {"at":"2026-10-15T06:54:25.242Z","kind":"task-updated","id":"t-q5-fix-dup-append","by":"dsh","status":"pending","note":"改为可竞争任务：codex/antigravity 先完成 W 任务者认领"}
+{"at":"2026-10-15T06:56:52.111Z","kind":"task-updated","id":"t-w1-port-autoincrement","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-15T06:56:52.192Z","kind":"task-updated","id":"t-w3-electron-fullscreen","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-15T06:56:59.767Z","kind":"task-updated","id":"t-w2-web-fullscreen","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-15T06:57:06.125Z","kind":"task-updated","id":"t-q5-fix-dup-append","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-15T07:06:37.900Z","kind":"task-updated","id":"t-q5-fix-dup-append","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-15T07:14:04.081Z","kind":"task-updated","id":"t-w1-port-autoincrement","by":"codex","status":"done","note":""}
+{"at":"2026-10-15T07:14:04.572Z","kind":"task-updated","id":"t-w3-electron-fullscreen","by":"codex","status":"done","note":""}
+{"at":"2026-10-15T07:23:27.173Z","kind":"task-updated","id":"t-w2-web-fullscreen","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-15T07:45:07.909Z","kind":"task-created","id":"t-w4-stream-fullscreen","assignee":"antigravity","title":"W4 推荐流页面添加全屏按钮"}
+{"at":"2026-10-15T07:45:07.911Z","kind":"task-updated","id":"t-w4-stream-fullscreen","by":"dsh","status":"pending","note":"brief ok（更正派发错误）"}

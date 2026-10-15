@@ -1,0 +1,53 @@
+{
+  "id": "t-w4-stream-fullscreen",
+  "createdAt": "2026-10-15T07:45:07.908Z",
+  "updatedAt": "2026-10-15T07:45:07.910Z",
+  "assignee": "antigravity",
+  "title": "W4 推荐流页面添加全屏按钮",
+  "brief": "详见 .agents/inbox/t-w4-stream-fullscreen.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "⚠️ 本任务更正协调者的派发错误：",
+    "  用户原话：全屏按钮全部添加的位置都错了，现在添加的页面本来就有全屏按钮。",
+    "  我让你添加的时推荐页面添加。",
+    "  我（协调者）此前让 W2 改 PlayerModal.tsx（详情页），但详情页本来就有全屏按钮；",
+    "  用户要的是推荐流页面（RecommendStream.tsx），那里没有任何全屏功能。",
+    "  这不是执行方的错误，是协调者 brief 没区分清楚页面。",
+    "完整更正说明: .agents/shared/fullscreen-requirement-correction.md",
+    "目标文件: apps/web-pc/src/components/RecommendStream.tsx（608 行）",
+    "全屏按钮位置: 第 286 行的右上角按钮区（倍速/画质按钮旁边）",
+    "目标布局（用户截图）: 竖版视频居中，左上第N集徽标，右上倍速/画质/全屏，",
+    "  右侧追剧+上下箭头，左下剧名/集数/标签/描述/操作按钮，底部进度条",
+    "复用 W2 的有效成果: window.hongguotDesktop 桥接调用、状态同步、错误提示",
+    "保留 W3 的成果: apps/web-pc/electron/preload.cjs + IPC（基础设施）",
+    "可评估: PlayerModal.tsx 新增的右上角悬浮全屏按钮是否冗余（需说明理由）",
+    "不要改 apps/web-pc/electron/、apps/tv-android/、custom-server/、shared/",
+    "环境：本机 DSH 沙箱拒绝 6300 以下 loopback 端口"
+  ],
+  "acceptance": [
+    "推荐流右上角有全屏按钮（截图）",
+    "点击可进入全屏，布局符合用户目标截图",
+    "全屏时控件不丢失（集数/倍速/画质/追剧/进度条）",
+    "全屏失败时有提示，Escape 可退出",
+    "详情页行为不变",
+    "typecheck / build 通过",
+    "报告写入 .agents/shared/t-w4-stream-fullscreen-antigravity.md"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-15T07:45:07.908Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-w4-stream-fullscreen.brief.md",
+  "order": 4,
+  "kind": "fix"
+}

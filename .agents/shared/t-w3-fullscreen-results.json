@@ -1,0 +1,86 @@
+{
+  "bridge": {
+    "type": "object",
+    "keys": [
+      "isDesktop",
+      "setFullScreen",
+      "toggleFullScreen",
+      "isFullScreen",
+      "onFullScreenChanged"
+    ],
+    "isDesktop": true
+  },
+  "focusedBefore": false,
+  "unfocusedFullscreenSucceeded": true,
+  "dimensions": {
+    "width": 2048,
+    "height": 1280,
+    "screenWidth": 2048,
+    "screenHeight": 1280
+  },
+  "bounds": {
+    "window": {
+      "x": 0,
+      "y": 0,
+      "width": 2048,
+      "height": 1280
+    },
+    "display": {
+      "x": 0,
+      "y": 0,
+      "width": 2048,
+      "height": 1280
+    },
+    "contextIsolation": true,
+    "nodeIntegration": false
+  },
+  "cycles": [
+    [
+      true,
+      false
+    ],
+    [
+      true,
+      false
+    ],
+    [
+      true,
+      false
+    ],
+    [
+      true,
+      false
+    ],
+    [
+      true,
+      false
+    ],
+    [
+      true,
+      false
+    ],
+    [
+      true,
+      false
+    ],
+    [
+      true,
+      false
+    ],
+    [
+      true,
+      false
+    ],
+    [
+      true,
+      false
+    ]
+  ],
+  "escapeExit": true,
+  "unsubscribe": true,
+  "notificationsBeforeUnsubscribe": 23,
+  "health": 200,
+  "backendPort": 2242,
+  "parentHgPortIgnored": true,
+  "closedOwnProcess": true
+}

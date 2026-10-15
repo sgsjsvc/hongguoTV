@@ -1,7 +1,7 @@
 {
   "id": "t-w1-port-autoincrement",
   "createdAt": "2026-10-15T06:46:45.354Z",
-  "updatedAt": "2026-10-15T06:46:45.356Z",
+  "updatedAt": "2026-10-15T07:14:04.058Z",
   "assignee": "codex",
   "title": "W1 端口自动递增（避免占用导致启动失败）",
   "brief": "详见 .agents/inbox/t-w1-port-autoincrement.brief.md",
@@ -28,15 +28,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-15T06:56:52.089Z",
+  "result": {
+    "summary": "W1完成：内容/共享服务默认11次递增、HG_PORT严格、PORT0保留；launcher实际端口与Vite代理联动通过。真实占用/范围耗尽/脚本启停、Vite3001→后端8789通过，115回归与构建通过。必要打包依赖已补。报告 .agents/shared/t-w1-port-autoincrement-codex.md"
+  },
   "history": [
     {
       "at": "2026-10-15T06:46:45.355Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-15T06:56:52.089Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-15T07:14:04.059Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

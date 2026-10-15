@@ -1,0 +1,10 @@
+{
+  "id": "t-w2-web-fullscreen",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-15T07:23:27.173Z",
+  "title": "W2 Web 端全屏修复与按钮",
+  "result": {
+    "summary": ".agents/shared/t-w2-web-fullscreen-antigravity.md"
+  }
+}

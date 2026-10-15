@@ -1,0 +1,6 @@
+{
+  "backendPort": 8789,
+  "vitePort": 3001,
+  "proxyRankTypes": 4,
+  "proxyStatus": 200
+}

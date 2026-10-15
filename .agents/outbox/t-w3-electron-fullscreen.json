@@ -1,0 +1,10 @@
+{
+  "id": "t-w3-electron-fullscreen",
+  "agent": "codex",
+  "status": "done",
+  "finishedAt": "2026-10-15T07:14:04.573Z",
+  "title": "W3 Electron 端窗口级全屏",
+  "result": {
+    "summary": "W3完成：原生全屏IPC/preload、串行异步状态与通知、Esc/F11、销毁清理；修复Windows事件早于状态的实测竞态。最终x64安装/便携包构建通过，失焦全屏/10轮toggle/屏幕尺寸/取消订阅/父HG_PORT隔离实测通过，已关自有进程。报告 .agents/shared/t-w3-electron-fullscreen-codex.md"
+  }
+}

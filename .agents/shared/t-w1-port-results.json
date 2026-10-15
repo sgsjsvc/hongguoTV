@@ -1,0 +1,58 @@
+[
+  {
+    "label": "default-one",
+    "type": "ready",
+    "port": 8789,
+    "logFile": "outputs/w1-tests/default-one.log"
+  },
+  {
+    "label": "default-three",
+    "type": "ready",
+    "port": 8791,
+    "logFile": "outputs/w1-tests/default-three.log"
+  },
+  {
+    "label": "all-busy",
+    "failed": true,
+    "code": 1,
+    "logFile": "outputs/w1-tests/all-busy.log"
+  },
+  {
+    "label": "explicit-busy",
+    "failed": true,
+    "code": 1,
+    "logFile": "outputs/w1-tests/explicit-busy.log"
+  },
+  {
+    "label": "explicit-free",
+    "type": "ready",
+    "port": 8899,
+    "logFile": "outputs/w1-tests/explicit-free.log"
+  },
+  {
+    "label": "ephemeral",
+    "type": "ready",
+    "port": 5522,
+    "logFile": "outputs/w1-tests/ephemeral.log"
+  },
+  {
+    "label": "sync-fallback",
+    "type": "ready",
+    "port": 8792,
+    "logFile": "outputs/w1-tests/sync-fallback.log"
+  },
+  {
+    "label": "launcher-web",
+    "actualPort": 8789,
+    "repeatedStart": true
+  },
+  {
+    "label": "launcher-sync",
+    "actualPort": 8792,
+    "repeatedStart": true
+  },
+  {
+    "label": "existing-8788-owner",
+    "ownership": "test-owned"
+  }
+]

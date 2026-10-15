@@ -1,0 +1,10 @@
+{
+  "id": "t-q5-fix-dup-append",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-15T07:06:37.901Z",
+  "title": "Q5 修复分页重复追加",
+  "result": {
+    "summary": ".agents/shared/t-q5-fix-dup-append-antigravity.md"
+  }
+}

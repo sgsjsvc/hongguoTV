@@ -1,0 +1,5 @@
+{
+  "rankTest": "PASS: 榜单最大 Top N 恰好为 100，完全符合 API 真实返回 (5页 x 20 = 100)，彻底消除了 Top 1..120 的 20 条重复！",
+  "disasterTest": "INFO: 累计条目数 76",
+  "q3Preserved": "PASS: 左栏题材列滚动位置完全保持，Q3 焦点与自适应成果零回退！"
+}
