@@ -10,9 +10,12 @@
     "build": "npm --prefix apps/web-pc run build",
     "typecheck": "npm --prefix apps/web-pc exec -- tsc --noEmit -p apps/web-pc/tsconfig.json",
     "desktop:dev": "npm --prefix apps/web-pc run desktop:dev",
-    "build:desktop": "npm run build && node scripts/build-bundles.mjs --platforms=win-x64",
+    "build:desktop": "npm run smoke && npm run build && node scripts/build-bundles.mjs --platforms=win-x64,win-arm64",
     "test": "node --test tests/*.test.mjs",
     "probe": "node scripts/probe.mjs",
+    "smoke": "node scripts/smoke-playback.mjs",
+    "diagnose": "node scripts/diagnose-playback.mjs",
+    "release:check": "npm test && npm run typecheck && npm run smoke",
     "sync-server": "node apps/sync-server/index.mjs",
     "build:bundles": "node scripts/build-bundles.mjs"
   },

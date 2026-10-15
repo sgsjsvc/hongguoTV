@@ -105,7 +105,7 @@ try {
       }),
     });
     vm.runInContext(
-      source + "\nthis.api = {fetchVideoInfo, resolveStream, qualityLabel, qualityNumber, prepareHeader, remoteRange, decryptPartial, rankData};",
+      source + "\nthis.api = {fetchVideoInfo, resolveStream, qualityLabel, qualityNumber, prepareHeader, remoteRange, decryptPartial, rankData, upstreamStats};",
       context,
       { timeout: 5000 }
     );
@@ -442,8 +442,30 @@ const server = http.createServer(async (req, res) => {
   }
 
   // 1. 健康检查
+  // 说明：ok:true 只表示「进程活着」，不代表「能播」。
+  // 2026-10-15 事故中上游返回空体，进程完全健康但三端全不可播，
+  // 因此这里额外暴露 playback 段，让调用方能区分「活着」与「能用」。
   if (pathname === "/health") {
-    return json(res, { service: "hongguotv-custom-bridge", version: "2.3.0", ok: true });
+    const stats = hgEngine?.upstreamStats ?? null;
+    const engineLoaded = Boolean(hgEngine);
+    // 有历史样本时，最近一批是否全为空体（上游静默降级）
+    const upstreamDegraded = Boolean(
+      stats && stats.empty > 0 && stats.ok === 0
+    );
+    return json(res, {
+      service: "hongguotv-custom-bridge",
+      version: "2.3.0",
+      ok: true,
+      playback: {
+        engineLoaded,
+        // 只有确认近期成功过，才敢说可播
+        upstreamHealthy: engineLoaded && !upstreamDegraded && (stats ? stats.ok > 0 : false),
+        upstreamDegraded,
+        stats: stats
+          ? { total: stats.total, ok: stats.ok, empty: stats.empty, error: stats.error }
+          : null,
+      },
+    });
   }
 
   // 1.1 静态托管 Web/PC 产物 (部署后端即自带 Web 前端页面)

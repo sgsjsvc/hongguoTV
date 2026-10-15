@@ -35,8 +35,9 @@ function loadEngine(file = ENGINE) {
     URLSearchParams,
     axios: { create: () => async () => ({ status: 200, data: "{}" }) },
   });
+  // 注意：这里刻意不导出 DEVICE——引擎已不再提供该常量（见下方结构约束测试）
   vm.runInContext(
-    source + "\nthis.api = { DEVICE, freshDevice, randomDeviceId, signedVideoRequest };",
+    source + "\nthis.api = { freshDevice, randomDeviceId, signedVideoRequest, buildMedusa, requestVideoModel };",
     context,
     { timeout: 5000 }
   );
@@ -115,6 +116,82 @@ test("engine: 设备画像字段保持不变（机型等不应随机）", () => 
 
 // ---------- 签名契约：medusa 必须使用传入的设备 ----------
 
+test("engine: 不得存在模块级可复用设备常量", () => {
+  const { source } = loadEngine();
+  // 结构约束：不允许出现 `const DEVICE = freshDevice()` 这类可复用常量。
+  // 2026-10-15 事故的根因就是这种常量被上游封禁。
+  assert.equal(
+    /const\s+DEVICE\s*=/.test(source),
+    false,
+    "发现模块级 DEVICE 常量；设备标识必须现场生成，不可复用"
+  );
+});
+
+test("engine: signedVideoRequest 缺少设备时必须抛错而非静默回落", () => {
+  const { api } = loadEngine();
+  const payload = JSON.stringify({ video_id: "1", biz_param: {} });
+  assert.throws(
+    () => api.signedVideoRequest(payload),
+    /一次性设备标识/,
+    "未传设备时应抛错——静默回落曾导致修复失效"
+  );
+  assert.throws(
+    () => api.signedVideoRequest(payload, { device_id: "1" }),
+    /一次性设备标识/,
+    "设备不完整（缺 iid）时也应抛错"
+  );
+  // 传完整设备时正常返回
+  const signed = api.signedVideoRequest(payload, api.freshDevice());
+  assert.ok(signed.url && signed.headers && signed.body, "传入完整设备后应正常签名");
+});
+
+test("engine: buildMedusa 缺少设备时必须抛错", () => {
+  const { source } = loadEngine();
+  const start = source.indexOf("function buildMedusa(");
+  const end = source.indexOf("\nfunction ", start + 10);
+  const body = source.slice(start, end > 0 ? end : undefined);
+  assert.ok(
+    /if\s*\(!device/.test(body),
+    "buildMedusa 应对缺失设备做显式校验，而不是回落到全局值"
+  );
+});
+
+// ---------- 可观测性：上游静默降级必须可被察觉 ----------
+
+test("engine: 暴露 upstreamStats 以观测上游空体率", () => {
+  const { source } = loadEngine();
+  assert.ok(/upstreamStats/.test(source), "引擎应记录上游请求结果分布");
+  assert.ok(/lastEmptyAt/.test(source), "应记录最近一次空体时间");
+});
+
+test("engine: 连续空体的错误信息能指向原因", () => {
+  const { source } = loadEngine();
+  const start = source.indexOf("async function requestVideoModel(");
+  const end = source.indexOf("\nfunction ", start + 10);
+  const body = source.slice(start, end > 0 ? end : undefined);
+  assert.ok(
+    /空响应体/.test(body) && /diagnose-playback/.test(body),
+    "全部空体时应给出可操作提示，而不是笼统的 HTTP 200"
+  );
+});
+
+test("server: 健康检查区分「进程活着」与「能播」", () => {
+  const server = fs.readFileSync(path.join(root, "custom-server", "index.mjs"), "utf8");
+  assert.ok(/playback\s*:/.test(server), "健康检查应包含 playback 段");
+  assert.ok(/upstreamDegraded/.test(server), "健康检查应暴露上游降级标志");
+  assert.ok(/upstreamHealthy/.test(server), "健康检查应暴露上游健康标志");
+});
+
+test("release: 打包流程包含播放冒烟门禁", () => {
+  const pkg = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8"));
+  assert.ok(pkg.scripts.smoke, "缺少 smoke 脚本");
+  assert.ok(
+    /smoke/.test(pkg.scripts["build:desktop"] || ""),
+    "build:desktop 必须先跑播放冒烟测试，避免打包出不能播的产物"
+  );
+  assert.ok(pkg.scripts["release:check"], "缺少 release:check 汇总门禁");
+});
+
 test("engine: signedVideoRequest 的 URL 使用传入的 device_id", () => {
   const { api } = loadEngine();
   const dev = api.freshDevice();
@@ -124,9 +201,10 @@ test("engine: signedVideoRequest 的 URL 使用传入的 device_id", () => {
   assert.equal(urlDev, dev.device_id, "URL 中的 device_id 与传入设备不一致");
 });
 
-test("engine: medusa 签名不得回落到全局 DEVICE（曾因此导致换设备无效）", () => {
+test("engine: medusa 签名必须使用传入的设备（曾因回落全局值而失效）", () => {
   // 事故修复过程中发现：buildMedusa 内部硬编码引用全局 DEVICE，
   // 导致即使传入了新设备，签名仍用旧 id，上游照样返回空体。
+  // 现在改为必填 + 显式校验，不再有任何回落路径。
   const { source } = loadEngine();
   const start = source.indexOf("function buildMedusa(");
   assert.ok(start > 0, "未找到 buildMedusa");
@@ -139,8 +217,14 @@ test("engine: medusa 签名不得回落到全局 DEVICE（曾因此导致换设�
     "buildMedusa 内仍引用全局 DEVICE，传入 device 参数会被忽略"
   );
   assert.ok(
-    /const\s+DEV\s*=\s*device\s*\|\|\s*DEVICE/.test(body),
-    "buildMedusa 应接受 device 参数并回落到 DEVICE"
+    /const\s+DEV\s*=\s*device\s*;/.test(body),
+    "buildMedusa 必须直接使用传入的 device，不得回落到任何全局值"
+  );
+  // 只检查赋值语句本身：守卫 `if (!device || ...)` 里的 || 是合法的校验
+  assert.equal(
+    /const\s+DEV\s*=\s*device\s*\|\|/.test(body),
+    false,
+    "buildMedusa 的赋值不应存在 || 回落——缺失设备必须显式报错"
   );
 });
 

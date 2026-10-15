@@ -45,11 +45,19 @@ const DEVICE_PROFILE = {
     update_version_code: '71332', host_abi: 'arm64-v8a', dragon_device_type: 'phone', pv_player: '71332',
     compliance_status: '0', need_personal_recommend: '1', player_so_load: '1', is_android_pad_screen: '0',
 };
-// 每次调用都产生一组全新的 iid/device_id，供单次 video_model 请求使用
+// 每次调用都产生一组全新的 iid/device_id，供单次 video_model 请求使用。
+//
+// 【设计约束，勿破坏】
+// 历史上这里是一个模块级常量 DEVICE，被上游封禁后三端同时不可播。
+// 为避免同类事故，本文件遵守以下规则：
+//   1. 不导出、不保存任何可复用的设备标识（没有 DEVICE 这样的模块级常量）
+//   2. 所有需要设备标识的请求都必须现场调用 freshDevice()
+//   3. 需要设备参数的函数一律要求显式传入，不提供静默回落
+// 测试 tests/device-identity.test.mjs 会锁定这些约束。
 function freshDevice() { return { ...DEVICE_PROFILE, iid: randomDeviceId(), device_id: randomDeviceId() }; }
-const DEVICE = freshDevice();
+// 搜索接口用的静态参数：不含一次性标识，可安全复用
 const APP_DEVICE = {
-    ...DEVICE, version_code: '72232', version_name: '7.2.2.32', manifest_version_code: '72232',
+    ...DEVICE_PROFILE, version_code: '72232', version_name: '7.2.2.32', manifest_version_code: '72232',
     update_version_code: '72232', pv_player: '72232',
 };
 const SELECTOR_GROUPS = [
@@ -438,7 +446,9 @@ class AesV3 {
 function xmxor(data, key) { const encoded=Buffer.alloc(data.length); for(let i=0;i<data.length;i+=1){const at=(i*4)&28;const d0=key[at],d1=key[at+1];let d2=((((data[i]<<4)|(data[i]>>>4))&255)+d0);d2=(~d2)^d1;d2=((((d2&255)<<3)|((d2&255)>>>5))&255);d2=(d2+d1)&255;d2=(d2^d0)&255;encoded[data.length-i-1]=(~d2)&255;} let last=encoded[encoded.length-1]^encoded[encoded.length-2];const first=encoded[0];encoded[0]=(~last+first)&255;encoded[1]=((encoded[0]^encoded[encoded.length-1]^254)+encoded[1])&255;encoded[2]=(encoded[2]+((last-first)^(((encoded[1]<<3)|(encoded[1]>>>5))&255)^2))&255;for(let i=0;i<encoded.length-4;i+=1){const temp=(((encoded[i+2]<<3)|(encoded[i+2]>>>5))&255)^encoded[i+1]^(i+3);encoded[i+3]=(~temp+encoded[i+3])&255;}encoded[encoded.length-1]^=encoded[encoded.length-2];let sum=0;for(let i=0;i<encoded.length-1;i+=1)sum+=encoded[i+1];encoded[0]=((encoded[0]^encoded[1])+sum)&255;return encoded; }
 function keyHash(signKey, random) { const input=Buffer.concat([signKey,le32(random),signKey]); const hash=sm3(input); const d1=(random>>16)&255; let d2=((d1<<11)|(random>>>24))^(d1>>5)^d1; d2=(~d2)>>>0; return [hash,le32(d2)]; }
 function buildMedusa(url, body, khronos, device) {
-    const DEV = device || DEVICE;
+    // device 必填：签名里嵌入 device_id，用错设备会让上游返回空体（曾因此让修复失效）
+    if (!device || !device.device_id) throw new Error('buildMedusa 需要一次性设备标识');
+    const DEV = device;
     const bodyMd5=body?crypto.createHash('md5').update(body).digest():Buffer.alloc(16); const querySm3=sm3(url.split('?')[1]); const ts=le32(khronos); const queryBodyTs=hashF13(querySm3,bodyMd5,ts,khronos); const nested=proto([[1,111,'sint'],[2,10,'sint'],[3,694367,'sint'],[5,586952199,'sint']]); const messageRand=Math.floor(Math.random()*0x100000000); const envLaunch=Math.floor(Math.random()*21)+100; const envPid=Math.floor(Math.random()*2000)+10001; const env=proto([[1,envLaunch,'sint'],[2,146331399,'sint'],[3,146331396,'sint'],[5,7,'sint'],[6,'v04.06.04.03-bugfix'],[7,envPid,'sint'],[12,deviceProto(DEV.device_id,DEV.version_name),'message'],[13,proto([[1,Math.floor(Date.now()/1000),'sint'],[2,-2,'sint'],[4,200,'sint']]),'message'],[14,DEV.version_name]]); const queryHash=sm3(Buffer.concat([Buffer.from(url.split('?')[1]),bodyMd5,Buffer.from('none')])); const message=proto([[1,Buffer.from('f7e85ffad7d7dc3bd62ac87057cf6118','hex'),'bytes'],[2,3,'sint'],[3,messageRand,'sint'],[4,'8662'],[5,DEV.device_id],[6,'1588093228'],[7,DEV.version_name],[8,'v04.06.04-ml-android'],[9,67503104,'sint'],[10,Buffer.from('4001000000000000','hex'),'bytes'],[12,khronos,'sint'],[13,queryBodyTs,'bytes'],[14,querySm3.subarray(0,6),'bytes'],[15,nested,'message'],[16,'AXYQOS6n2m60x1fVZHIrH3iol'],[17,khronos,'sint'],[19,queryHash,'bytes'],[20,'none'],[21,312,'sint'],[23,env,'message'],[24,'{\"cmr\":16777216,\"cmr2\":16777216,\"un_h\":1879194040,\"vpn\":0,\"kd\":0,\"fkd\":3672518972,\"pd\":-1872573247,\"dyn\":\"\",\"do\":0,\"tk\":true}']]); const random=Math.floor(Math.random()*0x100000000); const [hash,seed]=keyHash(Buffer.from('8ebdfa3806ecc5cee79423e6029ed82540bc2218bb7eae f71cb691f7aa8aa2f5'.replace(/ /g,''),'hex'),random); let transformed=xmxor(message,hash); transformed=Buffer.concat([Buffer.from('4001000000000000','hex'),transformed]).reverse(); for(let i=0;i<transformed.length;i+=1)transformed[i]^=seed[(~i)&3]; const check=((querySm3[0]&63)<<14)|0x18000001|((queryBodyTs[0]&63)<<8); const xmRand=Math.floor(Math.random()*0x100000000); const packed=Buffer.concat([Buffer.from([0x35]),le32(xmRand),le32(check),transformed,Buffer.from([random>>16,random>>24])]); const encrypted=new AesV3(Buffer.from('f1593376766ea98d34f31b057a9d5be4','hex'),khronos).encrypt(packed,Buffer.from('1fe109a4125283f418de9e051a969e12','hex')); const version=Buffer.from('03000000f7e85ffad7d7dc3bd62ac87057cf6118','hex'); const prefix=Buffer.alloc(20); for(let i=0;i<20;i+=4) prefix.writeUInt32LE(u32(version.readUInt32LE(i)^khronos),i); return Buffer.concat([prefix,Buffer.from([random&255,(random>>8)&255,0,1]),encrypted]).toString('base64');
 }
 function helios(khronos) {
@@ -453,6 +463,8 @@ function helios(khronos) {
 function branchOf(url, body, khronos) { const bodyMd5 = body ? crypto.createHash('md5').update(body).digest() : Buffer.alloc(16); const q = sm3(url.split('?')[1]); const iv = getIv(getIv(getIv(0x20230928, q), bodyMd5), le32(khronos)); const low = iv & 15; return low - (((low * 171) >> 9) * 3); }
 async function signedAppGet(values) {
     const khronos = Math.floor(Date.now() / 1000); const ticket = Date.now();
+    // 搜索接口同样要求一次性设备标识（签名内嵌 device_id）
+    const dev = freshDevice();
     const query = pythonUrlEncode({ ...values, ts: String(khronos), _rticket: String(ticket) });
     const url = `${APP_SEARCH_API}?${query}`;
     const random = Math.floor(Math.random() * 65536); const body = null;
@@ -462,7 +474,7 @@ async function signedAppGet(values) {
         'passport-sdk-version': '50561', 'x-xs-from-web': '0', 'x-khronos': String(khronos),
         'x-ladon': be32(khronos).toString('base64'), 'x-argus': le32(khronos).toString('base64'),
         'x-gorgon': xGorgon(query, body, khronos, random), 'x-helios': helios(khronos),
-        'x-medusa': buildMedusa(url, body, khronos), 'x-tt-dt': '',
+        'x-medusa': buildMedusa(url, body, khronos, dev), 'x-tt-dt': '',
     };
     const resp = await axios(url, { headers, timeout: 20000, responseType: 'text' });
     const data = jsonBody(resp.data);
@@ -470,11 +482,15 @@ async function signedAppGet(values) {
     return data;
 }
 
-function videoModelUrl() { const query = new URLSearchParams({ ...DEVICE }); return `${VIDEO_API}?${query}`; }
-
-// device 参数允许调用方传入一组一次性设备标识；缺省时用当前 DEVICE（保持旧行为）。
+// 构造一次性的 video_model 请求。
+// device 为必填：调用方必须现场 freshDevice()。
+// 不提供缺省回落——曾经因为「忘记传设备就用旧值」而让修复失效，
+// 因此这里选择直接抛错，让遗漏在开发阶段就暴露。
 function signedVideoRequest(payload, device) {
-    const dev = device || DEVICE;
+    if (!device || !device.device_id || !device.iid) {
+        throw new Error('signedVideoRequest 需要一次性设备标识：请调用 freshDevice() 并显式传入');
+    }
+    const dev = device;
     const khronos = Math.floor(Date.now() / 1000); const body = Buffer.from(payload); const ticketBase = Date.now(); let requestTicket = ticketBase; let query = ''; let url = '';
     // branch 1 的签名变体服务端不认：抖动 _rticket 找一个可用的 branch（最多试 32 秒偏移）
     for (let offset = 0; offset < 32; offset += 1) { requestTicket = ticketBase + offset; const values = { ...dev, ts: String(khronos), _rticket: String(requestTicket) }; query = pythonUrlEncode(values); url = `${VIDEO_API}?${query}`; if (branchOf(url, body, khronos) !== 1) break; }
@@ -488,6 +504,16 @@ function signedVideoRequest(payload, device) {
     return { url, headers, body };
 }
 
+// 上游健康度观测：记录最近一次 video_model 请求的结果分布。
+// 用于让健康检查与诊断脚本能如实反映「上游是否在静默降级」。
+const upstreamStats = { total: 0, empty: 0, ok: 0, error: 0, lastEmptyAt: 0, lastOkAt: 0 };
+function noteUpstream(kind) {
+    upstreamStats.total += 1;
+    upstreamStats[kind] += 1;
+    if (kind === 'empty') upstreamStats.lastEmptyAt = Date.now();
+    if (kind === 'ok') upstreamStats.lastOkAt = Date.now();
+}
+
 async function requestVideoModel(vid) {
     const payload = JSON.stringify({
         biz_param: { detail_page_version: 0, device_level: 3, disable_digg_stat: false, need_all_video_definition: true, need_mp4_align: false, use_os_player: false, use_server_dns: false, video_platform: 1024 },
@@ -495,20 +521,31 @@ async function requestVideoModel(vid) {
     });
     // 上游对同一 device_id 只放行一次：必须每次用新设备。
     // 空体是"设备已用尽"的信号，换设备重试即可（不改变业务语义）。
-    const attempts = 3;
+    // 连续多次空体说明上游策略变了（例如全面封禁），此时快速失败并留下明确错误。
+    const attempts = 5;
     let last = null;
+    let emptyCount = 0;
     for (let i = 0; i < attempts; i += 1) {
         const signed = signedVideoRequest(payload, freshDevice());
         const resp = await axios.post(signed.url, signed.body, { headers: signed.headers, timeout: 20000, responseType: 'text' });
         const data = jsonBody(resp.data);
         last = { resp, data };
         // 空体：该设备已被消耗，立即换一组重试
-        if (!data && resp.status === 200) continue;
+        if (!data && resp.status === 200) { emptyCount += 1; noteUpstream('empty'); continue; }
         const status = Number(data?.BaseResp?.StatusCode ?? data?.Code ?? data?.code ?? -1);
-        if (resp.status !== 200 || !data || status !== 0) throw new Error(`video_model failed: ${data?.BaseResp?.StatusMessage || data?.Message || data?.message || resp.status}`);
+        if (resp.status !== 200 || !data || status !== 0) {
+            noteUpstream('error');
+            throw new Error(`video_model failed: ${data?.BaseResp?.StatusMessage || data?.Message || data?.message || resp.status}`);
+        }
+        noteUpstream('ok');
         return data;
     }
-    throw new Error(`video_model failed: ${last?.resp?.status ?? 'empty'} (空响应，已重试 ${attempts} 次)`);
+    // 全部为空体：这不是单次抖动，而是上游策略变化，错误信息要能直接指向原因
+    throw new Error(
+        `video_model failed: 上游连续 ${emptyCount} 次返回空响应体（HTTP 200）。` +
+        `这通常意味着设备标识被风控，或上游接口已变更。` +
+        `请运行 node scripts/diagnose-playback.mjs 定位。`
+    );
 }
 
 function modelForVideo(data, vid) {
