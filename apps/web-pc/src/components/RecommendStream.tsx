@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { 
   Play, 
   Heart, 
@@ -9,7 +9,9 @@ import {
   ChevronUp, 
   ChevronDown, 
   ChevronRight, 
-  Layers 
+  Layers,
+  Maximize,
+  Minimize
 } from "lucide-react";
 import { api, saveProgress } from "../api";
 import { Detail, Episode, Series, VideoQualityItem } from "../types";
@@ -57,6 +59,7 @@ interface RecommendStreamProps {
   streamDetail: Detail | null;
   handleSelectSeries: (item: Series) => void;
   refreshHistory: () => Promise<void>;
+  showToast?: (msg: string) => void;
 }
 
 export const RecommendStream: React.FC<RecommendStreamProps> = ({
@@ -101,10 +104,122 @@ export const RecommendStream: React.FC<RecommendStreamProps> = ({
   streamDetail,
   handleSelectSeries,
   refreshHistory,
+  showToast,
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
+
+  // 监听全屏状态同步（DOM 与桌面端）
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      const isFs = Boolean(
+        document.fullscreenElement ||
+        (document as any).webkitFullscreenElement
+      );
+      setIsFullscreen(isFs);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+
+    const desktop = (window as any).hongguotvDesktop;
+    let unsubscribeDesktop: (() => void) | undefined;
+    if (desktop?.isDesktop) {
+      if (typeof desktop.isFullScreen === "function") {
+        desktop.isFullScreen().then((state: boolean) => {
+          setIsFullscreen(Boolean(state));
+        }).catch(() => {});
+      }
+      if (typeof desktop.onFullScreenChanged === "function") {
+        unsubscribeDesktop = desktop.onFullScreenChanged((state: boolean) => {
+          setIsFullscreen(Boolean(state));
+        });
+      }
+    }
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
+      if (typeof unsubscribeDesktop === "function") {
+        unsubscribeDesktop();
+      }
+    };
+  }, []);
+
+  const toggleFullscreen = useCallback(async () => {
+    const desktop = (window as any).hongguotvDesktop;
+    if (desktop?.isDesktop && typeof desktop.toggleFullScreen === "function") {
+      try {
+        const nextState = await desktop.toggleFullScreen();
+        setIsFullscreen(Boolean(nextState));
+      } catch (err: any) {
+        showToast?.("切换桌面全屏失败，请先点击窗口激活");
+      }
+      return;
+    }
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    try {
+      if (!document.fullscreenElement) {
+        if (container.requestFullscreen) {
+          await container.requestFullscreen();
+        } else if ((container as any).webkitRequestFullscreen) {
+          await (container as any).webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if ((document as any).webkitExitFullscreen) {
+          await (document as any).webkitExitFullscreen();
+        }
+      }
+    } catch (err: any) {
+      const msg = err?.message || "";
+      if (msg.includes("Permissions check failed") || err?.name === "TypeError") {
+        showToast?.("全屏失败，请先点击播放窗口再试");
+      } else {
+        showToast?.("全屏切换失败，请点击播放界面后再试");
+      }
+    }
+  }, [showToast]);
+
+  // 全屏快捷键 (F 键切换全屏，Escape 退出全屏)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement;
+      if (target?.tagName === "INPUT" || target?.tagName === "TEXTAREA" || target?.isContentEditable) {
+        return;
+      }
+      if (e.key === "f" || e.key === "F") {
+        e.preventDefault();
+        void toggleFullscreen();
+      } else if (e.key === "Escape") {
+        if (isFullscreen || document.fullscreenElement) {
+          e.preventDefault();
+          const desktop = (window as any).hongguotvDesktop;
+          if (desktop?.isDesktop && typeof desktop.setFullScreen === "function") {
+            desktop.setFullScreen(false).catch(() => {});
+          } else if (document.fullscreenElement) {
+            void document.exitFullscreen().catch(() => {});
+          } else {
+            void toggleFullscreen();
+          }
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isFullscreen, toggleFullscreen]);
+
   return (
     <div 
-      className="w-full h-full flex items-center justify-center relative select-none overflow-hidden bg-black"
+      ref={containerRef}
+      className={`w-full h-full flex items-center justify-center relative select-none overflow-hidden bg-black ${
+        isFullscreen ? "fixed inset-0 z-50 w-screen h-screen" : ""
+      }`}
       onWheel={(e) => {
         e.preventDefault();
         if (streamWheelLockRef.current) return;
@@ -163,6 +278,10 @@ export const RecommendStream: React.FC<RecommendStreamProps> = ({
             {/* 核心视频播放器或封面兜底 */}
             <div 
               className="absolute inset-0 z-0 flex items-center justify-center cursor-pointer"
+              onDoubleClick={(e) => {
+                e.stopPropagation();
+                void toggleFullscreen();
+              }}
               onClick={() => {
                 const video = streamVideoRef.current;
                 if (!video) return;
@@ -394,6 +513,29 @@ export const RecommendStream: React.FC<RecommendStreamProps> = ({
                 <span className="text-[11px] text-white/70 bg-black/50 px-3 py-1.5 rounded-full backdrop-blur-md border border-white/15 shadow-lg">
                   滚轮 / ↑↓ 键切剧
                 </span>
+
+                {/* 全屏切换按钮 */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    void toggleFullscreen();
+                  }}
+                  aria-label={isFullscreen ? "退出全屏" : "全屏"}
+                  title={isFullscreen ? "退出全屏 (ESC)" : "全屏 (F)"}
+                  className={`px-3 py-1.5 rounded-full backdrop-blur-md border text-xs font-bold transition flex items-center gap-1.5 shadow-lg cursor-pointer ${
+                    isFullscreen
+                      ? "bg-rose-600/40 text-rose-300 border-rose-500/50 hover:bg-rose-600/50"
+                      : "bg-black/60 hover:bg-black/80 text-white/90 border-white/15"
+                  }`}
+                >
+                  {isFullscreen ? (
+                    <Minimize className="w-3.5 h-3.5 text-rose-400" />
+                  ) : (
+                    <Maximize className="w-3.5 h-3.5 text-white/90" />
+                  )}
+                  <span>{isFullscreen ? "退出全屏" : "全屏"}</span>
+                </button>
               </div>
             </div>
 

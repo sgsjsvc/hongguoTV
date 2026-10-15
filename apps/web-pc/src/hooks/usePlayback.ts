@@ -181,11 +181,71 @@ export function usePlayback(
     resetControlsTimer();
   }, [resetControlsTimer, showToast]);
 
-  const toggleFullscreen = useCallback(() => {
-    if (!playerContainerRef.current) return;
-    if (!document.fullscreenElement) playerContainerRef.current.requestFullscreen().catch(() => {});
-    else document.exitFullscreen().catch(() => {});
+  // 全屏状态统一监听与同步
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+
+    const desktop = (window as any).hongguotvDesktop;
+    let unsubscribeDesktop: (() => void) | undefined;
+    if (desktop?.isDesktop) {
+      if (typeof desktop.isFullScreen === "function") {
+        desktop.isFullScreen().then((flag: boolean) => {
+          setIsFullscreen(Boolean(flag));
+        }).catch(() => {});
+      }
+      if (typeof desktop.onFullScreenChanged === "function") {
+        try {
+          unsubscribeDesktop = desktop.onFullScreenChanged((flag: boolean) => {
+            setIsFullscreen(Boolean(flag));
+          });
+        } catch {}
+      }
+    }
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
+      if (typeof unsubscribeDesktop === "function") {
+        try { unsubscribeDesktop(); } catch {}
+      }
+    };
   }, []);
+
+  const toggleFullscreen = useCallback(async () => {
+    const desktop = (window as any).hongguotvDesktop;
+    if (desktop?.isDesktop) {
+      try {
+        const nextState = await desktop.toggleFullScreen();
+        setIsFullscreen(Boolean(nextState));
+      } catch (err: any) {
+        showToast("切换桌面全屏失败，请先点击窗口激活");
+      }
+      return;
+    }
+
+    const container = playerContainerRef.current;
+    if (!container) return;
+
+    try {
+      if (!document.fullscreenElement) {
+        await container.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+    } catch (err: any) {
+      const msg = err?.message || "";
+      if (msg.includes("Permissions check failed") || err?.name === "TypeError") {
+        showToast("全屏失败，请先点击播放窗口再试");
+      } else {
+        showToast("全屏切换失败，请点击播放界面后再试");
+      }
+    }
+  }, [showToast]);
 
   const handleToggleMute = useCallback(() => {
     const video = videoRef.current;

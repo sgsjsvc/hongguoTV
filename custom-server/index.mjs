@@ -5,6 +5,7 @@ import crypto from "node:crypto";
 import path from "node:path";
 import { URL, fileURLToPath } from "node:url";
 import axios from "axios";
+import { listenWithFallback, serviceListenOptions } from "../shared/listen-port.mjs";
 import { HistoryStore } from "./history-store.mjs";
 import { createHistoryHandler } from "./history-routes.mjs";
 import { provider as coreProvider } from "../server/provider.mjs";
@@ -60,7 +61,8 @@ function serveStatic(res, pathname) {
   return true;
 }
 
-const PORT = Number(process.env.PORT || 8788);
+const listenOptions = serviceListenOptions(8788);
+const PORT = listenOptions.port;
 const DATA_DIR = process.env.HG_DATA_DIR || path.join(__dirname, "data");
 const historyStore = new HistoryStore(process.env.HISTORY_DB_PATH || path.join(DATA_DIR, "history.sqlite"));
 const libraryStore = new LibraryStore(path.join(DATA_DIR, "library.sqlite"));
@@ -798,19 +800,22 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, process.env.HG_HOST || "0.0.0.0", () => {
-  const actualPort = server.address().port;
+listenWithFallback(server, PORT, process.env.HG_HOST || "0.0.0.0", listenOptions.attempts).then(actualPort => {
+  try { fs.writeFileSync(path.join(DATA_DIR, "service-address.json"), JSON.stringify({pid:process.pid,port:actualPort})); }
+  catch(error) { console.warn(`无法登记开发代理地址：${error.message}；可用 HG_BACKEND_URL 指定实际服务地址。`); }
   if (process.send) process.send({type:"ready",port:actualPort});
   console.log(`===============================================`);
   console.log(`🚀 红果全能 Bridge 服务端 (v2.3 官方全量 Top 100 榜单版) 已启动!`);
-  console.log(`📡 监听地址: http://0.0.0.0:${PORT}`);
+  console.log(`📡 监听地址: http://localhost:${actualPort}`);
   console.log(`🎬 包含板块: 官方首页Banner、24题材分类、官方四大热播榜(Top 100 分页)、MP4解密流代理`);
   console.log(`===============================================`);
-});
+}).catch(error => { console.error(error.message); librarySync.stop(); libraryStore.close(); historyStore.close(); process.exitCode=1; if(process.connected)process.disconnect(); });
 
 let shuttingDown = false;
 function shutdown() {
   if (shuttingDown) return; shuttingDown = true; librarySync.stop();
+  const addressFile=path.join(DATA_DIR,"service-address.json");
+  try { if(JSON.parse(fs.readFileSync(addressFile,"utf8")).pid===process.pid)fs.unlinkSync(addressFile); } catch {}
   server.close(() => { libraryStore.close(); historyStore.close(); process.exit(0); });
   server.closeAllConnections();
 }

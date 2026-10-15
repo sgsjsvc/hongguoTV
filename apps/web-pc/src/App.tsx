@@ -145,6 +145,7 @@ export default function App() {
       handleToggleMute: playback.handleToggleMute,
       setVolume: playback.setVolume,
       setIsMuted: playback.setIsMuted,
+      isFullscreen: playback.isFullscreen,
     },
     showToast,
   });
@@ -384,13 +385,31 @@ export default function App() {
     return () => { cancelled = true; };
   }, [activeSeries?.id]);
 
-  // 全屏状态同步监听
+  // 全屏状态同步监听 (DOM 原生与 Electron 桌面双同步)
   useEffect(() => {
     const handleFullscreenChange = () => {
       playback.setIsFullscreen(!!document.fullscreenElement);
     };
     document.addEventListener("fullscreenchange", handleFullscreenChange);
-    return () => document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+
+    const desktop = (window as any).hongguotvDesktop;
+    let unsubscribeDesktop: (() => void) | undefined;
+    if (desktop?.isDesktop && typeof desktop.onFullScreenChanged === "function") {
+      try {
+        unsubscribeDesktop = desktop.onFullScreenChanged((flag: boolean) => {
+          playback.setIsFullscreen(Boolean(flag));
+        });
+      } catch {}
+    }
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("webkitfullscreenchange", handleFullscreenChange);
+      if (typeof unsubscribeDesktop === "function") {
+        try { unsubscribeDesktop(); } catch {}
+      }
+    };
   }, []);
 
   const handleVideoEnded = () => {
@@ -624,6 +643,7 @@ export default function App() {
             streamDetail={stream.streamDetail}
             handleSelectSeries={handleSelectSeries}
             refreshHistory={library.refreshHistory}
+            showToast={showToast}
           />
         )}
 

@@ -1,8 +1,22 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import fs from "node:fs";
 
-export default defineConfig({
+export default defineConfig(async ({command}) => {
+  let backend=process.env.HG_BACKEND_URL || "http://localhost:8788";
+  if(command==='serve'&&!process.env.HG_BACKEND_URL){
+    try {
+      const directory=process.env.HG_DATA_DIR || path.resolve(__dirname,"../../custom-server/data");
+      const state=JSON.parse(fs.readFileSync(path.join(directory,"service-address.json"),"utf8"));
+      if(!Number.isInteger(state.port)||state.port<1||state.port>65535)throw Error('Invalid backend port');
+      process.kill(state.pid,0);
+      const origin=`http://127.0.0.1:${state.port}`;
+      const health=await (await fetch(origin+'/health',{signal:AbortSignal.timeout(1000)})).json();
+      if(health.ok&&health.service==='hongguotv-custom-bridge')backend=origin;
+    } catch { /* Backend may not have started yet; preserve the default target. */ }
+  }
+  return {
   base: "./",
   plugins: [react()],
   resolve: {
@@ -13,11 +27,13 @@ export default defineConfig({
   server: {
     host: "0.0.0.0",
     port: 3000,
+    strictPort: false,
     proxy: {
       "/api": {
-        target: "http://localhost:8788", // 转发给后端 Bridge
+        target: backend,
         changeOrigin: true,
       },
     },
   },
+};
 });

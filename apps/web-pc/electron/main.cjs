@@ -1,4 +1,4 @@
-const {app,BrowserWindow,protocol,net,dialog}=require('electron');
+const {app,BrowserWindow,protocol,net,dialog,ipcMain}=require('electron');
 const {fork}=require('node:child_process');
 const fs=require('node:fs');
 const path=require('node:path');
@@ -6,6 +6,49 @@ const {pathToFileURL}=require('node:url');
 if(process.env.HG_DESKTOP_PROFILE){const profile=path.resolve(process.env.HG_DESKTOP_PROFILE);fs.mkdirSync(profile,{recursive:true});app.setPath('userData',profile);}
 let mainWindow,backend,backendOrigin,quitting=false,initializing=true;
 protocol.registerSchemesAsPrivileged([{scheme:'hongguotv',privileges:{standard:true,secure:true,supportFetchAPI:true,stream:true,corsEnabled:true}}]);
+let fullscreenQueue=Promise.resolve();
+function fullscreenWindow(event){
+ const win=mainWindow;
+ if(!win||win.isDestroyed()||win.webContents.isDestroyed()||event.sender!==win.webContents||event.senderFrame!==win.webContents.mainFrame)throw Error('全屏请求的窗口不可用');
+ return win;
+}
+function setWindowFullscreen(win,flag){
+ if(win.isDestroyed())return Promise.reject(Error('全屏窗口已关闭'));
+ if(win.isFullScreen()===flag)return Promise.resolve(flag);
+ return new Promise((resolve,reject)=>{
+  let timer,stateTimer;
+  const cleanup=()=>{clearTimeout(timer);clearTimeout(stateTimer);win.off('enter-full-screen',changed);win.off('leave-full-screen',changed);win.off('closed',closed);};
+  // Windows can emit the native event before isFullScreen() updates.
+  const changed=()=>{clearTimeout(stateTimer);if(win.isDestroyed()){closed();return;}if(win.isFullScreen()===flag){cleanup();resolve(win.isFullScreen());}else stateTimer=setTimeout(changed,16);};
+  const closed=()=>{cleanup();reject(Error('全屏窗口已关闭'));};
+  win.on('enter-full-screen',changed);win.on('leave-full-screen',changed);win.once('closed',closed);
+  timer=setTimeout(()=>{cleanup();reject(Error('窗口全屏切换超时，请重试'));},4000);
+  try{win.setFullScreen(flag);}catch(error){cleanup();reject(error);}
+ });
+}
+function enqueueFullscreen(win,flag){
+ const next=fullscreenQueue.catch(()=>{}).then(()=>{if(win.isDestroyed())throw Error('全屏窗口已关闭');return setWindowFullscreen(win,flag===undefined?!win.isFullScreen():flag);});
+ fullscreenQueue=next;return next;
+}
+function registerFullscreenHandlers(){
+ ipcMain.handle('fullscreen:set',(event,flag)=>{const win=fullscreenWindow(event);if(typeof flag!=='boolean')throw Error('全屏状态必须是 boolean');return enqueueFullscreen(win,flag);});
+ ipcMain.handle('fullscreen:toggle',event=>enqueueFullscreen(fullscreenWindow(event)));
+ ipcMain.handle('fullscreen:is',event=>fullscreenWindow(event).isFullScreen());
+}
+function watchFullscreen(win){
+ let notificationTimer;
+ const changed=flag=>{
+  clearTimeout(notificationTimer);const deadline=Date.now()+4000;
+  const publish=()=>{if(win.isDestroyed()||win.webContents.isDestroyed())return;if(win.isFullScreen()===flag)win.webContents.send('fullscreen:changed',flag);else if(Date.now()<deadline)notificationTimer=setTimeout(publish,16);};publish();
+ };
+ win.on('enter-full-screen',()=>changed(true));win.on('leave-full-screen',()=>changed(false));
+ win.once('closed',()=>clearTimeout(notificationTimer));
+ win.webContents.on('before-input-event',(event,input)=>{
+  if(input.type!=='keyDown')return;
+  if(input.key==='F11'||(input.key==='Escape'&&win.isFullScreen())){event.preventDefault();enqueueFullscreen(win,input.key==='Escape'?false:undefined).catch(error=>console.warn(error.message));}
+ });
+}
+registerFullscreenHandlers();
 function bootlog(stage){fs.appendFileSync(path.join(app.getPath('userData'),'startup-stage.log'),new Date().toISOString()+' '+stage+'\n');}
 async function startBackend(){
  bootlog('starting-backend');
@@ -13,7 +56,7 @@ async function startBackend(){
  const serviceRoot=fs.existsSync(path.join(packaged,'custom-server','index.mjs'))?packaged:path.resolve(__dirname,'../../..');
  const bundledNode=path.join(serviceRoot,'runtime',process.platform==='win32'?'node.exe':'node');
  const runtime=fs.existsSync(bundledNode)?bundledNode:process.env.HG_NODE_RUNTIME||'node';
- backend=fork(path.join(serviceRoot,'custom-server','index.mjs'),[],{execPath:runtime,execArgv:[],cwd:serviceRoot,windowsHide:true,env:{...process.env,HG_MANAGED:'1',PORT:'0',HG_HOST:'127.0.0.1',HG_DATA_DIR:path.join(app.getPath('userData'),'local-service'),HG_WEB_DIR:path.join(__dirname,'../dist')},stdio:['ignore','pipe','pipe','ipc']});
+ backend=fork(path.join(serviceRoot,'custom-server','index.mjs'),[],{execPath:runtime,execArgv:[],cwd:serviceRoot,windowsHide:true,env:{...process.env,HG_PORT:undefined,HG_MANAGED:'1',PORT:'0',HG_HOST:'127.0.0.1',HG_DATA_DIR:path.join(app.getPath('userData'),'local-service'),HG_WEB_DIR:path.join(__dirname,'../dist')},stdio:['ignore','pipe','pipe','ipc']});
  const logs=fs.createWriteStream(path.join(app.getPath('userData'),'local-service.log'),{flags:'a'});backend.stdout.pipe(logs,{end:false});backend.stderr.pipe(logs,{end:false});backend.once('exit',()=>logs.end());
  const port=await new Promise((resolve,reject)=>{const timeout=setTimeout(()=>reject(Error('内置后端启动超时')),15000);backend.once('error',error=>{clearTimeout(timeout);reject(error);});backend.once('exit',code=>{clearTimeout(timeout);reject(Error(`内置后端退出：${code}`));});backend.on('message',message=>{if(message?.type==='ready'){clearTimeout(timeout);resolve(message.port);}});});
  bootlog('backend-ready');
@@ -41,7 +84,7 @@ async function startBackend(){
  bootlog('legacy-migration-finished');
  protocol.handle('hongguotv',async request=>{const source=new URL(request.url);return net.fetch(backendOrigin+source.pathname+source.search,{method:request.method,headers:request.headers,body:['GET','HEAD'].includes(request.method)?undefined:await request.arrayBuffer(),bypassCustomProtocolHandlers:true});});
 }
-function createWindow(){bootlog('creating-main-window');mainWindow=new BrowserWindow({width:1380,height:860,minWidth:1024,minHeight:640,title:'红果短剧',backgroundColor:'#030712',autoHideMenuBar:true,webPreferences:{nodeIntegration:false,contextIsolation:true,webSecurity:true}});mainWindow.loadURL('hongguotv://app/');mainWindow.webContents.setWindowOpenHandler(()=>({action:'deny'}));mainWindow.on('closed',()=>{mainWindow=null;});}
+function createWindow(){bootlog('creating-main-window');mainWindow=new BrowserWindow({width:1380,height:860,minWidth:1024,minHeight:640,title:'红果短剧',backgroundColor:'#030712',autoHideMenuBar:true,webPreferences:{preload:path.join(__dirname,'preload.cjs'),nodeIntegration:false,contextIsolation:true,webSecurity:true}});watchFullscreen(mainWindow);mainWindow.loadURL('hongguotv://app/');mainWindow.webContents.setWindowOpenHandler(()=>({action:'deny'}));mainWindow.on('closed',()=>{mainWindow=null;});}
 app.whenReady().then(async()=>{try{await startBackend();createWindow();initializing=false;}catch(error){fs.appendFileSync(path.join(app.getPath('userData'),'startup-errors.log'),error.stack+'\n');console.error(error);dialog.showErrorBox('启动失败',error.message);if(backend)backend.kill();app.quit();}});
 app.on('activate',()=>{if(!mainWindow&&backendOrigin)createWindow();});app.on('window-all-closed',()=>{if(!initializing)app.quit();});
 app.on('before-quit',event=>{if(quitting||!backend||backend.exitCode!==null)return;event.preventDefault();quitting=true;backend.once('exit',()=>app.quit());if(backend.connected)backend.send({type:'shutdown'});const timeout=setTimeout(()=>{backend.kill();app.quit();},5000);timeout.unref();});

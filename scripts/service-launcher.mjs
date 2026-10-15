@@ -29,7 +29,7 @@ if(command==='stop'){
  writeFileSync(lockFile,JSON.stringify({pid:child.pid,token}),{mode:0o600});
  let ready;
  for(let attempt=0;attempt<100;attempt++){ready=await control(readState());if(ready)break;await new Promise(resolve=>setTimeout(resolve,150));}
- if(!ready)throw Error(`启动未就绪，请查看 ${path.join(profile,'service-errors.log')}；如端口占用，设置 HG_PORT 后重试。`);
+ if(!ready)throw Error(`启动未就绪，请查看 ${path.join(profile,'service-errors.log')}。默认端口已自动尝试递增；指定 HG_PORT 时严格使用该端口，请释放占用或更换 HG_PORT。`);
  console.log(`服务地址：http://localhost:${ready.port}\n数据：${profile}\n日志：${path.join(profile,'service.log')}`);
  if(remote)console.log(`家庭密钥文件：${path.join(profile,'shared-key.txt')}`);
 }else if(command==='run'){
@@ -43,7 +43,7 @@ if(command==='stop'){
   else if(req.url==='/stop'&&req.method==='POST'){res.end('{"ok":true}');shutdown();}
   else{res.writeHead(404);res.end('{}');}
  });
- const state={pid:process.pid,backendPid:child.pid,token,port:Number(process.env.HG_PORT||(remote?'8791':'8788')),controlPort:0};
+ const state={pid:process.pid,backendPid:child.pid,token,port:0,controlPort:0};
  controller.listen(0,'127.0.0.1',()=>{state.controlPort=controller.address().port;publish();});
  const publish=()=>{if(backendReady&&state.controlPort&&state.port)writeFileSync(stateFile,JSON.stringify(state),{mode:0o600});};
  child.on('message',message=>{if(message?.type==='ready'){backendReady=true;state.port=message.port;publish();}});

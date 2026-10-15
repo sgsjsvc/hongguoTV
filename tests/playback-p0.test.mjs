@@ -32,7 +32,7 @@ for(const file of engines){
 function fixture(engine){
   const source=fs.readFileSync('custom-server/index.mjs','utf8');
   const c=vm.createContext({http,URL,Buffer,AbortController,hgEngine:engine,byteRange,serveStatic:()=>false,handleLibrary:async()=>false,handleHistory:async()=>false,vidToSeriesMap:new Map(),console:{warn(){},error(){}}});
-  vm.runInContext(source.slice(source.indexOf('function json('),source.indexOf('server.listen('))+'\nthis.serverForTest=server;',c);return c.serverForTest;
+  vm.runInContext(source.slice(source.indexOf('function json('),source.indexOf('listenWithFallback(server, PORT'))+'\nthis.serverForTest=server;',c);return c.serverForTest;
 }
 async function serve(t,engine){const server=fixture(engine);await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(async()=>{server.closeAllConnections();await new Promise(r=>server.close(r));});return `http://127.0.0.1:${server.address().port}`;}
 function stub(total,chunk){return {resolveStream:async()=>({}),prepareHeader:async()=>({total}),remoteRange:chunk,decryptPartial:b=>b};}

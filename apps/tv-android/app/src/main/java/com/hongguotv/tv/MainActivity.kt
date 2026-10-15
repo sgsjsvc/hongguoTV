@@ -145,6 +145,8 @@ class MainActivity : ComponentActivity() {
     private var catalog = Catalog("", "")
     private var catalogScroll: android.os.Parcelable? = null
     private var catalogGrid: RecyclerView? = null
+    private var currentCatalogView: CatalogScreenView? = null
+    private var categoryTagScrollY = 0
     private var loadingCatalogMore = false
     private var loadCatalogMoreFailed = false
     private var selectedCategory = "real-drama"
@@ -261,7 +263,20 @@ class MainActivity : ComponentActivity() {
         })
         this@MainActivity.handler.post(ticker)
         if (store.baseUrl.isNotBlank()) scope.launch { runCatching { history.migrate(store) } }
-        startFeed()
+        when (intent?.getStringExtra("route")) {
+            "rank" -> openCatalog("排行榜", "rank")
+            "category" -> openCatalog("分类", "category")
+            else -> startFeed()
+        }
+    }
+
+    override fun onNewIntent(intent: android.content.Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        when (intent.getStringExtra("route")) {
+            "rank" -> openCatalog("排行榜", "rank")
+            "category" -> openCatalog("分类", "category")
+        }
     }
 
     private fun buildHeader() {
@@ -735,7 +750,7 @@ class MainActivity : ComponentActivity() {
         pauseIndicator.visibility = View.GONE
         seekHud.visibility = View.GONE
         episodeDrawer.visibility = View.GONE
-        navigationJob?.cancel(); navigationGeneration.next(); navigation.removeAllViews()
+        currentCatalogView = null; navigationJob?.cancel(); navigationGeneration.next(); navigation.removeAllViews()
     }
 
     private fun ensurePlayer(): ExoPlayer {
@@ -1085,13 +1100,20 @@ class MainActivity : ComponentActivity() {
                 ensureActive(); if (!navigationGeneration.isCurrent(generation) || screen != Screen.CATALOG) return@launch
                 val merged = if (nextPage) PlaybackPolicy.mergeUnique(snapshot.rows, rows) else rows
                 snapshot.ended = rows.isEmpty() || (nextPage && merged.size == snapshot.rows.size) || (snapshot.source == "category" && officialLastPage>0 && page>=officialLastPage) || (snapshot.source == "rank" && page >= 5)
+                val newItems = if (nextPage) merged.drop(snapshot.rows.size) else rows
                 snapshot.rows = merged; snapshot.page = page
                 loadingCatalogMore = false
                 loadCatalogMoreFailed = false
-                renderCatalog()
+                currentCatalogView?.setLoadingMore(false)
+                if (nextPage && currentCatalogView != null && screen == Screen.CATALOG && currentCatalogView?.source == snapshot.source) {
+                    currentCatalogView?.appendRows(newItems)
+                } else {
+                    renderCatalog()
+                }
             } catch (cancelled: CancellationException) { throw cancelled }
             catch (error: Exception) {
                 loadingCatalogMore = false
+                currentCatalogView?.setLoadingMore(false)
                 if (nextPage) {
                     loadCatalogMoreFailed = true
                 }
@@ -1105,6 +1127,7 @@ class MainActivity : ComponentActivity() {
 
     private fun renderCatalog(preserveFocus: String? = null) {
         screen = Screen.CATALOG
+        currentCatalogView?.tagScrollView?.let { categoryTagScrollY = it.scrollY }
         navigation.removeAllViews()
 
         val catalogView = CatalogScreenView(
@@ -1122,7 +1145,13 @@ class MainActivity : ComponentActivity() {
             artwork = artwork,
             onFilterSelected = { key, kind, id ->
                 categoryFilterFocus = key
-                if (kind == "type") { selectedCategory = id; selectedTag = "" } else selectedTag = id
+                if (kind == "type") {
+                    selectedCategory = id
+                    selectedTag = ""
+                    categoryTagScrollY = 0
+                } else {
+                    selectedTag = id
+                }
                 catalog.page = 1; catalog.focusedId = null; catalogScroll = null
                 catalog.ended = false
                 loadingCatalogMore = false
@@ -1169,9 +1198,11 @@ class MainActivity : ComponentActivity() {
                     }
                 } else null
             },
-            onNearBottom = { triggerAutoPage() }
+            onNearBottom = { triggerAutoPage() },
+            initialTagScrollY = categoryTagScrollY
         )
 
+        currentCatalogView = catalogView
         catalogGrid = catalogView.gridView
         val manager = catalogView.manager
 
@@ -1183,7 +1214,6 @@ class MainActivity : ComponentActivity() {
             if (catalogScroll != null) manager.onRestoreInstanceState(catalogScroll) else grid.scrollToPosition(index)
             grid.post {
                 val filter = catalogView.categoryButtons.firstOrNull { it.contentDescription == categoryFilterFocus }
-                categoryFilterFocus = null
                 val rankBtn = if (catalog.source == "rank" && catalog.focusedId == null) {
                     catalogView.rankButtons.firstOrNull { it.isSelected } ?: catalogView.rankButtons.firstOrNull()
                 } else null
@@ -1205,7 +1235,7 @@ class MainActivity : ComponentActivity() {
             return
         }
         loadingCatalogMore = true
-        catalogScroll = manager.onSaveInstanceState()
+        currentCatalogView?.setLoadingMore(true)
         loadCatalog(nextPage = true)
     }
 

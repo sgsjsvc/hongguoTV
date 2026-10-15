@@ -121,7 +121,6 @@
 
     <!-- Series Card & Common UI Defaults -->
     <dimen name="series_card_margin">8dp</dimen>
-    <dimen name="series_card_width">385dp</dimen>
     <dimen name="series_card_image_height">230dp</dimen>
     <dimen name="series_card_progress_height">6dp</dimen>
     <dimen name="series_card_progress_margin_top">6dp</dimen>

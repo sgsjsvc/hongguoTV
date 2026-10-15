@@ -42,16 +42,19 @@ internal class CatalogScreenView(
     val onSeriesFocused: (Series) -> Unit,
     val onSubtitleProvider: (Series) -> String = { it.badge },
     val onProgressProvider: (Series) -> Float? = { null },
-    val onNearBottom: (() -> Unit)? = null
+    val onNearBottom: (() -> Unit)? = null,
+    val initialTagScrollY: Int = 0
 ) : LinearLayout(context) {
 
     var gridView: RecyclerView? = null
     var manager: GridLayoutManager? = null
+    var seriesAdapter: SeriesAdapter? = null
+    var tagScrollView: ScrollView? = null
     val categoryButtons = mutableListOf<Button>()
     val rankButtons = mutableListOf<Button>()
+    private var loadingIndicator: LinearLayout? = null
 
     val tools: LinearLayout
-    var loadMoreButton: Button? = null
     private var rightArea: LinearLayout? = null
 
     init {
@@ -153,6 +156,10 @@ internal class CatalogScreenView(
             val tagScroll = ScrollView(context).apply {
                 this.id = View.generateViewId()
                 isVerticalScrollBarEnabled = false
+            }
+            tagScrollView = tagScroll
+            if (initialTagScrollY > 0) {
+                tagScroll.post { tagScroll.scrollTo(0, initialTagScrollY) }
             }
             val tagListLayout = LinearLayout(context).apply {
                 orientation = VERTICAL
@@ -289,18 +296,37 @@ internal class CatalogScreenView(
                 descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
             }
             gridView = grid
-            grid.adapter = SeriesAdapter(rows, artwork, { series ->
+            val isRank = (source == "rank")
+            val adapter = SeriesAdapter(rows, artwork, { series ->
                 onSeriesClick(series, gridManager)
             }, { series ->
                 onSeriesFocused(series)
                 if (onNearBottom != null) {
-                    val pos = rows.indexOf(series)
-                    if (pos >= 0 && pos >= rows.size - 5) {
+                    val list = seriesAdapter?.currentRows ?: rows
+                    val pos = list.indexOf(series)
+                    if (pos >= 0 && pos >= list.size - 5) {
                         onNearBottom.invoke()
                     }
                 }
-            }, onSubtitleProvider, onProgressProvider)
+            }, onSubtitleProvider, onProgressProvider, isRank = isRank)
+            seriesAdapter = adapter
+            grid.adapter = adapter
             contentTarget.addView(grid, LayoutParams(-1, 0, 1f))
+
+            val indicator = LinearLayout(context).apply {
+                orientation = HORIZONTAL
+                gravity = Gravity.CENTER
+                visibility = View.GONE
+                setPadding(0, TvUi.dp(context, 6), 0, TvUi.dp(context, 6))
+                val text = TextView(context).apply {
+                    text = "正在加载更多…"
+                    setTextColor(TvUi.TEXT_MUTED)
+                    setTextSize(TypedValue.COMPLEX_UNIT_DIP, 13f)
+                }
+                addView(text)
+            }
+            loadingIndicator = indicator
+            contentTarget.addView(indicator, LayoutParams(-1, -2))
 
             if (onNearBottom != null) {
                 grid.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -326,11 +352,11 @@ internal class CatalogScreenView(
         }
     }
 
-    fun addLoadMoreButton(text: String, onClick: () -> Unit): Button {
-        val btn = TvUi.pillButton(context, text) { onClick() }
-        loadMoreButton = btn
-        val target: ViewGroup = if (source == "category" && rightArea != null) rightArea!! else this
-        target.addView(btn)
-        return btn
+    fun appendRows(newRows: List<Series>) {
+        seriesAdapter?.appendRows(newRows)
+    }
+
+    fun setLoadingMore(loading: Boolean) {
+        loadingIndicator?.visibility = if (loading) View.VISIBLE else View.GONE
     }
 }

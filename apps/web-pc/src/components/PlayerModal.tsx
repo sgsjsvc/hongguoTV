@@ -178,8 +178,10 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
             onMouseMove={resetControlsTimer}
             onClick={resetControlsTimer}
             onDoubleClick={toggleFullscreen}
-            className={`relative aspect-[9/16] max-h-[72vh] lg:max-h-none lg:aspect-video w-full bg-black rounded-2xl overflow-hidden border border-slate-800 shadow-2xl flex items-center justify-center group ${
-              isFullscreen ? "fixed inset-0 z-50 rounded-none border-none max-h-none aspect-auto w-screen h-screen" : ""
+            className={`bg-black overflow-hidden flex items-center justify-center group ${
+              isFullscreen
+                ? "fixed inset-0 z-50 w-screen h-screen"
+                : "relative aspect-[9/16] max-h-[72vh] lg:max-h-none lg:aspect-video w-full rounded-2xl border border-slate-800 shadow-2xl"
             }`}
           >
             {currentEpisode ? (
@@ -243,7 +245,7 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
                     </span>
                   </div>
 
-                  <div className="relative">
+                  <div className="relative mr-12 md:mr-14">
                     <button
                       onClick={() => setShowShortcutHelp(!showShortcutHelp)}
                       className="p-1.5 rounded-lg bg-slate-900/60 hover:bg-slate-800 text-slate-400 hover:text-white transition"
@@ -446,9 +448,11 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
 
                       {/* 全屏按钮 */}
                       <button
+                        type="button"
                         onClick={toggleFullscreen}
-                        title="全屏 (F)"
-                        className="p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white transition"
+                        aria-label={isFullscreen ? "退出全屏" : "全屏"}
+                        title={isFullscreen ? "退出全屏 (ESC)" : "全屏 (F)"}
+                        className="p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer"
                       >
                         {isFullscreen ? <Minimize className="w-4 h-4" /> : <Maximize className="w-4 h-4" />}
                       </button>

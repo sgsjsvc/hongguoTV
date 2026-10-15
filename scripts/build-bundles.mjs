@@ -38,7 +38,7 @@ async function stage(platform,remote=false){
  const node=await runtime(platform);copy(node,path.join(directory,'runtime',platform.startsWith('win-')?'node.exe':'node'));
  const runtimeDirectory=platform.startsWith('win-')?path.dirname(node):path.dirname(path.dirname(node));copy(path.join(runtimeDirectory,'LICENSE'),path.join(directory,'runtime','LICENSE-node.txt'));
  copy(path.join(root,'LICENSE'),path.join(directory,'LICENSE'));
- for(const name of ['library-store.mjs','http-json.mjs','legacy-migration.mjs'])copy(path.join(root,'shared',name),path.join(directory,'shared',name));
+ for(const name of ['library-store.mjs','http-json.mjs','legacy-migration.mjs','listen-port.mjs'])copy(path.join(root,'shared',name),path.join(directory,'shared',name));
  copy(path.join(root,'scripts','service-launcher.mjs'),path.join(directory,'scripts','service-launcher.mjs'));
  copy(path.join(root,'scripts','migrate-library.mjs'),path.join(directory,'scripts','migrate-library.mjs'));
  copy(path.join(root,'custom-server','history-store.mjs'),path.join(directory,'custom-server','history-store.mjs'));
@@ -68,5 +68,6 @@ if(platforms.includes('win-x64')&&!process.argv.includes('--web-only')){
  copy(path.join(output,'hongguotv-web-win-x64'),path.join(desktop,'resources','hongguotv'));
  copy(path.join(root,'apps','web-pc','dist'),path.join(desktop,'resources','app','dist'));
  copy(path.join(root,'apps','web-pc','electron','main.cjs'),path.join(desktop,'resources','app','electron','main.cjs'));
+ copy(path.join(root,'apps','web-pc','electron','preload.cjs'),path.join(desktop,'resources','app','electron','preload.cjs'));
  const archive=path.join(output,'hongguotv-desktop-win-x64.zip');run('powershell.exe',['-NoProfile','-Command',`Compress-Archive -LiteralPath '${desktop.replaceAll("'","''")}' -DestinationPath '${archive.replaceAll("'","''")}' -Force`]);console.log(`已生成 ${archive}`);
 }

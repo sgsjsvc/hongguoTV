@@ -18,6 +18,7 @@ interface UseKeyboardShortcutsProps {
     handleToggleMute: () => void;
     setVolume: React.Dispatch<React.SetStateAction<number>>;
     setIsMuted: React.Dispatch<React.SetStateAction<boolean>>;
+    isFullscreen?: boolean;
   };
   showToast: (msg: string) => void;
 }
@@ -41,15 +42,22 @@ export function useKeyboardShortcuts({
         return;
       }
 
-      // D3-F3: 支持 Escape 退出片尾推荐弹窗、全屏以及主播放弹窗
+      // D3-F3 / W2: 支持 Escape 退出片尾推荐弹窗、全屏以及主播放弹窗
       if (e.key === "Escape") {
         e.preventDefault();
         if (showSeriesEndModal) {
           setShowSeriesEndModal(false);
           return;
         }
-        if (document.fullscreenElement) {
-          void document.exitFullscreen();
+        const desktop = (window as any).hongguotvDesktop;
+        if (document.fullscreenElement || playback.isFullscreen) {
+          if (desktop?.isDesktop && typeof desktop.setFullScreen === "function") {
+            desktop.setFullScreen(false).catch(() => {});
+          } else if (document.fullscreenElement) {
+            void document.exitFullscreen().catch(() => {});
+          } else {
+            playback.toggleFullscreen();
+          }
           return;
         }
         if (activeSeries) {

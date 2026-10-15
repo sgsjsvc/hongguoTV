@@ -14,11 +14,14 @@ import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
 
 internal class SeriesAdapter(
-    private val rows: List<Series>, private val artwork: ArtworkLoader,
+    initialRows: List<Series>, private val artwork: ArtworkLoader,
     private val selected: (Series) -> Unit, private val focused: (Series) -> Unit,
     private val subtitle: (Series) -> String = { it.badge },
-    private val progress: (Series) -> Float? = { null }
+    private val progress: (Series) -> Float? = { null },
+    private val isRank: Boolean = false
 ) : RecyclerView.Adapter<SeriesAdapter.Holder>() {
+    private val rows: MutableList<Series> = initialRows.toMutableList()
+    val currentRows: List<Series> get() = rows
     class Holder(
         val card: LinearLayout,
         val imageContainer: FrameLayout,
@@ -104,16 +107,29 @@ internal class SeriesAdapter(
         return Holder(card, imageContainer, image, rankBadge, title, badge,progress)
     }
 
+    fun appendRows(newRows: List<Series>) {
+        if (newRows.isEmpty()) return
+        val oldSize = rows.size
+        rows.addAll(newRows)
+        notifyItemRangeInserted(oldSize, newRows.size)
+    }
+
     override fun onBindViewHolder(holder: Holder, position: Int) {
         val series = rows[position]
         holder.title.text = series.title
-        holder.badge.text = subtitle(series)
-        holder.card.contentDescription = "${series.title}，${subtitle(series)}"
+        val sub = subtitle(series)
+        if (sub.isNotBlank()) {
+            holder.badge.visibility = android.view.View.VISIBLE
+            holder.badge.text = sub
+        } else {
+            holder.badge.visibility = android.view.View.GONE
+        }
+        holder.card.contentDescription = if (sub.isNotBlank()) "${series.title}，${sub}" else series.title
         val value=progress(series);holder.progress.visibility=if(value==null)android.view.View.GONE else android.view.View.VISIBLE
         holder.progress.progress=((value?:0f).coerceIn(0f,1f)*1000).toInt()
 
-        // Ranking badges if index < 10
-        if (position < 10 && series.badge.contains("榜")) {
+        // Ranking badges (all positions on rank page, or when badge contains 榜)
+        if (isRank || series.badge.contains("榜")) {
             holder.rankBadge.visibility = android.view.View.VISIBLE
             holder.rankBadge.text = "Top ${position + 1}"
             val bgGradient = when (position) {
