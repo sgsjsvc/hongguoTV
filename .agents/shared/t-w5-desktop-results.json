@@ -1,0 +1,230 @@
+{
+  "mode": "desktop",
+  "controlledMedia": true,
+  "geometry": {
+    "viewport": [
+      2304,
+      1536
+    ],
+    "screen": [
+      2304,
+      1536
+    ],
+    "outer": [
+      2304,
+      1536
+    ],
+    "focused": true,
+    "player": {
+      "x": 0,
+      "y": 0,
+      "width": 2304,
+      "height": 1536,
+      "position": "fixed"
+    },
+    "domFullscreen": false,
+    "desktop": true
+  },
+  "continued": {
+    "ended": 1,
+    "url": "hongguotv://app/api/episodes/1002/stream?quality=1080P&seriesId=9000000000000000001",
+    "fullscreen": true
+  },
+  "idle": {
+    "topOpacity": "0",
+    "buttonOpacity": "1",
+    "buttonSize": 32
+  },
+  "escapeKeepsPlayer": true,
+  "errorToast": true,
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/banners"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sections"
+    },
+    {
+      "method": "GET",
+      "path": "/api/rank/types"
+    },
+    {
+      "method": "GET",
+      "path": "/api/category/tags"
+    },
+    {
+      "method": "GET",
+      "path": "/api/category/list"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/rank/list"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library"
+    },
+    {
+      "method": "GET",
+      "path": "/api/series/9000000000000000001"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/episodes/1001/qualities"
+    },
+    {
+      "method": "GET",
+      "path": "/api/series/9000000000000000001/related"
+    },
+    {
+      "method": "GET",
+      "path": "/api/recommend"
+    },
+    {
+      "method": "GET",
+      "path": "/api/episodes/1001/stream"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/episodes/1002/qualities"
+    },
+    {
+      "method": "GET",
+      "path": "/api/episodes/1002/stream"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    }
+  ]
+}

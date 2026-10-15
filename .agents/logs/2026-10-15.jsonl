@@ -61,3 +61,7 @@
 {"at":"2026-10-15T08:01:13.011Z","kind":"task-created","id":"t-w5-detail-fullscreen","assignee":"antigravity","title":"W5 详情页全屏（验证 + 补齐）"}
 {"at":"2026-10-15T08:01:13.012Z","kind":"task-updated","id":"t-w5-detail-fullscreen","by":"dsh","status":"pending","note":"brief ok"}
 {"at":"2026-10-15T08:01:31.818Z","kind":"task-updated","id":"t-w5-detail-fullscreen","by":"dsh","status":"pending","note":"改派给 codex：详情页全屏"}
+{"at":"2026-10-15T09:17:16.467Z","kind":"task-updated","id":"t-w4-stream-fullscreen","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-15T09:17:49.338Z","kind":"task-updated","id":"t-w5-detail-fullscreen","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-15T09:24:34.783Z","kind":"task-updated","id":"t-w4-stream-fullscreen","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-15T09:30:50.021Z","kind":"task-updated","id":"t-w5-detail-fullscreen","by":"codex","status":"done","note":""}

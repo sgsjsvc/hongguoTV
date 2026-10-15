@@ -1,7 +1,7 @@
 {
   "id": "t-w4-stream-fullscreen",
   "createdAt": "2026-10-15T07:45:07.908Z",
-  "updatedAt": "2026-10-15T07:45:07.910Z",
+  "updatedAt": "2026-10-15T09:24:34.777Z",
   "assignee": "antigravity",
   "title": "W4 推荐流页面添加全屏按钮",
   "brief": "详见 .agents/inbox/t-w4-stream-fullscreen.brief.md",
@@ -35,15 +35,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-15T09:17:16.436Z",
+  "result": {
+    "summary": ".agents/shared/t-w4-stream-fullscreen-antigravity.md"
+  },
   "history": [
     {
       "at": "2026-10-15T07:45:07.908Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-15T09:17:16.437Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-15T09:24:34.778Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

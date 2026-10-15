@@ -1,0 +1,10 @@
+{
+  "id": "t-w4-stream-fullscreen",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-15T09:24:34.784Z",
+  "title": "W4 推荐流页面添加全屏按钮",
+  "result": {
+    "summary": ".agents/shared/t-w4-stream-fullscreen-antigravity.md"
+  }
+}

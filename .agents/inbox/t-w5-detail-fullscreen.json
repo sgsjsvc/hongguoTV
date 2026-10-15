@@ -1,7 +1,7 @@
 {
   "id": "t-w5-detail-fullscreen",
   "createdAt": "2026-10-15T08:01:13.009Z",
-  "updatedAt": "2026-10-15T08:01:31.816Z",
+  "updatedAt": "2026-10-15T09:30:50.017Z",
   "assignee": "codex",
   "title": "W5 详情页全屏（验证 + 补齐）",
   "brief": "详见 .agents/inbox/t-w5-detail-fullscreen.brief.md",
@@ -41,15 +41,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-15T09:17:49.315Z",
+  "result": {
+    "summary": "W5完成：修复PlayerModal relative/fixed及比例约束冲突；Web/Electron实际player=viewport=screen2304x1536，真实ended自动1001→1002并保留全屏，Esc不关详情、失败toast通过。受控本地片验证，非官方解码验收。typecheck/build/119回归通过，独立unpacked包与dist逐文件一致；报告 .agents/shared/t-w5-detail-fullscreen-codex.md，待DSH统一封装。"
+  },
   "history": [
     {
       "at": "2026-10-15T08:01:13.010Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-15T09:17:49.316Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-15T09:30:50.018Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

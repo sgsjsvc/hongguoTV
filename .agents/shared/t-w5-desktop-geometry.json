@@ -1,0 +1,24 @@
+{
+  "viewport": [
+    2304,
+    1536
+  ],
+  "screen": [
+    2304,
+    1536
+  ],
+  "outer": [
+    2304,
+    1536
+  ],
+  "focused": true,
+  "player": {
+    "x": 0,
+    "y": 0,
+    "width": 2304,
+    "height": 1536,
+    "position": "fixed"
+  },
+  "domFullscreen": false,
+  "desktop": true
+}
