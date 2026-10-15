@@ -1,0 +1,53 @@
+{
+  "id": "t-q5-fix-dup-append",
+  "createdAt": "2026-10-15T06:49:21.066Z",
+  "updatedAt": "2026-10-15T06:49:21.069Z",
+  "assignee": "antigravity",
+  "title": "Q5 修复分页重复追加",
+  "brief": "详见 .agents/inbox/t-q5-fix-dup-append.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "来源：Q4 独立复核判定 Q3 不通过，Q3 引入严重新缺陷",
+    "缺陷：榜单页显示 Top 1..120，真实仅 100 条，多 20 条重复",
+    "根因（Q4 定位，含代码推导）：",
+    "  CatalogScreenView.kt:301  SeriesAdapter(currentRows, ...) 使 adapter.rows 与 currentRows 共享同一 MutableList",
+    "  CatalogScreenView.kt:355-358  appendRows 先 currentRows.addAll(newRows)，再 seriesAdapter?.appendRows(newRows)",
+    "  SeriesAdapter.kt:108-113  oldSize = rows.size 时 rows 已被改，导致 rows = old + 2*new",
+    "  首次追加后 rows 指向新对象，共享断开，故仅首轮分页重复一次",
+    "  连带：notifyItemRangeInserted(40,20) 越界（当时只有 20 条），位置映射破坏",
+    "验证基线（Q4 提供）：",
+    "  榜单 /api/rank/list?type=rank_hot 5 页 x 20 = 100 条（page 6 为 0）",
+    "  分类 tag=disaster = 58 条；每页 24 条",
+    "  榜单 Top N 徽标 = RecyclerView position + 1，可作位置探针",
+    "  请求计数探针：.agents/shared/q4_probe.sh",
+    "不得回退 Q3 成果：左栏滚动位置、焦点行为、加载指示、死代码清理、7 条分页约束",
+    "设备：只用 D1（127.0.0.1:16384）",
+    "环境：adb 必须设 ANDROID_ADB_SERVER_PORT=15037",
+    "不要改 apps/web-pc/（其他 agent 在做全屏）与 shared/content-core/"
+  ],
+  "acceptance": [
+    "榜单总条目 == 100（末页最大 Top N 为 100）",
+    "分类 tag=disaster == 58 条",
+    "无重复卡片，Top N 序号与真实排名一致",
+    "Q3 成果未回退，7 条分页约束仍满足",
+    "构建/lint/测试通过",
+    "报告写入 .agents/shared/t-q5-fix-dup-append-antigravity.md"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-15T06:49:21.067Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-q5-fix-dup-append.brief.md",
+  "order": 1,
+  "kind": "fix"
+}

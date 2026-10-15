@@ -45,3 +45,5 @@
 {"at":"2026-10-15T06:46:45.361Z","kind":"task-updated","id":"t-w2-web-fullscreen","by":"dsh","status":"pending","note":"brief ok"}
 {"at":"2026-10-15T06:46:45.383Z","kind":"task-created","id":"t-w3-electron-fullscreen","assignee":"codex","title":"W3 Electron 端窗口级全屏"}
 {"at":"2026-10-15T06:46:45.385Z","kind":"task-updated","id":"t-w3-electron-fullscreen","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-15T06:49:21.068Z","kind":"task-created","id":"t-q5-fix-dup-append","assignee":"antigravity","title":"Q5 修复分页重复追加"}
+{"at":"2026-10-15T06:49:21.070Z","kind":"task-updated","id":"t-q5-fix-dup-append","by":"dsh","status":"pending","note":"brief ok"}
