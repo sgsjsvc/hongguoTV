@@ -93,3 +93,40 @@ $adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
 4. **验证准则**：静态截图不能证明"卡住"或"正常"，必须验证**状态是否推进**（如播放位置时间戳变化）
 
 **完整设备矩阵见** `.agents/shared/device-allocation.md`
+
+---
+
+## 待办复核任务（2026-10-15）
+
+| 任务 ID | 标题 | 复核对象 |
+| --- | --- | --- |
+| `t-w6-verify-fullscreen` | W6 W4/W5 全屏成果独立复核 | W4（推荐流全屏）、W5（详情页全屏） |
+
+### 复核理由
+
+1. W4/W5 是本轮**唯一未经独立复核**的任务
+2. **W2 曾因协调者的错误 brief 做错方向** —— 该区域易出错
+3. **W5 发现了真实缺陷**（全屏样式被 Tailwind 覆盖）—— 该区域确有问题
+4. 全屏是用户最关心的功能，涉及 Web + Electron 双环境
+
+### ⚠️ 复核时必须注意
+
+**两个不同的页面**：
+
+| 页面 | 组件 | 全屏按钮 |
+| --- | --- | --- |
+| 推荐流 | `RecommendStream.tsx` | W4 新增（右上角） |
+| 详情页/播放弹窗 | `PlayerModal.tsx` | 本就有（底部栏） |
+
+**协调者此前就是混淆了这两个页面，导致 W2 做错方向。复核时务必先确认页面。**
+
+**两条用户核心要求需独立验证**：
+
+1. **全屏后保留自动下一集**（W5 声称用真实 `ended` 事件验证，非手动 dispatch）
+2. **整个屏幕全屏**（判据 `innerWidth === screen.width`，非窗口最大化）
+
+### 认领方式
+
+```powershell
+node .agents/cli.mjs claim t-w6-verify-fullscreen workbuddy
+```
