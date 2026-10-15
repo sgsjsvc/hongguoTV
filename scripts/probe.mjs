@@ -1,5 +1,7 @@
 import fs from "node:fs/promises";
-const base = process.env.BRIDGE_URL || "http://127.0.0.1:8787";
+// 默认端口必须与 custom-server/index.mjs 的 PORT 默认值一致（8788）。
+// 历史上这里误写为 8787，导致探针从未能连上本机服务。
+const base = process.env.BRIDGE_URL || "http://127.0.0.1:8788";
 const headers = process.env.BRIDGE_TOKEN
   ? { Authorization: `Bearer ${process.env.BRIDGE_TOKEN}` }
   : {};
