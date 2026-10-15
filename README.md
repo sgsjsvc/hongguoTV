@@ -233,6 +233,49 @@ node scripts/collect-release.mjs
 
 ---
 
+## 开发人员
+
+### 维护者
+
+| 角色 | 人员 |
+| --- | --- |
+| 项目发起与维护 | **sgsjsvc**（[GitHub](https://github.com/sgsjsvc)） |
+
+### 多 Agent 协作团队
+
+本项目的三端实现、缺陷修复与验证由多个人工智能 agent 通过**文件总线**协作完成，
+协作记录完整保留在 [`.agents/`](.agents/README.md) 中（任务、验收报告、实测证据）。
+
+| Agent | 职责 |
+| --- | --- |
+| **DSH** | 主控、调度、验收、跨端联调 |
+| **Codex** | 后端、算法、批量重构 |
+| **Antigravity** | UI、浏览器验证、多模态 |
+| **WorkBuddy** | 独立复核、记忆沉淀、文档 |
+
+**为什么用文件总线**：它是四个 agent 唯一的共同能力，且天然持久、可审计、可 diff、可进 git。
+任务从 `inbox/` 认领、结果写入 `outbox/`、证据留在 `shared/`，全过程可追溯。
+
+> 每个 agent 的产出都需**独立复核**（如 Q3 由 Antigravity 修复、Q4 由 WorkBuddy 复核并发现新缺陷），
+> 详见 `.agents/shared/` 下的验收报告。
+
+### 参与贡献
+
+欢迎提交 Issue 与 Pull Request。
+
+**提交前请确保**：
+
+```powershell
+npm run release:check   # 测试 + 类型检查 + 播放冒烟门禁
+```
+
+**修改共享引擎时的额外要求**：`shared/content-core/hongguo.js` 同时运行在
+**Node（Web / Windows）** 与 **QuickJS（TV）** 两种宿主中，后者只提供
+`createHash` 与 `createDecipheriv`。改动必须在两种环境下都验证 ——
+详见[内容引擎说明](shared/content-core/README.md#device-identity-read-before-touching-randomdeviceid--freshdevice)。
+
+---
+
 ## 许可证
 
 [GPL-3.0](LICENSE)
