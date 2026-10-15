@@ -18,8 +18,11 @@
 | --- | --- | --- |
 | Windows x64 | `红果短剧-1.0.0-x64-setup.exe` | 安装包，可选目录、建快捷方式、可卸载 |
 | Windows arm64 | `红果短剧-1.0.0-arm64-setup.exe` | 骁龙/Surface Pro X 等 ARM 设备 |
+| Windows 通用 | `红果短剧-1.0.0-setup.exe` | 含双架构，不确定架构时选这个 |
 | Android TV | `hongguotv-android5.1-release-signed.apk` | Android 5.1+，四种 CPU 架构通用 |
 | Web 服务 | `hongguotv-web-<平台>.zip` / `.tar.gz` | 解压后运行 `start.cmd` / `./start.sh` |
+
+各平台的 `-portable.exe` 为免安装版，直接运行。
 
 若尚无现成产物，按下方[构建与打包](#构建与打包)自行生成。
 
@@ -33,9 +36,27 @@ npm --prefix apps/web-pc ci
 
 npm run server      # 本地内容服务，默认 8788
 npm run dev         # Web 开发页，默认 3000
-npm test            # 93 项测试
+npm test            # 144 项测试
 npm run typecheck   # TypeScript 类型检查
 ```
+
+### 发布前检查
+
+```powershell
+npm run release:check   # test + typecheck + 播放冒烟门禁
+```
+
+`smoke` 会启动临时服务并**真实向上游取流**，任一样本失败即退出码 1。
+这是发布前的硬性门禁：代码与单元测试全绿并不代表能播放（见
+[内容引擎说明](shared/content-core/README.md#device-identity-read-before-touching-randomdeviceid--freshdevice)）。
+
+### 故障诊断
+
+```powershell
+npm run diagnose        # 分层定位：引擎 → 服务 → 上游 → 端到端
+```
+
+输出会直接判定问题在**上游**还是**我方**，并给出可操作建议。
 
 ---
 
@@ -50,9 +71,10 @@ custom-server/      本地内容服务（播放代理、解密流、资料库）
 server/             内容适配器与兼容入口
 shared/             三端共用代码
   content-core/     内容引擎（签名、解密、取流），打包进三端
+  listen-port.mjs   端口自动递增（占用时依次尝试后续端口）
   library-store.mjs 资料库（事件溯源 + SQLite）
-scripts/            构建、打包、校验工具
-tests/              Node 测试（93 项）
+scripts/            构建、打包、校验、诊断工具
+tests/              Node 测试（144 项）
 docs/               架构、API、部署与验收记录
 release/            发布产物汇总（构建生成，不入库）
 .agents/            多 agent 协作总线与任务记录
@@ -69,6 +91,11 @@ release/            发布产物汇总（构建生成，不入库）
 
 **修改该文件会影响三端**，需同时验证。
 
+> ⚠️ 引擎运行在两种不同的 JS 宿主中：Node（Web / Windows）与 **QuickJS（TV）**。
+> 后者**只提供** `createHash` 与 `createDecipheriv`，没有 `randomBytes` 等 API。
+> 改动引擎时**必须在两种环境下都验证** —— 详见
+> [内容引擎说明](shared/content-core/README.md)。
+
 ---
 
 ## 构建与打包
@@ -83,17 +110,24 @@ node scripts/build-bundles.mjs --web-only               # 跳过桌面版
 
 覆盖 Windows / Linux / macOS 各 x64 与 arm64，每包内置 Node 运行时。
 
+> ⚠️ 桌面端打包依赖 `outputs/bundles/hongguotv-web-win-<arch>` 目录。
+> **两个架构都要生成**（`--platforms=win-x64,win-arm64`），否则对应架构的
+> bundle 目录会保留旧引擎，被打进安装包。
+
 ### Windows 桌面端
 
 ```powershell
-# 1. 先生成 Windows Web 包（作为后端来源）
+# 1. 先生成两个架构的 Web 包（作为后端来源）
 node scripts/build-bundles.mjs --platforms=win-x64,win-arm64
 
 # 2. 打包安装包与便携版
 cd apps/web-pc
-npx electron-builder --config electron-builder.config.cjs --win --x64 --publish=never
-npx electron-builder --config electron-builder.config.cjs --win --arm64 --publish=never
+npx electron-builder --config electron-builder.config.cjs --win --x64 --arm64 --publish=never
 ```
+
+> ⚠️ **不要设置 `HG_ELECTRON_DIST`**。它会强制使用指定架构的 Electron，
+> 导致另一架构的产物被 `afterPack` 钩子判为「产物架构错误」而失败。
+> 不设置时 electron-builder 会按目标架构自动选择。
 
 **代码签名**（可选）通过环境变量传入，凭据不写入配置文件：
 
@@ -120,6 +154,11 @@ cd apps/tv-android
 node scripts/collect-release.mjs      # 三端产物汇总到 release/
 ```
 
+> ⚠️ 该脚本是**搬运工，不负责构建**。它从 `outputs/tv-android`、
+> `outputs/bundles`、`outputs/windows` 复制现成文件。
+> **打包后务必先更新这些源目录**，否则 `release/` 里会是旧产物。
+> 收集后建议抽查：产物内引擎应与 `shared/content-core/hongguo.js` 逐字节一致。
+
 ---
 
 ## 平台要求
@@ -140,7 +179,10 @@ node scripts/collect-release.mjs      # 三端产物汇总到 release/
 - 数据位于用户资料目录，**更新程序不会覆盖数据**
 
 服务默认端口：本地内容服务 **8788**，家庭共享服务 **8791**。
-可用 `HG_PORT` 覆盖端口、`HG_DATA_DIR` 指定数据目录。
+
+**端口被占用时自动递增**（8788 → 8789 → …，最多尝试 11 次），并在日志中打印实际端口，
+无需手动处理。也可用 `HG_PORT` 指定固定端口（此时不递增，占用即报错），
+`HG_DATA_DIR` 指定数据目录。
 
 详见 [本地服务与远程同步](docs/LOCAL_REMOTE_SERVICES.md)。
 
@@ -166,10 +208,28 @@ node scripts/collect-release.mjs      # 三端产物汇总到 release/
 
 | 项 | 现状 |
 | --- | --- |
-| Node 测试 | **93 项**（`npm test`） |
-| TV 单元测试 | **30 项**（`:app:testDebugUnitTest`） |
+| Node 测试 | **144 项**（`npm test`） |
+| TV 单元测试 | **32 项**（`:app:testDebugUnitTest`） |
 | 类型检查 | `npm run typecheck` |
 | Lint | `:app:lintDebug`（`abortOnError = true`） |
+| 播放冒烟门禁 | `npm run smoke`（真实取流，失败阻止发布） |
+| 链路诊断 | `npm run diagnose`（分层定位上游/服务问题） |
+| 设备实测 | 4 台（含 Android 5.1 / API 22 真机） |
+
+### 发布流程建议
+
+```powershell
+npm run release:check                    # 1. 门禁：测试 + 类型 + 真实播放
+npm run build                            # 2. 前端
+node scripts/build-bundles.mjs --platforms=win-x64,win-arm64,darwin-x64,darwin-arm64,linux-x64,linux-arm64
+# 3. 桌面端（见上）
+# 4. Android TV（见上）
+# 5. 更新 outputs/ 下的源目录后再收集
+node scripts/collect-release.mjs
+```
+
+**关键**：第 1 步的冒烟测试不可跳过。代码与单元测试全绿并不能保证能播放 ——
+外部接口变更会让「成功」变成「HTTP 200 + 空响应体」，只有真实取流才能发现。
 
 ---
 
