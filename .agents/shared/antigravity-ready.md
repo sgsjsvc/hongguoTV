@@ -94,3 +94,34 @@ $adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
    - **验证严禁"假成功"**：验证必须对应明确的代码版本/提交；**坚决不把 HTTP 200/成功响应当作实际播放成功**，必须通过浏览器 DevTools / DOM / Media 事件深度核验播放器实际播放状态（如 `video.currentTime > 0`、无卡顿错误事件、实际渲染帧等）。
    - **TV 端已在范围内**（旧版本文档中的"TV 范围排除"已废止）。
    - **实机验证注意**：静态截图**不能**证明"卡住"或"正常"，必须验证**状态是否推进**（如播放位置时间戳变化）。
+
+---
+
+## 可竞争任务（2026-10-15 新增）
+
+部分任务**不固定归属**，由多个 agent **先到先得**。
+
+### 当前可竞争任务
+
+| 任务 ID | 标题 | 可认领方 | 规则 |
+| --- | --- | --- | --- |
+| `t-q5-fix-dup-append` | Q5 修复分页重复追加 | **codex / antigravity** | 谁先完成自己当前的 W 任务，谁认领 |
+
+### 认领方式
+
+```powershell
+node .agents/cli.mjs claim t-q5-fix-dup-append <你的身份>
+```
+
+### 机制
+
+- 先认领者获得 **30 分钟独占锁**
+- 另一方认领会收到 `task already claimed by <对方>`
+- **不要强行抢占** —— 若认领失败，说明对方已开始，请勿重复工作
+
+### 如何识别可竞争任务
+
+```powershell
+node .agents/cli.mjs ready     # 可竞争任务会显示 [可竞争] 标记
+node .agents/cli.mjs show <id> # 查看 assignees 与 competitive 字段
+```

@@ -47,3 +47,4 @@
 {"at":"2026-10-15T06:46:45.385Z","kind":"task-updated","id":"t-w3-electron-fullscreen","by":"dsh","status":"pending","note":"brief ok"}
 {"at":"2026-10-15T06:49:21.068Z","kind":"task-created","id":"t-q5-fix-dup-append","assignee":"antigravity","title":"Q5 修复分页重复追加"}
 {"at":"2026-10-15T06:49:21.070Z","kind":"task-updated","id":"t-q5-fix-dup-append","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-15T06:54:25.242Z","kind":"task-updated","id":"t-q5-fix-dup-append","by":"dsh","status":"pending","note":"改为可竞争任务：codex/antigravity 先完成 W 任务者认领"}

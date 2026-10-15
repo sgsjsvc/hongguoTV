@@ -1,11 +1,38 @@
 # Q5 修复分页重复追加
 
 **任务 ID**: `t-q5-fix-dup-append`
-**负责人**: antigravity
+**负责人**: **codex 或 antigravity（可竞争，先到先得）**
 **设备**: **D1** `127.0.0.1:16384`
 **依赖**: 无
 **协调者**: dsh
 **范围**: 仅 TV 端分类页与排行榜
+
+---
+
+## 〇、⚠️ 认领规则（可竞争任务）
+
+**本任务由 codex 与 antigravity 共同竞争。**
+
+**规则**：
+
+> **谁先完成自己当前的 W 任务，谁认领本任务。**
+
+| 你的身份 | 你的 W 任务 | 完成后可认领 |
+| --- | --- | --- |
+| **codex** | W1（端口自动递增）、W3（Electron 全屏） | ✅ |
+| **antigravity** | W2（Web 端全屏） | ✅ |
+
+**认领命令**：
+
+```powershell
+node .agents/cli.mjs claim t-q5-fix-dup-append <你的身份>
+# 例：node .agents/cli.mjs claim t-q5-fix-dup-append codex
+```
+
+**机制**：先认领者获得 **30 分钟独占锁**，另一方认领会收到
+`task already claimed by <对方>`。**不要强行抢占。**
+
+**若你认领失败**：说明对方已开始，**请勿重复工作**，转去做其他任务或待命。
 
 ---
 

@@ -1,7 +1,7 @@
 {
   "id": "t-q5-fix-dup-append",
   "createdAt": "2026-10-15T06:49:21.066Z",
-  "updatedAt": "2026-10-15T06:49:21.069Z",
+  "updatedAt": "2026-10-15T06:54:25.240Z",
   "assignee": "antigravity",
   "title": "Q5 修复分页重复追加",
   "brief": "详见 .agents/inbox/t-q5-fix-dup-append.brief.md",
@@ -49,5 +49,12 @@
   "dispatch": "file-bus",
   "briefFile": ".agents/inbox/t-q5-fix-dup-append.brief.md",
   "order": 1,
-  "kind": "fix"
+  "kind": "fix",
+  "assignees": [
+    "antigravity",
+    "codex"
+  ],
+  "competitive": true,
+  "claimPolicy": "first-come-first-served",
+  "claimNote": "本任务由 codex 与 antigravity 共同竞争：谁先完成各自当前的 W 任务，谁认领本任务。认领用 node .agents/cli.mjs claim t-q5-fix-dup-append <你的身份>"
 }

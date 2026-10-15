@@ -99,3 +99,34 @@ $adb = "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe"
 4. 文件总线不会自动唤醒本会话；需要新的用户消息或已配置的合法调度入口触发检查，不声称持续后台监听。
 
 后续收到明确任务时，重新检查 ready 和任务详情，仅认领 `assignee=codex` 且依赖已完成的任务。开始前检查最新差异；结果记录改动文件、验证命令、实际输出、失败与剩余问题。未分配任务时保持待命，不自行扩展范围。
+
+---
+
+## 可竞争任务（2026-10-15 新增）
+
+部分任务**不固定归属**，由多个 agent **先到先得**。
+
+### 当前可竞争任务
+
+| 任务 ID | 标题 | 可认领方 | 规则 |
+| --- | --- | --- | --- |
+| `t-q5-fix-dup-append` | Q5 修复分页重复追加 | **codex / antigravity** | 谁先完成自己当前的 W 任务，谁认领 |
+
+### 认领方式
+
+```powershell
+node .agents/cli.mjs claim t-q5-fix-dup-append <你的身份>
+```
+
+### 机制
+
+- 先认领者获得 **30 分钟独占锁**
+- 另一方认领会收到 `task already claimed by <对方>`
+- **不要强行抢占** —— 若认领失败，说明对方已开始，请勿重复工作
+
+### 如何识别可竞争任务
+
+```powershell
+node .agents/cli.mjs ready     # 可竞争任务会显示 [可竞争] 标记
+node .agents/cli.mjs show <id> # 查看 assignees 与 competitive 字段
+```
