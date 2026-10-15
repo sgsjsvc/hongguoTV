@@ -130,3 +130,36 @@ node .agents/cli.mjs claim t-q5-fix-dup-append <你的身份>
 node .agents/cli.mjs ready     # 可竞争任务会显示 [可竞争] 标记
 node .agents/cli.mjs show <id> # 查看 assignees 与 competitive 字段
 ```
+
+---
+
+## 全屏任务分工（2026-10-15）
+
+### 关键事实：Web 与 Electron 是同一套前端代码
+
+`apps/web-pc/src` → `vite build` → `dist` → 被 Electron 与浏览器**共用**。
+
+**所以改一次前端代码，两端都生效。** 桌面端自动走 `window.hongguotvDesktop` 桥接，
+浏览器走 DOM API。
+
+### 分工
+
+| 任务 | 负责方 | 页面 | 文件 |
+| --- | --- | --- | --- |
+| **W5** | **codex** | 详情页/播放弹窗 | `PlayerModal.tsx` |
+| **W4** | **antigravity** | 推荐流 | `RecommendStream.tsx` |
+
+### 两条通用要求
+
+1. **保留自动下一集** —— 全屏后自动连播必须继续工作
+2. **整个屏幕全屏** —— 用 `win.setFullScreen`（W3 已实现），不用 `maximize` 或 CSS 模拟
+
+### 参考图
+
+- 图二（详情页全屏）：`.agents/shared/ref-fig2-other-page-fullscreen.png`
+- 图一（推荐页全屏）：见 `fullscreen-task-split.md` 的 ASCII 描述
+
+### 文档
+
+- 分工总览：`.agents/shared/fullscreen-task-split.md`
+- 需求更正：`.agents/shared/fullscreen-requirement-correction.md`

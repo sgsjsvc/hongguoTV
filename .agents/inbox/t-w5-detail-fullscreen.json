@@ -1,0 +1,61 @@
+{
+  "id": "t-w5-detail-fullscreen",
+  "createdAt": "2026-10-15T08:01:13.009Z",
+  "updatedAt": "2026-10-15T08:01:31.816Z",
+  "assignee": "codex",
+  "title": "W5 详情页全屏（验证 + 补齐）",
+  "brief": "详见 .agents/inbox/t-w5-detail-fullscreen.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "任务分工: .agents/shared/fullscreen-task-split.md",
+    "⚠️ 关键事实：Web 与 Electron 是同一套前端代码（apps/web-pc/src -> dist），",
+    "  改一次两端都生效。桌面端走 window.hongguotvDesktop 桥接，浏览器走 DOM API。",
+    "  所以不存在「Web 详情页」与「Electron 详情页」两个独立任务。",
+    "用户判定：W2 已符合图二（其他页面全屏），不需重做。",
+    "  因此本任务 = 验证 + 补齐差距（若无差距则如实报告无需改动）。",
+    "图二参考图: .agents/shared/ref-fig2-other-page-fullscreen.png",
+    "  特征：左上 ←剧名 第N集 官方画质:1080P；右上 ⚙ ⛶；",
+    "        中间视频+播放按钮；底部 ⏸ ‹ › 时间 1x 1080P 连播:开 🔊 ⛶",
+    "用户特别强调（写入验收项）：",
+    "  1. 全屏后保留自动下一集功能（详情页实现见 App.tsx:423 autoPlayNext）",
+    "  2. 整个屏幕全屏，不是窗口全屏（W3 已用 win.setFullScreen，验证即可）",
+    "需复测的 4 个已知缺陷（协调者实测发现）：",
+    "  1. .catch(()=>{}) 静默吞错（W2 已改为 toast）",
+    "  2. 原生全屏成功但 React 状态未同步（W2 已修）",
+    "  3. 全屏按钮随控制栏隐藏（W2 已加常驻按钮）",
+    "  4. Electron 窗口失焦后全屏被拒（W3 已用 setFullScreen 绕过）",
+    "文件边界：主要改 PlayerModal.tsx / usePlayback.ts（如需）；",
+    "  不要改 RecommendStream.tsx（W4 职责）、apps/web-pc/electron/（W3 成果）",
+    "环境：Electron 测试需先 npm run build + build-bundles + electron-builder；",
+    "  ELECTRON_RUN_AS_NODE 必须未设置"
+  ],
+  "acceptance": [
+    "全屏布局符合图二（截图对比 ref-fig2-other-page-fullscreen.png）",
+    "全屏下自动下一集仍工作（全屏后播完自动切集）",
+    "屏幕级全屏（window.innerWidth === screen.width）",
+    "浏览器与 Electron 效果一致",
+    "4 个已知缺陷已修复（逐项复测）",
+    "Escape 退出全屏不关闭弹窗",
+    "typecheck / build 通过",
+    "报告写入 .agents/shared/t-w5-detail-fullscreen-<身份>.md"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-15T08:01:13.010Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-w5-detail-fullscreen.brief.md",
+  "order": 5,
+  "kind": "fix",
+  "reassignedFrom": "antigravity",
+  "reassignReason": "用户要求详情页与推荐流各由一个 agent 负责，避免同一 agent 串行两任务"
+}

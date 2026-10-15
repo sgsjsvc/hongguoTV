@@ -58,3 +58,6 @@
 {"at":"2026-10-15T07:23:27.173Z","kind":"task-updated","id":"t-w2-web-fullscreen","by":"antigravity","status":"done","note":""}
 {"at":"2026-10-15T07:45:07.909Z","kind":"task-created","id":"t-w4-stream-fullscreen","assignee":"antigravity","title":"W4 推荐流页面添加全屏按钮"}
 {"at":"2026-10-15T07:45:07.911Z","kind":"task-updated","id":"t-w4-stream-fullscreen","by":"dsh","status":"pending","note":"brief ok（更正派发错误）"}
+{"at":"2026-10-15T08:01:13.011Z","kind":"task-created","id":"t-w5-detail-fullscreen","assignee":"antigravity","title":"W5 详情页全屏（验证 + 补齐）"}
+{"at":"2026-10-15T08:01:13.012Z","kind":"task-updated","id":"t-w5-detail-fullscreen","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-15T08:01:31.818Z","kind":"task-updated","id":"t-w5-detail-fullscreen","by":"dsh","status":"pending","note":"改派给 codex：详情页全屏"}

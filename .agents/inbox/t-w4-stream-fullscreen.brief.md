@@ -4,7 +4,16 @@
 **负责人**: antigravity
 **依赖**: 无（W2/W3 已完成）
 **协调者**: dsh
-**范围**: **仅 Web 端推荐流**（`apps/web-pc/src/components/RecommendStream.tsx`）
+**范围**: **仅推荐流**（`apps/web-pc/src/components/RecommendStream.tsx`）
+
+**相关文档**：
+
+- 任务分工总览：`.agents/shared/fullscreen-task-split.md`
+- 图二参考图：`.agents/shared/ref-fig2-other-page-fullscreen.png`
+- 需求更正说明：`.agents/shared/fullscreen-requirement-correction.md`
+
+**⚠️ 关键事实**：Web 与 Electron 是**同一套前端代码**（`apps/web-pc/src` → `dist`），
+改一次**两端都生效**。桌面端自动走桥接分支，浏览器走 DOM API。
 
 ---
 
