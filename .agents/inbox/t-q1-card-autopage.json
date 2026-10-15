@@ -1,7 +1,7 @@
 {
   "id": "t-q1-card-autopage",
   "createdAt": "2026-10-15T04:07:50.479Z",
-  "updatedAt": "2026-10-15T04:07:50.481Z",
+  "updatedAt": "2026-10-15T04:17:16.965Z",
   "assignee": "antigravity",
   "title": "Q1 分类/排行榜卡片空白修复 + 自动分页",
   "brief": "详见 .agents/inbox/t-q1-card-autopage.brief.md",
@@ -26,15 +26,21 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
+  "status": "claimed",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-15T04:17:16.965Z",
   "result": null,
   "history": [
     {
       "at": "2026-10-15T04:07:50.480Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-15T04:17:16.965Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
     }
   ],
   "dispatch": "file-bus",
