@@ -44,6 +44,31 @@ TV 端用 Media3 的 `setMediaItem()` + `prepare()` **复用 ExoPlayer**
 
 **问题仅在 UI 树。**
 
+### 🔍 关键证据：代码已经更新了 UI，然后又把树销毁了
+
+协调者核实 `loadEpisode` 的实际执行顺序（`MainActivity.kt:808-819`）：
+
+```kotlin
+// 808-817：先更新所有 UI 文本
+episodeBadge.text = "第 ${episode.number} 集"
+infoTitle.text = "@${detail.series.title}  ${detail.series.badge}"
+infoSubtitle.text = "第 ${episode.number} 集 · 《${detail.series.title}》第 ${episode.number} 集"
+infoTags.text = "#短剧  $tagList"
+infoDesc.text = detail.series.description.ifBlank { ... }
+collectionButton.text = "合集：${detail.series.title} | 共${detail.episodes.size}集>"
+playButton.text = if (player?.isPlaying == true) "暂停播放" else "继续播放"
+updateFavState()
+
+// 819：然后把整个树销毁
+navigation.removeAllViews()   // ← 上面的更新全部白做
+```
+
+**这是最直接的证据**：这些 `TextView.text` 赋值**只对已存在的视图有效**，
+而紧接着 `removeAllViews()` 把它们全部丢弃 —— 后续重建时必然重新设置一遍。
+
+**所以「切集只改 2 个字段」不仅是优化方向，更是代码原本的意图**
+（808-817 行就是这么写的），只是被 819 行的 `removeAllViews()` 破坏了。
+
 ---
 
 ## 二、要求
