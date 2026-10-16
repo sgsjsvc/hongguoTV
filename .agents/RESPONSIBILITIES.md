@@ -9,7 +9,7 @@
 | dsh | 统筹协调 | .agents任务、协调与验收记录 | 拆需求、定优先级和架构、协调接口/唯一写者/交接、整合、最终验收与发布安排 |
 | antigravity | Web / 电脑端 | apps/web-pc/（含src、electron和端侧构建配置）、apps/sync-server/public/ | Web和桌面界面与播放、Electron窗口/进程/IPC/单实例、远程管理平台界面、自测 |
 | qoder | TV端 | apps/tv-android/ | Android5.1.1(API22)+、遥控器/焦点、Media3、JNI与本地服务宿主、存储适配、TV问题修复与自测 |
-| workbuddy | 手机端（仅 Android） | 手机专属客户端目录，待首个任务确定 | 手机界面、触控播放、横竖屏、生命周期、本地存储与共享服务接入；**平台已由用户于 2026-10-16 明确：仅 Android，不含 iOS**；技术栈与目录仍待明确后再开发 |
+| workbuddy | 手机端（仅 Android） | 手机专属客户端目录（**由 Web 端代码移植，不从头编写**） | 手机界面、触控播放、横竖屏、生命周期、本地存储与共享服务接入；**平台已由用户于 2026-10-16 明确：仅 Android，不含 iOS**；**实施方案已由用户明确：直接复制/移植 Web 端代码做手机兼容，不重新实现**；技术栈与目录由 DSH 在首个任务中指定 |
 | codex | 后端：短剧后端服务 + 远程服务 | shared/、server/、custom-server/、apps/sync-server/后端（不含public/） | 内容解析/签名/解密、清晰度与媒体Range、推荐算法/缓存、本地资料库、远程同步、鉴权/密钥和迁移 |
 | opencode | 打包与测试 | scripts/打包与验证工具、tests/、发布产物与验收报告 | 统一Web/桌面/TV/手机/服务端打包，依赖与运行环境整合、产物/版本/校验和验证、功能/接口/回归/兼容/性能测试和发布门禁 |
 
@@ -41,7 +41,7 @@
 - shared/opencode-ready.md存在且被git跟踪，已有B8交付；能力结论限于其真实报告与证据。
 - WorkBuddy转为手机端，需要自行补充shared/workbuddy-mobile-readiness.md，验证平台/工具链、目录、构建/调试能力、设备和阻塞。保留旧ready，不据旧文档/复核能力推定手机开发能力；未验证前不派依赖未证实能力的实现。**用户已于2026-10-16明确手机端只做Android（不含iOS）**；iOS工具链在Windows宿主不可得，此决策与之相符。
 - Antigravity自行补充Electron能力，OpenCode补充手机打包/测试能力，Qoder聚焦TV。未经验证的平台明确待验证，不代称全部可用。
-- 当前apps只有web-pc、tv-android、sync-server，无独立手机工程。此次只落实职责，不自行创建手机工程、选择技术栈或开发新功能。手机端技术栈与专属目录待明确后再开单。
+- 当前apps只有web-pc、tv-android、sync-server，无独立手机工程。此次只落实职责，不自行创建手机工程、选择技术栈或开发新功能。**手机端实施方案已由用户明确：直接复制/移植 Web 端（apps/web-pc/src）代码做手机兼容，不从零重写**；据此，手机端不再是"另起一套客户端"，而是**基于既有 Web 代码的移植适配**，共享逻辑（引擎、推荐、同步协议）继续由 codex 唯一维护，不复制第二份引擎。
 
 ## 总线与路由
 
