@@ -22,5 +22,14 @@
   "allocation": ".agents/shared/device-allocation.md",
   "authorization": "用户指令：领取分配的模拟器",
   "note": "ADB 已验证在线；横屏 1280x720 已配置；另将 density 降为 192 使最小宽度达 600dp，命中 values-sw600dp 档（TV 目标档），实测分类页 leftRail 142px = 118.3dp = sw600dp 值。应用已安装并冒烟通过。仅操作 D3，未触碰 D1/D2/REAL。详见 .agents/shared/device-d3-workbuddy-ready.md",
-  "correction": ".agents/shared/device-dimens-bucket-correction.md"
+  "correction": ".agents/shared/device-dimens-bucket-correction.md",
+  "supersededBy": {
+    "at": "2026-10-16T14:55:00Z",
+    "by": "dsh",
+    "reason": "MuMu 设备已改为动态声明制（.agents/mumu-device-allocation.md），本静态锁不再是有效登记",
+    "effectiveRegistry": ".agents/state/mumu-d3.lock.json（type=mumu-lock）",
+    "readBy": "无代码读取本文件；cli.mjs 的 mumu list/declare/release 只读写 mumu-*.lock.json",
+    "archivedCopy": ".agents/archive/device-locks-before-dynamic-20261016/device-d3.lock.json",
+    "action": "原样保留，不删除；仅加注本字段说明其已被取代"
+  }
 }

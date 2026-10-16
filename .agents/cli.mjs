@@ -260,18 +260,14 @@ async function main() {
       break;
     }
 
-    // ---------- 团队花名册 ----------
+    // ---------- 六领域花名册 ----------
     case "team": {
       const { TEAM } = await import("./team.mjs");
-      const byBackend = {};
-      for (const r of TEAM) (byBackend[r.backend] ??= []).push(r);
-      print(`团队岗位共 ${TEAM.length} 个，物理后端 ${Object.keys(byBackend).length} 个\n`);
-      for (const [be, rows] of Object.entries(byBackend)) {
-        console.log(`\n【${be}】(${rows.length} 岗位)`);
-        for (const r of rows) {
-          console.log(`  ${r.id.padEnd(13)} ${r.title.padEnd(14)} 波次${r.waves}  ${r.duties}`);
-          console.log(`  ${"".padEnd(13)} 允许改: ${r.fileScope.join("  ")}`);
-        }
+      print(`现行身份共 ${TEAM.length} 个（六领域 + dsh 统筹），依据 RESPONSIBILITIES.md\n`);
+      for (const r of TEAM) {
+        console.log(`【${r.id}】${r.title}   波次${r.waves}`);
+        console.log(`  职责: ${r.duties}`);
+        console.log(`  允许改: ${r.fileScope.join("  ")}`);
       }
       break;
     }
@@ -280,14 +276,14 @@ async function main() {
       const { routeFiles, clashWith } = await import("./dispatch.mjs");
       const r = routeFiles(args);
       if (!r.primary) {
-        print("未找到归属岗位（fileScope 未覆盖这些路径）");
+        print("未找到归属身份（fileScope 未覆盖这些路径）");
         print({ unmatched: r.unmatched });
         break;
       }
-      console.log(`主责岗位: ${r.primary.id} — ${r.primary.title}`);
-      console.log(`后端:     ${r.primary.backend}（把它粘给 ${r.primary.backend} 的窗口）`);
+      console.log(`主责身份: ${r.primary.id} — ${r.primary.title}`);
+      console.log(`派发对象: ${r.primary.backend}（把它粘给 ${r.primary.backend} 的窗口）`);
       if (r.all.length > 1) console.log(`共同涉及: ${r.all.slice(1).map((x) => `${x.id}(${x.title})`).join(", ")}`);
-      if (r.reviews.length) console.log(`应评审:   ${r.reviews.map((x) => `${x.id}(${x.title})`).join(", ")}`);
+      if (r.reviews.length) console.log(`应知会:   ${r.reviews.map((x) => `${x.id}(${x.title})`).join(", ")}`);
       const clash = clashWith(args);
       if (clash.length) {
         console.log(`\n⚠ 与未完成任务冲突:`);
@@ -301,9 +297,9 @@ async function main() {
     case "board": {
       const { board } = await import("./dispatch.mjs");
       const rows = board();
-      print(table(rows, ["岗位", "名称", "后端", "波次", "进行中", "待办", "已完成", "在途"]));
+      print(table(rows, ["身份", "领域", "波次", "进行中", "待办", "已完成", "失败", "在途"]));
       const total = rows.reduce((a, b) => a + b.在途, 0);
-      console.log(`\n在途任务合计 ${total}，并发上限 3（物理后端数）`);
+      console.log(`\n在途任务合计 ${total}（含历史旧岗位 id 归并后的统计）`);
       break;
     }
 
@@ -312,10 +308,10 @@ async function main() {
       const p = plan();
       for (const [w, rows] of Object.entries(p.并行波次)) {
         console.log(`\n── 波次 ${w} (${rows.length} 个) ──`);
-        for (const r of rows) console.log(`  ${r.后端.padEnd(12)} ${r.岗位.padEnd(13)} [${r.状态}] ${r.标题}`);
+        for (const r of rows) console.log(`  ${r.身份.padEnd(12)} ${r.领域.padEnd(16)} [${r.状态}] ${r.标题}`);
       }
       if (p.冲突对.length) {
-        console.log("\n⚠ 冲突对（同文件）:");
+        console.log("\n⚠ 冲突对（文件范围重叠）:");
         for (const [a, b] of p.冲突对) console.log(`   ${a} × ${b}`);
       } else {
         console.log("\n✓ 无文件冲突");

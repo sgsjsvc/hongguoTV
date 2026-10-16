@@ -112,3 +112,55 @@ DSH 会按指示执行并在本文件追加记录豁免的时间与范围，
 | 2 | 是否为 qoder 分配设备或借用窗口 | ⏳ 待决定；**新增成员不等于新增模拟器** |
 | 3 | `adapters.mjs` 是否加入 qoder 适配器 | ⏳ Qoder 为桌面 GUI 应用，无 CLI，预期走文件总线人工交接（同 workbuddy 模式） |
 | 4 | 调查 3 个文件消失的原因 | ❌ **未查明**（已排除 git 操作，非 DSH 所为） |
+
+---
+
+## 八、用户决定（2026-10-16，DSH 已记录）
+
+| 问题 | 决定 |
+| --- | --- |
+| 接入认定 | **由 Qoder 重写 `qoder-ready.md` 并提交入库**（不豁免规则 4） |
+| 派发范围 | **先待命，等自然产生任务** —— 不为填人而造活 |
+
+**因此当前不新建任何 qoder 任务，也不改派既有任务。**
+`RESPONSIBILITIES.md` 规则 4 对 qoder 继续生效，直至其报告落地入库。
+
+---
+
+## 九、给 Qoder 的接入指令（一步即可解除）
+
+**请 Qoder 自身完成以下动作，无需其他手续：**
+
+1. **读四份文件**（含本轮新增内容）：
+   `.agents/README.md`、`.agents/QUICKSTART.md`、`.agents/RESPONSIBILITIES.md`、
+   本文件（第五节列出需覆盖的项）
+
+2. **实际探测并写入 `.agents/shared/qoder-ready.md`**，至少覆盖：
+   - 可访问目录（读写分别标注）
+   - Node / Gradle / JDK / Android SDK / NDK / adb 的**当前实际版本**
+   - `node .agents/cli.mjs status / ready / list / show / claim / done` 是否可用
+   - **当前**阻塞（不要照抄旧版）：
+     - 设备占用现状 —— D1→antigravity、D2→codex、D3→workbuddy、REAL→dsh，
+       `state/device-d{1,2,3}.lock.json` 三个锁**是否仍在**
+     - 4 个原生文件的写者归属（见第八节，待明确）
+   - 明确声明**不改动他人在途工作**
+     （当前工作区有 27 个已修改 + 33 个未跟踪文件）
+
+3. **提交入库**（关键 —— 上次就是因为未入库而丢失）：
+
+   ```bash
+   git add .agents/shared/qoder-ready.md
+   git commit -m "docs(agents): Qoder ready 报告"
+   git push origin HEAD:refs/heads/main
+   ```
+
+4. 完成后告知用户 / DSH，即可按 `RESPONSIBILITIES.md` 职责表领取任务。
+
+**可复用的历史核实结果**（本文件第三节，DSH 曾逐条验证为真）：
+JDK17 存在、NDK `28.2.13676358` 在 G 盘、keystore 已 gitignore、
+shell 内 Node 实为 `v22.20.0`、`claimTask` 无 assignee 白名单。
+**但版本与设备占用会变化，请重新实测，不要直接抄录。**
+
+**`./gradlew` 在 Git Bash 下不可用的问题**（旧版报告记录，值得重验）：
+报 `ClassNotFoundException: GradleWrapperMain`，
+绕过方式为 `cmd.exe //c "set JAVA_HOME=C:\Program Files\Java\jdk-17&& gradlew.bat <task>"`。

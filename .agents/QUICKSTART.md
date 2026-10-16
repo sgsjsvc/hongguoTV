@@ -1,67 +1,43 @@
-# 四个 Agent 快速接入
+# 六个Agent新会话快速接入
 
-项目：`F:\Project\hongguoTV`。复用现有 `.agents` 文件总线，无需安装服务、配置 MCP 或使用 Docker。
+项目：`F:\Project\hongguoTV`。用户决定全体重开新会话，先读 [START_HERE.md](START_HERE.md)。职责唯一依据为 [RESPONSIBILITIES.md](RESPONSIBILITIES.md)。下方每段可直接粘贴到对应工具的新会话。
 
-本文件是快速接入约束；与 README 的默认分工冲突时，以用户最新指令和本文件为准。
+## 通用规则
 
-## 当前边界
+每个新会话从项目文件恢复，真实验证当前权限/工具/能力，自己写shared/<身份>-session-ready.md，不代写他人报告，不拿旧ready冒充本次实测，不删除旧报告。先看自己的claimed再看ready，不重复领取，不覆盖他人差异，不自动改派旧任务。同文件唯一写者，DSH协调和最终验收。接入完成后等待明确任务，不自动改业务、启停服务、构建、安装、发布或推送。
 
-- 本轮已进入执行阶段。TV UI 自适应与布局优化进行中（见 `.agents/shared/tv-ui-plan.md`）。
-- **TV 在范围内。** 早期版本的本文件曾写「TV 不改动、不构建、不安装」，该条已废止：用户后续下达了「优化 TV 端 UI，采用自适应适配各种屏幕分辨率，优化布局和遥控器控制」的指令。按本文件第 5 行，用户最新指令优先。各 agent 不得再以旧边界推辞 TV 任务。
-- 播放修复的范围仍为 Web / Windows / TV 三端共用引擎；改动 `shared/content-core/hongguo.js` 前必须先明确隔离方式（见阻塞项）。
-- 当前工作区已有其他工具的未提交修改。先检查差异，不覆盖、不回退、不清理。
-- DSH 暂任唯一协调者；Codex、Antigravity、WorkBuddy 是执行或审查方。用户可以更换协调者。
-- 同一文件同一时间只分配一个修改者。
-- 合并、推送、服务启停、安装和发布由协调者统一安排，并遵守用户已授权的范围。
-- Cookie、访问密钥、签名凭据和未脱敏抓包不得写入协作文件或提交 Git。
+## 给DSH：统筹协调
 
-## 最快使用步骤
+> 你的身份是dsh，工作区F:\Project\hongguoTV。请读取.agents/START_HERE.md并完整执行接入步骤，重读RESPONSIBILITIES.md、README.md、QUICKSTART.md和HANDOVER.md。负责需求拆分、优先级、架构、接口和唯一写者协调、整合、最终验收与发布安排。核实各新会话真实能力，按六领域分工派发。检查B5/B7入口接线协调和旧team/dispatch路由，保留原负责人，明确交接后才改派。接入阶段不改业务、不自动发布。 自己写.agents/shared/dsh-session-ready.md，列出实际命令/结果、权限/工具、自己的在途/可领取任务、阻塞和下一步。接入后只报告结果并等待明确执行指令；不代替其他Agent接入或认领其任务。
 
-1. 在四个工具里打开或授权项目目录。
-2. 分别粘贴下面对应的启动指令。
-3. 各工具读取 `.agents/README.md` 和本文件，写出自己的就绪报告。
-4. 用户向 DSH 提供一个具体任务。DSH 拆分任务并写入 inbox，明确负责人、允许改动文件、依赖和验收条件。
-5. 执行方只领取分配给自己的、依赖已完成的任务；结果通过 CLI 写入 outbox。协调者审查证据后再接受结果。
+## 给Antigravity：Web/电脑端
 
-### 给 DeepSeek Harness
+> 你的身份是antigravity，工作区F:\Project\hongguoTV。请读取.agents/START_HERE.md并完整执行接入步骤，重读RESPONSIBILITIES.md、README.md、QUICKSTART.md和HANDOVER.md。主责apps/web-pc/全部端侧代码，包括React与Electron窗口/进程/IPC/单实例，以及apps/sync-server/public/管理界面。真实验证浏览器、React、Electron能力并列限制；后端归codex，统一打包与独立测试归opencode。 自己写.agents/shared/antigravity-session-ready.md，列出实际命令/结果、权限/工具、自己的在途/可领取任务、阻塞和下一步。接入后只报告结果并等待明确执行指令；不代替其他Agent接入或认领其任务。
 
-> 你是本项目本轮协作协调者，身份 dsh。请读取 F:\Project\hongguoTV\.agents\README.md 和 F:\Project\hongguoTV\.agents\QUICKSTART.md，检查现有 inbox / outbox 和工作区状态。把接入结果写入 .agents/shared/dsh-ready.md，包含可访问目录、可用工具和阻塞项。暂时不要修改业务代码或自动派发实现任务；等待我的具体任务。收到任务后只分配有明确边界的任务，每个文件只有一个修改者，汇总其他 agent 的报告并依据验收证据整合。
+## 给Qoder：TV端
 
-### 给 Codex / ChatGPT
+> 你的身份是qoder，工作区F:\Project\hongguoTV。请读取.agents/START_HERE.md并完整执行接入步骤，重读RESPONSIBILITIES.md、README.md、QUICKSTART.md和HANDOVER.md。主责apps/tv-android/，兼容Android5.1.1(API22)，负责遥控器、播放、JNI/本地服务宿主与端侧适配。Electron已归antigravity，共享引擎归codex。保留重建ready及入库核验要求，未核验不假定已接入执行。设备动态声明，不把高版本模拟器当API22实机。 自己写.agents/shared/qoder-session-ready.md，列出实际命令/结果、权限/工具、自己的在途/可领取任务、阻塞和下一步。接入后只报告结果并等待明确执行指令；不代替其他Agent接入或认领其任务。
 
-> 你是执行及审查方，身份 codex。请读取 F:\Project\hongguoTV\.agents\README.md 和 F:\Project\hongguoTV\.agents\QUICKSTART.md。把接入结果写入 .agents/shared/codex-ready.md，包含可访问目录、可用工具和阻塞项。暂时不修改业务代码。收到明确任务后，检查 ready 任务，仅认领 assignee=codex 的任务；执行前检查现有差异，完成后记录改动、验证命令、实际结果和剩余问题。没有任务时报告待命，不自行扩展范围。
+## 给WorkBuddy：手机端
 
-### 给 Antigravity
+> 你的身份是workbuddy，工作区F:\Project\hongguoTV。请读取.agents/START_HERE.md并完整执行接入步骤，重读RESPONSIBILITIES.md、README.md、QUICKSTART.md和HANDOVER.md。用户最新分工已替代默认只做独立复核和文档，但旧任务不自动转移。自行补shared/workbuddy-mobile-readiness.md，实测移动端工具链、平台、构建/调试能力与阻塞。当前无手机独立工程，不自行确定技术栈、创建工程或把TV改为手机版。 自己写.agents/shared/workbuddy-session-ready.md，列出实际命令/结果、权限/工具、自己的在途/可领取任务、阻塞和下一步。接入后只报告结果并等待明确执行指令；不代替其他Agent接入或认领其任务。
 
-> 你是执行及浏览器验证方，身份 antigravity。请读取 F:\Project\hongguoTV\.agents\README.md 和 F:\Project\hongguoTV\.agents\QUICKSTART.md。把接入结果写入 .agents/shared/antigravity-ready.md，包含可访问目录、可用工具和阻塞项。暂时不修改业务代码。收到明确任务后，仅认领 assignee=antigravity 且依赖完成的任务；验证必须对应明确的代码版本，不把 HTTP 成功当作实际播放成功。
->
-> **注意：TV 已在本轮范围内。** 早期版本的本文件曾写「TV 不在本轮范围」，该条已废止 —— 用户已下达 TV UI 自适应与布局优化指令，你已完成的 T1/T2/T3 正是该指令下的任务。不要再以旧边界推辞 TV 任务。当前进行中的任务链见 `.agents/shared/tv-ui-plan.md`。
+## 给Codex：后端：短剧后端服务+远程服务
 
-### 给 WorkBuddy
+> 你的身份是codex，工作区F:\Project\hongguoTV。请读取.agents/START_HERE.md并完整执行接入步骤，重读RESPONSIBILITIES.md、README.md、QUICKSTART.md和HANDOVER.md。主责shared/、server/、custom-server/、apps/sync-server/后端，不含public/。负责内容/签名/解密/Range/推荐/缓存/存储/同步，改引擎同步vendor并验证Node/QuickJS。先恢复B5/B7等自己claimed任务及报告，不重复claim或跳过入口接线协调。 自己写.agents/shared/codex-session-ready.md，列出实际命令/结果、权限/工具、自己的在途/可领取任务、阻塞和下一步。接入后只报告结果并等待明确执行指令；不代替其他Agent接入或认领其任务。
 
-> 你是文档整理及独立复核方，身份 workbuddy。请读取 F:\Project\hongguoTV\.agents\README.md 和 F:\Project\hongguoTV\.agents\QUICKSTART.md。把接入结果写入 .agents/shared/workbuddy-ready.md，包含可访问目录、可用工具和阻塞项。暂时不修改业务代码。收到明确任务后，仅认领 assignee=workbuddy 且依赖完成的任务；区分已验证事实与推测，审查测试证据，按任务约定整理文档。没有 CLI 权限时，在报告中说明，由协调者代记任务状态。
->
-> **注意：你已认领 T4（TV UI 自适应独立复核）。** 复核对象是 T1–T3 的产物，重点核查「三档 dimens 数值是否真的不同」与「是否真自适应」，不能只看构建通过。任务详情见 `.agents/inbox/t-mv6o7lhy-8d34e3.brief.md`。
+## 给OpenCode：打包与测试
 
-## 文件交接与命令
+> 你的身份是opencode，工作区F:\Project\hongguoTV。请读取.agents/START_HERE.md并完整执行接入步骤，重读RESPONSIBILITIES.md、README.md、QUICKSTART.md和HANDOVER.md。统一负责Web/电脑/TV/手机/服务端打包、环境/依赖整合、产物架构/内容/版本/校验和核对、功能/接口/回归/兼容/性能测试和发布门禁。DSH决定正式发布。真实验证各平台能力，未验证明确标限制。业务缺陷交所属开发者修复，跨界改动先指定写者，遵守构建互斥和设备动态声明。 自己写.agents/shared/opencode-session-ready.md，列出实际命令/结果、权限/工具、自己的在途/可领取任务、阻塞和下一步。接入后只报告结果并等待明确执行指令；不代替其他Agent接入或认领其任务。
 
-在项目根目录执行：
+## 总线命令
 
 ```powershell
-node .agents/cli.mjs status
+node .agents/cli.mjs list claimed
 node .agents/cli.mjs ready
-node .agents/cli.mjs show <任务ID>
-node .agents/cli.mjs claim <任务ID> <自己的身份>
-node .agents/cli.mjs done <任务ID> <自己的身份> "结论及证据文件路径"
-node .agents/cli.mjs fail <任务ID> <自己的身份> "阻塞原因及已尝试措施"
+node .agents/cli.mjs show <id>
+node .agents/cli.mjs claim <id> <身份>
+node .agents/cli.mjs done <id> <身份> "实际结果与报告路径"
 ```
 
-协调者使用 createTask 建立包含 context、acceptance、blockedBy 的任务；简单的 CLI add 命令不应代替完整的任务边界。
-
-详细报告写在 `.agents/shared/<任务ID>-<身份>.md`，包括：目标、实际改动、验证环境和命令、结果、剩余风险、需要其他方回答的问题。跨 agent 问题通过报告交给协调者，协调者再创建跟进任务。
-
-任务命令中的 done 只表示执行方提交结果，不能替代协调者的最终验收。现有锁不构成文件级隔离，协调者仍需保证任务修改范围不重叠。
-
-## 能力边界
-
-这是文件交接，不是即时聊天或自动唤醒。各工具完成一轮后，用户可能需要发送“检查分配给你的新任务”。未验证各工具适配器前，不使用 `run` 自动调度。普通聊天界面若无法访问本地文件，需要把相关文档内容粘贴进去，不能假定已经接入。
+未完成任务不因换会话标done；未接入、未验证、被阻塞与已交付分开说明。六领域通知见shared/notice-20261016-six-domains-new-sessions.md。

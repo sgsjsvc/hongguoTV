@@ -12,5 +12,14 @@
   "installedPackage": "com.hongguotv.tv",
   "allocation": ".agents/shared/device-allocation.md",
   "authorization": "用户指令：领取分配的模拟器",
-  "note": "ADB 已验证在线，横屏 1280x720 已配置，应用已安装就绪。等待明确的 UI 与交互测试任务。"
+  "note": "ADB 已验证在线，横屏 1280x720 已配置，应用已安装就绪。等待明确的 UI 与交互测试任务。",
+  "supersededBy": {
+    "at": "2026-10-16T14:55:00Z",
+    "by": "dsh",
+    "reason": "MuMu 设备已改为动态声明制（.agents/mumu-device-allocation.md），本静态锁不再是有效登记",
+    "effectiveRegistry": ".agents/state/mumu-d1.lock.json（type=mumu-lock）",
+    "readBy": "无代码读取本文件；cli.mjs 的 mumu list/declare/release 只读写 mumu-*.lock.json",
+    "archivedCopy": ".agents/archive/device-locks-before-dynamic-20261016/device-d1.lock.json",
+    "action": "原样保留，不删除；仅加注本字段说明其已被取代"
+  }
 }

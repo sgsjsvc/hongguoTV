@@ -1,5 +1,20 @@
 # 调试设备分配规范
 
+> ## ⚠️ 本文件已失效（历史参考）— 2026-10-16 起
+>
+> 本文件的**静态分配**（D1→antigravity、D2→codex、D3→workbuddy、REAL→dsh）**已被
+> [mumu-device-allocation.md](../mumu-device-allocation.md) 的动态声明制取代**：
+> 「谁要谁声明，先声明后用，用完释放」。**派发与使用一律以新文件为准，不得按本文件固定归属。**
+>
+> **本文件保留仅为历史参考**，不删除（协同记录须可追溯）。
+>
+> **配套旧锁文件去向**：`state/device-d1.lock.json`、`state/device-d2.lock.json`、
+> `state/device-d3.lock.json` 三个 2026-10-15 旧制静态锁，已由 DSH 于 2026-10-16 裁决
+> **原样归档**（保留设备ID、agent、地址、授权与备注全文，见文件内 `supersededBy` 字段），
+> 不在 `state/` 中继续冒充现行登记。**现行登记唯一来源为 `state/mumu-<设备>.lock.json`**
+> （`mumu list` / `mumu declare` / `mumu release` 只读写该格式）。
+> 归档副本：`.agents/archive/device-locks-before-dynamic-20261016/`。
+
 **协调者**: dsh
 **日期**: 2026-10-15
 **目的**: 固定设备分配，避免多个 agent 抢用同一模拟器

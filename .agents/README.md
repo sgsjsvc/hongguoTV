@@ -1,15 +1,19 @@
 # 多 Agent 协作规范
 
-四个 agent 通过**文件总线**协作。选文件而非 IPC，是因为它是四个 agent 唯一的共同能力，且天然持久、可审计、可 diff、可进 git。
+六方通过**文件总线**协作。文件交接可持久、可审计，不依赖各工具私有 IPC。2026-10-16 用户新增 Qoder、OpenCode 并要求重新分工；最新职责与交接规则以 [RESPONSIBILITIES.md](RESPONSIBILITIES.md) 为准。
 
-## 参与方
+## 参与方（用户最新分工）
 
-| Agent | 调用方式 | 定位 |
-| --- | --- | --- |
-| **DSH**（本会话） | 自有工具链 | 主控、调度、验收、跨端联调 |
-| **Codex / ChatGPT** | `codex.exe exec` | 后端、算法、批量重构 |
-| **Antigravity** | `agentapi.bat` | UI、浏览器验证、多模态 |
-| **WorkBuddy** | 文件总线（无 CLI） | 记忆沉淀、文档、长上下文 |
+| Agent | 主责 |
+| --- | --- |
+| DSH / dsh | 统筹协调、最终验收与发布安排 |
+| Antigravity / antigravity | Web/电脑端，包含Electron与远程管理界面 |
+| Qoder / qoder | TV端 |
+| WorkBuddy / workbuddy | 手机端 |
+| Codex / codex | 短剧后端服务与远程共享服务 |
+| OpenCode / opencode | 打包与测试、产物校验、发布门禁 |
+
+所有Agent将重新打开新会话。先读 [START_HERE.md](START_HERE.md)，按 [QUICKSTART.md](QUICKSTART.md) 对应身份恢复。旧会话、旧ready和旧路由不代表当前能力。职责唯一依据是 [RESPONSIBILITIES.md](RESPONSIBILITIES.md)。
 
 ## 目录约定
 
@@ -106,21 +110,23 @@ node .agents/cli.mjs run <id>   # 生成 .agents/inbox/<id>.workbuddy-prompt.md
 
 ## 分工边界
 
-避免两个 agent 同时改同一文件：
+职责以 [RESPONSIBILITIES.md](RESPONSIBILITIES.md) 为准，具体文件授权以任务brief为准。
 
 | 区域 | 归属 |
 | --- | --- |
-| `shared/content-core/`、`custom-server/`、`server/` | Codex |
-| `apps/web-pc/src/` | Antigravity |
-| `apps/tv-android/` | Antigravity（TV 在本轮范围内，见 QUICKSTART 边界） |
-| `docs/`、`.workbuddy-ai/memory/` | WorkBuddy |
-| 跨端联调、发布、验收 | DSH（主控） |
+| 任务协调、最终验收、发布安排 | DSH |
+| apps/web-pc/（含electron）、apps/sync-server/public/ | Antigravity |
+| apps/tv-android/ | Qoder |
+| 手机专属客户端目录（尚未建立） | WorkBuddy |
+| shared/、server/、custom-server/、同步服务后端 | Codex |
+| 跨端打包、测试、性能与产物校验工具 | OpenCode |
 
-> **归属是默认值，不是硬约束。** 实际以每个任务的 `assignee` 与 `brief` 为准。同一文件同一时间只能有一个修改者。
+开发者负责所属功能自测，OpenCode负责独立验证与统一打包。同一文件同一时间只有一个写者；已领取任务由原负责人完成或经DSH交接，不自动转移。各方维护模块文档，DSH汇总交接。
 
 ## 已知限制
 
 1. **Antigravity 会自主使用工具**。实测让它"只回复 BUS_OK"，它仍去执行了 `dir`。任务描述里若要它只回答不执行，需要显式约束。
-2. **Codex 沙箱是 workspace-write**，默认只能改工作区。
+2. 各工具的文件、命令与网络权限以其实际会话为准，不能根据产品名称假定；接入报告必须明确验证。
 3. **WorkBuddy 无法自动触发**，必须人工在其窗口操作。
 4. **Antigravity 会话不可复用**，每次 `new-conversation` 都是新会话，上下文不延续。
+5. Qoder / OpenCode 尚未验证自动适配器；使用人工打开项目、读取指令和 `claim/done` 文件交接，不对它们调用 `run`。现有 team/route/plan 旧岗位映射需 DSH 同步，暂不作为六方分配依据。
