@@ -14,15 +14,28 @@
 
 获取发布产物（由 `node scripts/collect-release.mjs` 汇总生成，**不入版本库**），**无需安装 Node.js 或任何运行环境**。
 
+产物**全部平铺在 `release/` 下**，命名规则：
+
+| 类型 | 格式 |
+| --- | --- |
+| Windows 桌面端 | `hongguotv-desktop-win-<架构>-<形态>.exe` |
+| Web 服务端 | `hongguotv-web-<平台>-<架构>.<zip\|tar.gz>` |
+| 家庭共享服务端 | `hongguotv-sync-<平台>-<架构>.tar.gz` |
+| Android TV | `hongguotv-tv-android5.1-<类型>.apk` |
+
+常用产物：
+
 | 平台 | 文件 | 说明 |
 | --- | --- | --- |
-| Windows x64 | `红果短剧-1.0.0-x64-setup.exe` | 安装包，可选目录、建快捷方式、可卸载 |
-| Windows arm64 | `红果短剧-1.0.0-arm64-setup.exe` | 骁龙/Surface Pro X 等 ARM 设备 |
-| Windows 通用 | `红果短剧-1.0.0-setup.exe` | 含双架构，不确定架构时选这个 |
-| Android TV | `hongguotv-android5.1-release-signed.apk` | Android 5.1+，四种 CPU 架构通用 |
-| Web 服务 | `hongguotv-web-<平台>.zip` / `.tar.gz` | 解压后运行 `start.cmd` / `./start.sh` |
+| Windows x64 | `hongguotv-desktop-win-x64-setup.exe` | 安装包，可选目录、建快捷方式、可卸载 |
+| Windows arm64 | `hongguotv-desktop-win-arm64-setup.exe` | 骁龙/Surface Pro X 等 ARM 设备 |
+| Windows 通用 | `hongguotv-desktop-win-universal-setup.exe` | 含双架构，不确定架构时选这个 |
+| Android TV | `hongguotv-tv-android5.1-release.apk` | Android 5.1+，四种 CPU 架构通用 |
+| Web 服务 | `hongguotv-web-<平台>-<架构>.zip` / `.tar.gz` | 解压后运行 `start.cmd` / `./start.sh` |
 
 各平台的 `-portable.exe` 为免安装版，直接运行。
+
+产物清单与校验值见 `release/README.md`、`release/manifest.json` 与 `release/SHA256SUMS.txt`。
 
 若尚无现成产物，按下方[构建与打包](#构建与打包)自行生成。
 
@@ -151,12 +164,18 @@ cd apps/tv-android
 ### 汇总产物
 
 ```powershell
-node scripts/collect-release.mjs      # 三端产物汇总到 release/
+node scripts/collect-release.mjs      # 三端产物汇总到 release/（扁平结构）
 ```
 
-> ⚠️ 该脚本是**搬运工，不负责构建**。它从 `outputs/tv-android`、
-> `outputs/bundles`、`outputs/windows` 复制现成文件。
-> **打包后务必先更新这些源目录**，否则 `release/` 里会是旧产物。
+**行为**：
+
+- 清空 `release/` 下的产物（**保留 `*.md` 说明文档**）与旧子目录
+- 从 `outputs/windows`、`outputs/bundles`、`outputs/tv-android` 复制现成文件
+- **按统一规则重命名**（重命名只发生在 `release/` 内，构建产物保持原名）
+- 生成 `SHA256SUMS.txt` 与 `manifest.json`
+
+> ⚠️ 该脚本是**搬运工，不负责构建**。
+> **打包后必须先确认 `outputs/` 下的源目录是最新的**，否则会搬运旧产物。
 > 收集后建议抽查：产物内引擎应与 `shared/content-core/hongguo.js` 逐字节一致。
 
 ---
@@ -199,8 +218,9 @@ node scripts/collect-release.mjs      # 三端产物汇总到 release/
 | [项目状态](docs/PROJECT_STATUS.md) | 当前进度与已知问题 |
 | [推送说明](docs/PUSH_GUIDE.md) | 仓库与发布流程 |
 
-> 构建产物的详细说明（架构选择、SmartScreen 处理、签名信息、校验方式）
-> 见 `release/README.md`，该文件随 `scripts/collect-release.mjs` 生成。
+> 构建产物的详细说明（命名规则、架构选择、SmartScreen 处理、签名信息、校验方式）
+> 见 `release/README.md`。该文件为手工维护，`scripts/collect-release.mjs`
+> 收集产物时会**保留它**（不随产物清空）。
 
 ---
 
