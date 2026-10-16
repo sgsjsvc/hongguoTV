@@ -1,7 +1,7 @@
 {
   "id": "t-p2-web-video-reuse",
   "createdAt": "2026-10-16T04:27:40.690Z",
-  "updatedAt": "2026-10-16T04:27:40.692Z",
+  "updatedAt": "2026-10-16T04:47:41.551Z",
   "assignee": "antigravity",
   "title": "P2 Web 端切集不重建 video 元素",
   "brief": "详见 .agents/inbox/t-p2-web-video-reuse.brief.md",
@@ -50,5 +50,7 @@
   "dispatch": "file-bus",
   "briefFile": ".agents/inbox/t-p2-web-video-reuse.brief.md",
   "order": 2,
-  "kind": "perf"
+  "kind": "perf",
+  "scopeExpanded": true,
+  "note": "核实发现 PlayerModal.tsx 也有 key={currentEpisode.id}，问题范围扩大至两个组件"
 }

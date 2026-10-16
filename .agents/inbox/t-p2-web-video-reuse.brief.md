@@ -77,6 +77,27 @@ TV 端用 Media3 的 `setMediaItem()` + `prepare()` **复用同一个 ExoPlayer 
 | 6 | 倍速 | 切集后保持用户设置 |
 | 7 | 暂停状态 | 切集后按预期播放/暂停 |
 
+### 2.4 ⚠️ 补充发现：`PlayerModal` 也有同样问题
+
+协调者核实：**两个组件都有 `key`**，问题范围比原 brief 描述的更大。
+
+| 文件 | 行 | key |
+| --- | --- | --- |
+| `RecommendStream.tsx` | 300 | `key={`${currentItem.id}-${streamCurrentEpisode?.id || 0}`}` |
+| **`PlayerModal.tsx`** | — | **`key={currentEpisode.id}`** |
+
+**两处都需处理**（`PlayerModal` 是详情页播放器，同样存在切集重建）。
+
+**验证方法**：切集时检查 `<video>` 的 DOM 引用是否变化。
+
+```javascript
+const v1 = document.querySelector('video');
+// 切集
+v1 === document.querySelector('video')   // true = 复用成功
+```
+
+---
+
 ### 2.3 保留现有正确行为
 
 **不要破坏**：
