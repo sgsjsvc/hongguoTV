@@ -244,12 +244,16 @@ npm run build                            # 2. 前端
 node scripts/build-bundles.mjs --platforms=win-x64,win-arm64,darwin-x64,darwin-arm64,linux-x64,linux-arm64
 # 3. 桌面端（见上）
 # 4. Android TV（见上）
-# 5. 更新 outputs/ 下的源目录后再收集
+# 5. 确认 outputs/ 下的源目录已更新，再收集
 node scripts/collect-release.mjs
 ```
 
 **关键**：第 1 步的冒烟测试不可跳过。代码与单元测试全绿并不能保证能播放 ——
 外部接口变更会让「成功」变成「HTTP 200 + 空响应体」，只有真实取流才能发现。
+
+**收集后**：产物已扁平化并统一命名，可直接用于分发。
+若需同步到 GitHub Release，注意正文中的文件名也要一并更新
+（见 `.agents/shared/TODO-release-update.md`）。
 
 ---
 
