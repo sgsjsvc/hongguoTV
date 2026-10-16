@@ -168,3 +168,43 @@ node outputs/debug/measure-deep.mjs        # 冷热对比与并发
 ```powershell
 node .agents/cli.mjs claim <任务ID> <你的身份>
 ```
+
+---
+
+## 性能优化任务补充（2026-10-16 第二批）
+
+### 新增 P4：TV 端列表渲染与滚动流畅度
+
+**协调者静态审查发现 4 个问题**（见 `.agents/shared/perf-baseline-render.md`）：
+
+| # | 问题 | 影响 |
+| --- | --- | --- |
+| A | `SeriesAdapter` 无 `onViewRecycled` | 快速滚动图片错位 |
+| B | `ArtworkLoader.load()` 无条件清空图片 | 滚动闪烁 |
+| C | `GradientDrawable` 每次 bind 都新建 | 榜单滚动对象分配 |
+| D | OkHttp 无并发限制 | 快速滚动请求风暴 |
+
+### 最终分工（负载 2/2/1）
+
+| 任务 | 负责方 | 文件 |
+| --- | --- | --- |
+| `t-p1-detail-cache` | **codex** | `server/provider.mjs` |
+| `t-p4-tv-render` | **codex** | `SeriesAdapter.kt`、`ArtworkLoader.kt` |
+| `t-p2-web-video-reuse` | **antigravity** | `apps/web-pc/src/` |
+| `t-p3-tv-ui-reuse` | **workbuddy** | `MainActivity.kt` |
+
+**注意**：codex 领了 P1 与 P4 —— 两者**文件不重叠**（服务端 vs TV 端），可自由安排顺序。
+
+### ⚠️ 设备当前离线
+
+MuMu 模拟器已关闭，真机 `192.168.1.120:5555` 显示 `offline`。
+
+**涉及 TV 的任务（P3、P4）需先启动模拟器或连真机**：
+
+```powershell
+$env:ANDROID_ADB_SERVER_PORT = "15037"
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" start-server
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" connect 127.0.0.1:16384
+```
+
+若设备不可用，可先做代码改动，**在报告中标注「未实测」**。

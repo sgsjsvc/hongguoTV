@@ -1,0 +1,56 @@
+{
+  "id": "t-p4-tv-render",
+  "createdAt": "2026-10-16T04:35:03.349Z",
+  "updatedAt": "2026-10-16T04:36:32.324Z",
+  "assignee": "codex",
+  "title": "P4 TV 端列表渲染与滚动流畅度",
+  "brief": "详见 .agents/inbox/t-p4-tv-render.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "用户需求：优化性能、视频播放流畅度、短剧切换流畅度等",
+    "本任务补充「列表渲染与滚动流畅度」（主基线覆盖播放链路）",
+    "协调者静态审查发现 4 个问题（见 .agents/shared/perf-baseline-render.md）：",
+    "  A(高) SeriesAdapter 无 onViewRecycled -> 复用时旧图片残留，快速滚动图片错位",
+    "  B(高) ArtworkLoader.load() 无条件 setImageDrawable(null) -> 滚动闪烁",
+    "        即使缓存命中也是「清空->设置」两步",
+    "  C(中) SeriesAdapter.kt:141-144 每次 bind 都 new GradientDrawable + 查 TvUi.dimen",
+    "        -> 榜单页滚动大量对象分配",
+    "  D(中) ArtworkLoader 的 OkHttp 无并发限制（默认 64）-> 快速滚动请求风暴",
+    "与 P3 的关系：P3 改 MainActivity.kt（workbuddy），本任务改",
+    "  SeriesAdapter.kt + ArtworkLoader.kt，文件不重叠可并行",
+    "SeriesAdapter 被分类页、榜单页、搜索结果三处共用，改动需全场景回归",
+    "⚠️ 设备当前离线：MuMu 已关闭，真机 192.168.1.120:5555 显示 offline",
+    "  执行方需先启动 MuMu 或连真机；若不可用则提供代码级证据并标注未实测",
+    "环境：adb 需设 ANDROID_ADB_SERVER_PORT=15037，先 adb start-server 再 connect",
+    "  滚动流畅度可用 dumpsys gfxinfo 测 Janky frames",
+    "不要改 MainActivity.kt（P3 职责）、server/provider.mjs（P1）、apps/web-pc（P2）"
+  ],
+  "acceptance": [
+    "onViewRecycled 已实现且清理 tag",
+    "缓存命中时不清空图片",
+    "GradientDrawable 在 Holder 中复用",
+    "图片请求有并发上限",
+    "8 项行为验证通过（快速滚动无错位、徽标颜色正确、全场景回归）",
+    "TV 单元测试 32 项通过",
+    "报告写入 .agents/shared/t-p4-tv-render-antigravity.md"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-16T04:35:03.350Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-p4-tv-render.brief.md",
+  "order": 4,
+  "kind": "perf",
+  "reassignedFrom": "antigravity",
+  "reassignReason": "负载均衡：antigravity 已有 P2，codex 仅 P1；且 P4 与 P1 文件不重叠"
+}

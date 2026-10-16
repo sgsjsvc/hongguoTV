@@ -4,3 +4,6 @@
 {"at":"2026-10-16T04:27:40.692Z","kind":"task-updated","id":"t-p2-web-video-reuse","by":"dsh","status":"pending","note":"brief ok"}
 {"at":"2026-10-16T04:27:40.694Z","kind":"task-created","id":"t-p3-tv-ui-reuse","assignee":"workbuddy","title":"P3 TV 端切集不重建 UI 树"}
 {"at":"2026-10-16T04:27:40.695Z","kind":"task-updated","id":"t-p3-tv-ui-reuse","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-16T04:35:03.351Z","kind":"task-created","id":"t-p4-tv-render","assignee":"antigravity","title":"P4 TV 端列表渲染与滚动流畅度"}
+{"at":"2026-10-16T04:35:03.352Z","kind":"task-updated","id":"t-p4-tv-render","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-16T04:36:32.397Z","kind":"task-updated","id":"t-p4-tv-render","by":"dsh","status":"pending","note":"改派给 codex：负载均衡"}
