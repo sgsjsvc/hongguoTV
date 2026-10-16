@@ -327,3 +327,70 @@ Get-Process -Name java -ErrorAction SilentlyContinue | Select-Object Id, StartTi
 **杩欐剰鍛崇潃**锛?
 - 鉂?涓嶉渶瑕佷紭鍖栫綉缁?浠ｇ悊锛堝凡瓒冲蹇級
 - 鉁?搴斿叧娉細鍒囬泦閲嶅缓锛圥2锛夈€乁I 鏍戦噸寤猴紙P3锛夈€佸垪琛ㄦ覆鏌擄紙P4锛夈€佹挱鏀惧櫒鍙傛暟
+
+---
+
+## 新增 P5：Web 端轮询优化（2026-10-16）
+
+### 协调者实测发现
+
+`apps/web-pc/src/api.ts:72`：
+
+```javascript
+setInterval(() => void refreshLibrary().catch(() => {}), 1000);   // 每秒一次
+```
+
+**实测**：每秒 1 次请求 `/api/library`，单次响应 14.2 KB。
+
+| 指标 | 值 |
+| --- | --- |
+| 每小时 | **50.0 MB** |
+| **每天** | **1201 MB** |
+
+**响应体是完整 library**（收藏+历史+偏好+同步状态），随数据增长变大。
+
+### ✅ TV 端有现成的正确范例
+
+`apps/tv-android/.../HistorySync.kt:33`：
+
+```kotlin
+var backoff = 1000L
+while (isActive) {
+  if (foreground && remoteUrl.isNotBlank()) {      // 仅前台 + 已配置
+    try { flush(); backoff = 1000 }
+    catch { backoff = (backoff * 2).coerceAtMost(30000) }   // 指数退避
+  }
+  delay(backoff)
+}
+```
+
+| 特性 | TV | Web（当前） |
+| --- | --- | --- |
+| 仅前台请求 | ✅ | ❌ |
+| 指数退避 | ✅ | ❌ 固定 1s |
+| 未配置跳过 | ✅ | ❌ |
+
+### 要求（最低成本）
+
+1. 页面不可见时暂停（`document.hidden`）
+2. 间隔 1s → 10s
+3. 播放视频时暂停或降频
+
+### ⚠️ 不要破坏
+
+- **主动操作**（点收藏）必须**立即生效**
+- 多端同步 **≤ 10 秒**可接受
+- 切回前台应**立即拉取一次**
+- `refreshLibrary` 被多处调用，**只改 `setInterval` 那处**
+
+### 最终负载（2/2/2）
+
+| 任务 | 负责方 |
+| --- | --- |
+| P1 预取机制 | codex |
+| P4 TV 列表渲染 | codex |
+| P2 Web video 复用 | antigravity |
+| **P5 Web 轮询优化** | **antigravity** |
+| P3 TV UI 树复用 | workbuddy |
+
+详见 `.agents/inbox/t-p5-polling.brief.md`。

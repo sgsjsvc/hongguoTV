@@ -9,3 +9,5 @@
 {"at":"2026-10-16T04:36:32.397Z","kind":"task-updated","id":"t-p4-tv-render","by":"dsh","status":"pending","note":"改派给 codex：负载均衡"}
 {"at":"2026-10-16T04:42:15.094Z","kind":"task-updated","id":"t-p1-detail-cache","by":"dsh","status":"pending","note":"修正任务目标：加缓存 -> 预取"}
 {"at":"2026-10-16T04:47:41.553Z","kind":"task-updated","id":"t-p2-web-video-reuse","by":"dsh","status":"pending","note":"补充 PlayerModal 同问题"}
+{"at":"2026-10-16T04:54:17.468Z","kind":"task-created","id":"t-p5-polling","assignee":"antigravity","title":"P5 Web 端轮询优化（消除每天 1.2 GB 流量）"}
+{"at":"2026-10-16T04:54:17.469Z","kind":"task-updated","id":"t-p5-polling","by":"dsh","status":"pending","note":"brief ok"}

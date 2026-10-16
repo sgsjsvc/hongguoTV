@@ -1,0 +1,62 @@
+{
+  "id": "t-p5-polling",
+  "createdAt": "2026-10-16T04:54:17.466Z",
+  "updatedAt": "2026-10-16T04:54:17.468Z",
+  "assignee": "antigravity",
+  "title": "P5 Web 端轮询优化（消除每天 1.2 GB 流量）",
+  "brief": "详见 .agents/inbox/t-p5-polling.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "用户需求：优化性能、播放流畅度、算法效率等",
+    "协调者实测发现（见 .agents/shared/perf-polling-finding.md）：",
+    "  apps/web-pc/src/api.ts:72 有 setInterval(refreshLibrary, 1000)",
+    "  实测：每秒 1 次请求 /api/library，单次响应 14.2 KB",
+    "  推算：每小时 50 MB，每天 1201 MB",
+    "  响应体是完整 library（收藏+历史+偏好+同步状态），随数据增长变大",
+    "影响：播放视频时每秒额外请求争用连接；电视常开每天 1.2 GB；移动端流量敏感",
+    "✅ TV 端有现成正确范例（HistorySync.kt:33）：",
+    "  var backoff=1000L; while(isActive){ if(foreground && remoteUrl.isNotBlank()){...} delay(backoff) }",
+    "  TV 具备：仅前台请求 + 指数退避 1s->30s + 未配置时跳过",
+    "  Web 端三者都没有，应达到同等水平",
+    "要求（最低成本）：",
+    "  1. 页面不可见时暂停（document.hidden / visibilitychange）",
+    "  2. 间隔 1s -> 10s",
+    "  3. 播放视频时暂停或降频",
+    "进阶（可选）：条件请求 ETag/If-Modified-Since 或增量接口",
+    "⚠️ 不要破坏：主动操作（点收藏）必须立即生效；多端同步 ≤10 秒可接受；",
+    "  切回前台应立即拉取一次",
+    "⚠️ refreshLibrary 被多处调用，只改 setInterval 那处，别影响主动刷新路径",
+    "测量脚本：scripts/perf/measure-polling-live.mjs（优化前后对比）",
+    "文件边界：只改 apps/web-pc/src/api.ts（+hooks 如需），",
+    "  不要动 RecommendStream.tsx（P2）、server/provider.mjs（P1）、apps/tv-android（P3/P4）",
+    "环境：Windows PowerShell 5.1（不支持 &&）"
+  ],
+  "acceptance": [
+    "页面隐藏时无请求",
+    "播放视频时无请求或显著降频",
+    "空闲时间隔 >= 10 秒",
+    "切回前台立即拉取一次",
+    "主动操作仍立即生效",
+    "多端同步仍工作（<= 10 秒）",
+    "流量显著下降（用 measure-polling-live.mjs 对比）",
+    "typecheck 通过",
+    "报告写入 .agents/shared/t-p5-polling-antigravity.md"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-16T04:54:17.467Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-p5-polling.brief.md",
+  "order": 5,
+  "kind": "perf"
+}
