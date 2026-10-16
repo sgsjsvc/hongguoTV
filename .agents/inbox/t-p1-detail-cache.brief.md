@@ -184,3 +184,67 @@ POST /api/prefetch
 3. 若时间有限，后两者可预留接口但不实现
 
 详见 `.agents/shared/perf-list-cache-verdict.md`。
+
+---
+
+## 十、补充：切剧路径分析（含推荐分页预取）
+
+**协调者审查 `useStreamFeed.ts` 与 `recommendation-session.mjs` 后发现**：
+
+### 切剧分三种情况
+
+| 情况 | 是否请求网络 | 耗时 |
+| --- | --- | --- |
+| **同页内切剧**（多数） | ❌ 不请求 | ~40 ms（已缓存）或 ~1500 ms（详情未缓存） |
+| **切到下一页** | ✅ `load()` | 更慢（推荐接口冷启动可达 2514 ms） |
+| **`needsRestart` 为真** | ✅ 重建会话 | **~4000 ms**（但触发频率低） |
+
+### `advance` 的设计亮点（应保留）
+
+```javascript
+async advance(direction, reason = direction) {
+  const index = this.index + (direction === 'next' ? 1 : -1);
+  ...
+  if (index >= this.items.length) await this.load();   // ← 仅越界时才加载
+  ...
+}
+```
+
+**只有当前页用尽时才请求网络** —— 这是好设计，避免每次切剧都请求。
+
+### `load()` 的现有保护
+
+```javascript
+async load(page = this.page + 1) {
+  if (this.pending.has(page)) return this.pending.get(page).promise;   // 并发去重
+  if (page <= this.page || this.exhausted) return;                     // 边界检查
+  ...
+}
+```
+
+✅ 并发去重、边界检查、可取消（`AbortController`）都已具备。
+
+### 建议：预取接口扩展支持推荐分页
+
+```javascript
+{ "kind": "recommend", "session": "...", "page": 2 }
+```
+
+**⚠️ 重要限制**：推荐分页**必须按顺序加载**（`recommendation-service.mjs:28`）：
+
+```javascript
+if (page !== state.pages.size + 1) throw new RecommendationError(409, '请按顺序加载推荐分页');
+```
+
+**所以预取必须与用户的实际浏览顺序一致，不能随意预取未来页。**
+
+**安全的预取时机**：
+
+| 时机 | 预取内容 |
+| --- | --- |
+| 当前页剩余 < 3 部时 | 预取下一页推荐 |
+| 播放到当前剧 90% 时 | 预取下一部剧详情 + 首集清晰度 |
+
+**优先级**：`detail` + `qualities`（收益最大）> `recommend`（收益中等，但需注意顺序约束）。
+
+详见 `.agents/shared/perf-drama-switch-analysis.md`。
