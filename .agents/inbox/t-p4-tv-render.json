@@ -1,7 +1,7 @@
 {
   "id": "t-p4-tv-render",
   "createdAt": "2026-10-16T04:35:03.349Z",
-  "updatedAt": "2026-10-16T04:36:32.324Z",
+  "updatedAt": "2026-10-16T05:11:08.990Z",
   "assignee": "codex",
   "title": "P4 TV 端列表渲染与滚动流畅度",
   "brief": "详见 .agents/inbox/t-p4-tv-render.brief.md",
@@ -36,15 +36,21 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
+  "status": "claimed",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-16T05:11:08.989Z",
   "result": null,
   "history": [
     {
       "at": "2026-10-16T04:35:03.350Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T05:11:08.990Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
     }
   ],
   "dispatch": "file-bus",

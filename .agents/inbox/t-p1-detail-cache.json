@@ -1,7 +1,7 @@
 {
   "id": "t-p1-detail-cache",
   "createdAt": "2026-10-16T04:27:40.684Z",
-  "updatedAt": "2026-10-16T04:42:15.093Z",
+  "updatedAt": "2026-10-16T05:11:08.831Z",
   "assignee": "codex",
   "title": "P1 播放预取机制（消除切剧 2 秒等待）",
   "brief": "详见 .agents/inbox/t-p1-detail-cache.brief.md",
@@ -36,15 +36,21 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
+  "status": "claimed",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-16T05:11:08.831Z",
   "result": null,
   "history": [
     {
       "at": "2026-10-16T04:27:40.685Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T05:11:08.831Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
     }
   ],
   "dispatch": "file-bus",

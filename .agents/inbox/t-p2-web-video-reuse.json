@@ -1,7 +1,7 @@
 {
   "id": "t-p2-web-video-reuse",
   "createdAt": "2026-10-16T04:27:40.690Z",
-  "updatedAt": "2026-10-16T04:47:41.551Z",
+  "updatedAt": "2026-10-16T05:11:53.965Z",
   "assignee": "antigravity",
   "title": "P2 Web 端切集不重建 video 元素",
   "brief": "详见 .agents/inbox/t-p2-web-video-reuse.brief.md",
@@ -36,15 +36,21 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
+  "status": "claimed",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-16T05:11:53.965Z",
   "result": null,
   "history": [
     {
       "at": "2026-10-16T04:27:40.690Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T05:11:53.965Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
     }
   ],
   "dispatch": "file-bus",
