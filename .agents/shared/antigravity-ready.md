@@ -287,3 +287,46 @@ $env:ANDROID_ADB_SERVER_PORT = "15037"
 **教训**：判断「有无缓存」必须清空缓存后测首次请求。
 
 完整修正说明见 `.agents/shared/perf-baseline-correction.md`。
+
+---
+
+## ⚠️ 并行注意事项（TV 端任务）
+
+P3（workbuddy）与 P4（codex）**都修改 TV 端代码**：
+
+| 任务 | 文件 |
+| --- | --- |
+| P3 | `MainActivity.kt` |
+| P4 | `SeriesAdapter.kt`、`ArtworkLoader.kt` |
+
+**文件不重叠，可同时改代码。**
+
+**但构建时会争用同一个 Gradle build 目录**：
+
+- 同时执行 `assembleDebug` 可能导致 Gradle 守护进程冲突
+- 症状：构建失败、产物不完整、或 `Unable to delete directory`
+
+**建议**：
+
+1. **改代码可并行**，但**构建前互相确认**（或错开时间）
+2. 若构建失败且原因不明，先检查是否有另一个 Gradle 进程在跑
+3. 构建后可验证产物时间戳，确认是自己那次构建
+
+```powershell
+# 检查是否有其他 Gradle 进程
+Get-Process -Name java -ErrorAction SilentlyContinue | Select-Object Id, StartTime
+```
+
+## 播放流畅度测量结论（新增）
+
+**吞吐已排除**：实测代理吞吐 **108–189 Mbps**，是 1080P 码率的 **36–63 倍**。
+
+**真正的瓶颈是 HEVC 解码** —— 上游所有清晰度均为 HEVC（`bytevc1`），
+无硬件解码的设备会软解掉帧。
+
+详见 `.agents/shared/perf-throughput-verdict.md`。
+
+**这意味着**：
+
+- ❌ 不需要优化网络/代理（已足够快）
+- ✅ 应关注：切集重建（P2）、UI 树重建（P3）、列表渲染（P4）、播放器参数
