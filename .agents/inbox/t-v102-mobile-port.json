@@ -1,0 +1,47 @@
+{
+  "id": "t-v102-mobile-port",
+  "createdAt": "2026-10-16T15:53:10.774Z",
+  "updatedAt": "2026-10-16T16:02:26.987Z",
+  "assignee": "workbuddy",
+  "title": "T4 手机端（仅 Android）基于 Web 代码移植可行性验证",
+  "brief": ".agents/inbox/t-v102-mobile-port.brief.md",
+  "context": [
+    "用户决策：手机端只做 Android；直接复制 Web 代码，不从零编写",
+    "目标目录 apps/mobile/（尚未创建）",
+    "禁止改 apps/web-pc/**；禁止复制共享引擎/推荐核心",
+    "本次发布不含手机端，本任务不得混入发布产物",
+    "Capacitor/Cordova/RN 当前均未安装，需联网验证"
+  ],
+  "acceptance": [
+    "第一段可行性报告含真实命令与原始输出",
+    "明确回答能否只复制 Web 代码",
+    "列出需适配项清单与最低 API 建议",
+    "未擅自创建工程或写 apps/web-pc",
+    "报告 .agents/shared/t-v102-mobile-port-workbuddy.md"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-16T15:53:10.774Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T15:57:38.610Z",
+      "status": "claimed",
+      "by": "orchestrator",
+      "note": "file-bus dispatch"
+    },
+    {
+      "at": "2026-10-16T16:02:26.988Z",
+      "status": "pending",
+      "by": "dsh",
+      "note": "交回待领取：派发=建单(pending)，认领由执行方自行完成"
+    }
+  ]
+}

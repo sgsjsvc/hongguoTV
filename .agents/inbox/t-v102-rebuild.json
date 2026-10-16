@@ -1,0 +1,41 @@
+{
+  "id": "t-v102-rebuild",
+  "createdAt": "2026-10-16T15:53:10.772Z",
+  "updatedAt": "2026-10-16T15:53:10.772Z",
+  "assignee": "opencode",
+  "title": "T3 v1.0.2 全终端产物重建+校验+桌面运行时验证",
+  "brief": ".agents/inbox/t-v102-rebuild.brief.md",
+  "context": [
+    "必须基于冻结提交 a623f8a",
+    "入口不变量 SHA256 b2dbaea0a915b13d44348f88cb2ed2f1f8e0338044c9b84d99e10722001a0333",
+    "引擎三副本 SHA256 cf3d685cc60d3045336805e41150d72340c052de1a600caab96b794d48042bf2",
+    "旧产物已全删，需从零生成；runtime-cache 已删需联网重下 Node",
+    "dist-win/default_app.asar 曾被 WorkBuddyAI.exe 锁定",
+    "P1：旧产物入口是接线前的 d593a775"
+  ],
+  "acceptance": [
+    "全部产物从 a623f8a 重建",
+    "关键校验：产物内 custom-server/index.mjs SHA256 必须等于 b2dbaea0",
+    "npm test 214/214 与 smoke 通过",
+    "verify-release-packages.py 6/6 全绿",
+    "桌面运行时验证给出明确结论（无 GUI 则如实报告）",
+    "report .agents/shared/t-v102-rebuild-opencode.md",
+    "不打 tag 不推送不发布"
+  ],
+  "blockedBy": [
+    "t-v102-version-web",
+    "t-v102-version-tv"
+  ],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-16T15:53:10.772Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ]
+}

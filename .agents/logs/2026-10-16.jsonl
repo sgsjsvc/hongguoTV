@@ -64,3 +64,15 @@
 {"at":"2026-10-16T12:40:56.986Z","kind":"task-updated","id":"t-b6-query-acceleration","by":"antigravity","status":"done","note":""}
 {"at":"2026-10-16T14:42:13.354Z","kind":"task-updated","id":"t-b5-perf-measurement","by":"codex","status":"done","note":""}
 {"at":"2026-10-16T14:42:13.495Z","kind":"task-updated","id":"t-b7-algo-optimize","by":"codex","status":"done","note":""}
+{"at":"2026-10-16T15:53:10.768Z","kind":"task-created","id":"t-v102-version-web","assignee":"antigravity","title":"T1 v1.0.2 版本号统一（Web/桌面端）"}
+{"at":"2026-10-16T15:53:10.772Z","kind":"task-created","id":"t-v102-version-tv","assignee":"qoder","title":"T2 v1.0.2 版本号统一（Android TV）"}
+{"at":"2026-10-16T15:53:10.773Z","kind":"task-created","id":"t-v102-rebuild","assignee":"opencode","title":"T3 v1.0.2 全终端产物重建+校验+桌面运行时验证"}
+{"at":"2026-10-16T15:53:10.775Z","kind":"task-created","id":"t-v102-mobile-port","assignee":"workbuddy","title":"T4 手机端（仅 Android）基于 Web 代码移植可行性验证"}
+{"at":"2026-10-16T15:56:00.204Z","kind":"task-updated","id":"t-v102-version-web","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T15:56:18.860Z","kind":"task-updated","id":"t-v102-version-web","by":"antigravity","status":"failed","note":""}
+{"at":"2026-10-16T15:56:18.955Z","kind":"task-updated","id":"t-v102-version-web","by":"dsh","status":"pending","note":"交回待领取（DSH 不作为认领人）"}
+{"at":"2026-10-16T15:57:02.898Z","kind":"task-updated","id":"t-v102-version-web","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T15:57:33.719Z","kind":"task-updated","id":"t-v102-version-web","by":"dsh","status":"claimed","note":"清除 DSH 误置的 placeholder result（非执行方失败）"}
+{"at":"2026-10-16T15:57:36.985Z","kind":"task-updated","id":"t-v102-version-web","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-16T15:57:38.627Z","kind":"task-updated","id":"t-v102-mobile-port","by":"orchestrator","status":"claimed","note":"file-bus dispatch"}
+{"at":"2026-10-16T16:02:26.989Z","kind":"task-updated","id":"t-v102-mobile-port","by":"dsh","status":"pending","note":"交回待领取：派发=建单(pending)，认领由执行方自行完成"}

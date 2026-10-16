@@ -1,0 +1,65 @@
+{
+  "id": "t-v102-version-web",
+  "createdAt": "2026-10-16T15:53:10.765Z",
+  "updatedAt": "2026-10-16T15:57:36.960Z",
+  "assignee": "antigravity",
+  "title": "T1 v1.0.2 版本号统一（Web/桌面端）",
+  "brief": ".agents/inbox/t-v102-version-web.brief.md",
+  "context": [
+    "冻结提交 a623f8a（业务代码基线）",
+    "唯一写者范围：apps/web-pc/package.json, apps/web-pc/package-lock.json",
+    "版本号用户已定为 v1.0.2",
+    "根 package.json(0.1.1) 不改；web-pc 由 1.0.0 改 1.0.2"
+  ],
+  "acceptance": [
+    "两个文件版本一致为 1.0.2",
+    "typecheck 退出 0",
+    "报告 .agents/shared/t-v102-version-web-antigravity.md",
+    "不提交不推送"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-16T15:57:02.880Z",
+  "result": {
+    "summary": "已成功将 apps/web-pc 版本号更新为 1.0.2（含 package.json 与 package-lock.json），通过 typecheck，报告已写入 .agents/shared/t-v102-version-web-antigravity.md"
+  },
+  "history": [
+    {
+      "at": "2026-10-16T15:53:10.766Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T15:56:00.196Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T15:56:18.857Z",
+      "status": "failed",
+      "by": "antigravity",
+      "note": ""
+    },
+    {
+      "at": "2026-10-16T15:56:18.955Z",
+      "status": "pending",
+      "by": "dsh",
+      "note": "交回待领取（DSH 不作为认领人）"
+    },
+    {
+      "at": "2026-10-16T15:57:02.880Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T15:57:36.961Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
+    }
+  ]
+}

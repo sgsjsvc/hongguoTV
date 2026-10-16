@@ -1,0 +1,10 @@
+{
+  "id": "t-v102-version-web",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-16T15:57:36.986Z",
+  "title": "T1 v1.0.2 版本号统一（Web/桌面端）",
+  "result": {
+    "summary": "已成功将 apps/web-pc 版本号更新为 1.0.2（含 package.json 与 package-lock.json），通过 typecheck，报告已写入 .agents/shared/t-v102-version-web-antigravity.md"
+  }
+}
