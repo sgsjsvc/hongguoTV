@@ -143,8 +143,70 @@
 
 ## 七、需用户/DSH 决策的两点
 
-1. **版本号**：本次发布用 **新版本号**（如 `v1.0.2`，标记本次接线与全终端构建）还是**沿用/替换 `v1.0.1`**？DSH 建议**新号 `v1.0.2`**（`v1.0.1` 已于 2026-10-15 发布，不可覆盖）。
+1. **版本号**：✅ **已决 —— `v1.0.2`**（用户 2026-10-16 直接指令）。`v1.0.1` 已于 2026-10-15 发布，**不可覆盖**；本次发布统一使用 `v1.0.2`。发布执行时须同步 `release/README.md`、产物内嵌名、tag、GH Release 标题四处。
 2. **桌面端是否在本轮发布内**：若 antigravity 无法及时完成运行时验证，DSH 建议**本次先发 Web + TV + sync（三个已充分验证的端）**，桌面 EXE 顺延到下一轮。**请指示是否接受该取舍。**
+
+---
+
+## 八、过期产物清理（用户指令，DSH 已执行 2026-10-16 23:0x）
+
+### 用户指令
+「我要删除之前的所有构建过期产物，关闭进程独占锁定」。
+
+### 执行结果
+
+| 指标 | 清理前 | 清理后 | 变化 |
+| --- | --- | --- | --- |
+| `outputs/` | 11,984.6 MB | 1,405.1 MB | −10,579.5 MB |
+| `release/` | 1,180.6 MB | **已删除** | −1,180.6 MB |
+| `dist-win/` | 554.3 MB | 0.1 MB | −554.2 MB |
+| **合计** | **13,719.6 MB** | **1,405.2 MB** | **−12,314.4 MB（−12.0 GB）** |
+| F 盘可用 | 461.88 GB | **473.98 GB** | **+12.1 GB** |
+
+**已删除（16 项中 15 项成功）**：`outputs/bundles`、`outputs/w7-release`、`outputs/windows`、`outputs/build-archives`、`outputs/runtime-cache`、`outputs/testing/w7-release`、`outputs/testing/all-clients-20261015`、`outputs/testing/b1-vendor`、`outputs/testing/recommend-fullscreen-20261015`、`outputs/w5-desktop`、`outputs/github-source-20261013-143651`、`outputs/layout-backup-20261013-144538`、`outputs/packaging-tests`、`outputs/w3-profile`、`release/`。
+**`dist-win/` 清到仅剩 1 个文件**（554 MB → 0.1 MB）：除被锁定的 `resources\default_app.asar`（109,371 B）外全部删除。
+
+### ⚠️ 进程独占锁定：**未能解除**（DSH 已尽力，需外部介入）
+
+**锁定持有者已精确查明**（Windows Restart Manager API 实测，非猜测）：
+
+```
+PID 27728 | WorkBuddyAI.exe
+```
+
+- 该进程为 **workbuddy 身份所运行的 WorkBuddy AI 应用子进程**（父进程 `24296`，10:36:05 启动），**不是** opencode 猜测的 Defender/索引器。
+- **DSH 的解除尝试全部失败**（`Access is denied`）：
+  1. `Stop-Process -Id 27728 -Force` → Access denied；
+  2. `taskkill /F /PID 27728` → Access denied；
+  3. `taskkill /F /T /PID 24296`（终止整棵进程树）→ Access denied；
+  4. `WM_CLOSE` 优雅关闭 → 该进程 `MainWindowHandle=0`（无可见主窗口，无法消息关闭）；
+  5. DSH 当前**非管理员**（`isAdmin=False`，用户 `DESKTOP-GBDFG47\AnLin`），无权终止他人用户上下文进程。
+- **判定**：**该锁定无法由 DSH 解除**。需**用户手动操作**：在其 WorkBuddy 窗口退出/关闭 WorkBuddy 应用（或由管理员终止 `WorkBuddyAI.exe` 全部进程）。
+- **影响面最小**：被锁文件仅 **109,371 B（107 KB）**，其余 554 MB 已清除。**不影响本次发布**——`dist-win` 属桌面 staging，发布产物由 `scripts/build-bundles.mjs` + `collect-release.mjs` 重新生成到 `release/`，不依赖该 staging 目录。
+
+### 清理前所做的保护动作（避免误删）
+
+1. **`release/README.md` 已先行备份** → `.agents/archive/release-README-before-v1.0.2-20261016.md`（6,744 B）。理由：该文件**未被 git 跟踪**且经查 `collect-release.mjs` / `build-bundles.mjs` **均不会重新生成它**，直接删 `release/` 会**永久丢失**这份手写的发布说明。
+2. **保留被报告引用的证据**（未删）：`outputs/testing/{b5,b7,b5-b7-final}`（B5/B7 交付证据）、`outputs/debug/opencode-compat-20261016`（全终端实测截图）、`outputs/version-snapshots/{custom-server-data-20261014-180640,tv-db-20261013-201326,web-service-db-20261013103003}`（**含用户数据库 `historical.sqlite`/`library.sqlite`**）、`outputs/version-snapshots/ce5398c`（**`docs/ROLLBACK_STATUS.md` 明载的恢复救援副本**）、`outputs/tv-android`（TV 交付 APK 副本）。
+3. **未触碰运行中的用户数据**：`custom-server/data`、`apps/sync-server/data` 及家庭共享密钥**原样保留**。
+4. **逐项绝对路径校验**：删除前每个目标均 `Resolve-Path` 并断言前缀为 `F:\Project\hongguoTV\`，**拒绝**任何越界路径。
+
+### 删除后的完整性验证（DSH 实测）
+
+| 验证项 | 结果 |
+| --- | --- |
+| 是否误删 git 跟踪文件 | **无**（`git status` 无 ` D` 条目） |
+| 测试套件 | **214/214 通过、0 失败** |
+| 源码语法 | `custom-server/index.mjs`、`scripts/build-bundles.mjs`、`scripts/collect-release.mjs` 全部 `node --check` 通过 |
+| 保留的证据/用户数据 | 8 项**全部存在** |
+| git 仓库 | 完好，HEAD `a3917fa` 未变 |
+
+### 对发布流程的影响
+
+- ✅ **正向**：`release/` 与 `outputs/bundles` 的过期产物（内置接线前入口 `d593a775…`）**已物理清除**，P1"旧产物被误当新版发布"的风险**从源头消除**。
+- ⚠️ **注意**：`release/` 现已不存在，**发布必须重新生成**——即第五节步骤 2 从"重建"变为"**从零生成**"。`release/README.md` 须从上述备份恢复并更新版本号为 `v1.0.2`。
+- ⚠️ `scripts/verify-release-packages.py` 曾校验的 `outputs/w7-release`（陈旧桌面 staging）**已随清理删除**，不再产生 opencode 报告第 2.3 节末尾那个 `AssertionError`。
+- ⚠️ `outputs/runtime-cache` 已删：`build-bundles.mjs:10` 会在需要时**重新创建该目录并重新下载 Node 运行时**，**重建产物需要网络**（10-12 的 tar.xz 缓存已不存在）。
 
 ---
 
