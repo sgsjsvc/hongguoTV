@@ -212,3 +212,50 @@ npm run dev                     # Vite 3000
 ```powershell
 node .agents/cli.mjs done t-p2-web-video-reuse antigravity "结论及报告路径"
 ```
+
+---
+
+## 十、补充：顺便测量 `onTimeUpdate` 重渲染影响（不强制优化）
+
+**协调者审查发现**（详见 `.agents/shared/perf-rerender-note.md`）：
+
+`RecommendStream.tsx:317-337` 的 `onTimeUpdate` 每次触发都调用
+`setStreamCurrentTime` + `setStreamDuration`。
+
+**`timeupdate` 默认约每 250 ms 触发一次（4 次/秒）**，即**每秒 4 次组件重渲染**。
+
+### 要求：测量，但不盲目优化
+
+**理由**：React 重渲染 ≠ 必然掉帧（diff 有优化），且组件 DOM 规模有限。
+**这是「可能的问题」，不是「已确认的问题」**（其他问题都有实测证据，这个只有代码审查）。
+
+**请在改动时顺便测量**：
+
+```javascript
+// 浏览器 DevTools → Performance 录制 10 秒播放
+// 或用 React DevTools Profiler 看 RecommendStream 的重渲染耗时
+```
+
+**判定**：
+
+| 实测结果 | 行动 |
+| --- | --- |
+| 单次重渲染 < 5 ms | ✅ 无需优化，在报告中说明 |
+| 单次重渲染 5–10 ms | ⚠️ 建议节流 setState（每 500ms） |
+| 单次重渲染 > 10 ms | 🔴 需优化（节流或拆分组件） |
+
+**若决定优化**，最简方案是节流：
+
+```typescript
+const lastUpdateRef = useRef(0);
+onTimeUpdate={() => {
+  const now = performance.now();
+  if (now - lastUpdateRef.current < 500) return;   // 节流 500ms
+  lastUpdateRef.current = now;
+  // ... 原有逻辑
+}}
+```
+
+**注意**：节流后进度条更新会略不流畅，**需权衡**。
+
+**不要为此单独派发任务** —— 它与 P2 同一文件，合并处理即可。
