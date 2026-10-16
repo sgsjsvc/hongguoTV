@@ -194,4 +194,35 @@
 
 ---
 
+## 裁决 1 的后续：codex 已按裁定重做接线，DSH 独立复核通过（2026-10-16 22:37–22:50）
+
+**背景**：本裁决书落盘后，codex 于 22:37 按「给 codex 的下一条明确指令」重做了接线（`custom-server/index.mjs` 改动时间 22:37:15，新增 `tests/backend-instrumentation.test.mjs`）。DSH **未参与其实现**，仅做独立复核。
+
+**codex 的修复方式（读取源码确认）**：
+- 保留 `const reqStart = Date.now();`（现 `:520`，**定义存在**），`reqStart` 引用 28 处 / 定义 1 处 —— **方案 A（保留 `reqStart`）**，正是裁定的两个选项之一；
+- 接入 `traceRequest`（`:2` 导入，`:522` 在 `HG_TIMING === '1'` 时启用）与 `createPrefetchMetrics`（`:3` 导入，`:504` 建实例，`:505` 包装 loader，`:517` 显式 `concurrency: 2`）；
+- 新增 `tests/backend-instrumentation.test.mjs`，**包含裁定要求的 4 条路由断言**，并额外补了一条"变异测试"（`:74-81`）——故意删掉 `reqStart` 定义后断言 4 条路由全部 500 且报错含 `reqStart`，**正好守住本裁决发现的缺陷类型**。
+
+**DSH 独立复核（不依赖 codex 的测试脚手架）**：
+- 脚本 `outputs/testing/dsh-adjudication/verify-wiring.mjs`：复制 `shared/`+`server/`+`custom-server/` 到隔离目录，**真实 fork 后端进程**，用真实 HTTP 打 5 条路由，分别测 `HG_TIMING=1` 与 `HG_TIMING=0`，断言 200 + 无 `error` 字段 + 可解析 JSON + `Server-Timing` 的有无。
+
+| 断言 | 实测结果 |
+| --- | --- |
+| `HG_TIMING=1`：4 条路由 200 且非错误响应 | **pass**（`/api/banners` 200 / 2536 B、`/api/sections` 200 / 8071 B、`/api/rank/types` 200 / 303 B、`/api/recommend` 200 / 10280 B） |
+| `HG_TIMING=1`：`Server-Timing` 存在 | **pass**（`app;dur=0.170`、`app;dur=1793.982`、`app;dur=2455.366` 等） |
+| `HG_TIMING=0`：`Server-Timing` 不出现 | **pass**（opt-in 语义正确） |
+| 服务端日志无 `reqStart`/`ReferenceError` | **pass**（0 条） |
+| codex 路由级测试 | `tests/backend-instrumentation.test.mjs` **4/4 通过** |
+| 全量回归 | **214/214 通过、0 失败**（较裁决前的 210 项新增 4 项，见 `outputs/testing/dsh-adjudication/npm-test-postfix.log`） |
+
+**复核结论**：**裁定 1 的验收条件已满足**。两版失效入口（patch / `staged-index.mjs`）**未被使用**；现行入口保留 B6 的 `reqStart` 语义与 `hot:recommend` 缓存（codex 测试 `:57` 断言同页重试仍命中 `hot:recommend`、`recommendCalls===1`），并加入了裁定要求的路由级回归。
+
+**仍待 DSH 收口（不擅自标 done）**：
+1. `t-b5-perf-measurement` / `t-b7-algo-optimize` **仍为 claimed**，DSH 未改状态。是否置 done，需 codex 先按流程提交报告并声明交付；
+2. **接线后需要更新的证据**：`b5-perf-baseline.md` / `b7-algo-opt-codex.md` 中"尚未接线""服务默认并发 1"等表述**现已被实现取代**，须由 codex 更新（DSH 不代写）；
+3. `.agents/shared/b5-b7-index-hooks.patch` 与 `outputs/testing/b7/staged-index.mjs` 为**已知失效产物**：应标注为"已废弃、勿使用"，**不删除**（保留审计痕迹）；
+4. 本轮接线**未经 DSH 提交**（仍属 codex 未提交工作区改动），与其余 18 个业务文件一样**未纳入本次协作文档提交**。
+
+---
+
 *本裁决书由 DSH 依据本轮实测写成；所有"实测"结论来自 2026-10-16 本会话真实命令，未验证项已明确标注。修订历史保留在本文件内，不覆盖他人报告。*
