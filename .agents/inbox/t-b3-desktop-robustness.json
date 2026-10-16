@@ -1,0 +1,59 @@
+{
+  "id": "t-b3-desktop-robustness",
+  "createdAt": "2026-10-16T07:08:01.905Z",
+  "updatedAt": "2026-10-16T07:08:01.908Z",
+  "assignee": "workbuddy",
+  "title": "B3 修复 Electron 桌面端缺陷（后端崩溃 + 单实例）",
+  "brief": "详见 .agents/inbox/t-b3-desktop-robustness.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "用户要求：发现 bug 并分配任务，直到无法检查出 bug 为止",
+    "协调者已做四轮系统性排查，报告见 .agents/shared/bughunt-round2/3/4.md",
+    "",
+    "Bug#5 (中) 后端崩溃后无任何处理：",
+    "  apps/web-pc/electron/main.cjs 中 backend.once('exit') 共 3 处，全是 once",
+    "  且用途有限（启动阶段拒绝 Promise / 关日志流 / before-quit）",
+    "  启动完成后无任何存活的崩溃监听器",
+    "  后果：后端死亡 -> 主进程无感知 -> 渲染进程请求全部 ECONNREFUSED",
+    "        -> 用户看到白屏/操作全失败/无提示 -> 只能重启应用",
+    "Bug#6 (低) 无单实例锁：",
+    "  全仓库无 requestSingleInstanceLock",
+    "  端口用 PORT=0 不会冲突，但多实例共享 userData 的 SQLite",
+    "",
+    "修复要求：",
+    "  Bug#5: 监听器必须持久（on 而非 once）；区分正常退出（quitting 标志）；",
+    "         若自动重启需限次数；崩溃信息写日志",
+    "  Bug#6: 加 requestSingleInstanceLock + second-instance 聚焦已有窗口",
+    "  注意与现有 whenReady / activate 逻辑协调",
+    "",
+    "必须不破坏：全屏（有队列/超时/状态重试）、旧数据迁移、退出清理",
+    "已验证正常的部分（不要改）：",
+    "  - 启动超时 15000ms 且有用户提示",
+    "  - window-all-closed + initializing 守卫",
+    "  - before-quit 发送 shutdown + kill 超时兜底",
+    "  - contextIsolation true / nodeIntegration false / 仅暴露 3 个全屏 IPC",
+    "  - 全新安装迁移路径（/api/library/import 接受空数组返回 200）",
+    "环境：Windows PowerShell 5.1；改含中文文件时用 Node 或 edit 工具",
+    "  （PowerShell 的 Get-Content+Set-Content 会破坏 UTF-8 编码）"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-16T07:08:01.906Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-b3-desktop-robustness.brief.md",
+  "order": 3,
+  "kind": "fix"
+}

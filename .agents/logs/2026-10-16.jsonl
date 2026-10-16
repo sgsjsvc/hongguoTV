@@ -31,3 +31,5 @@
 {"at":"2026-10-16T06:48:37.349Z","kind":"task-updated","id":"t-b1-vendor-sync","by":"dsh","status":"pending","note":"brief ok"}
 {"at":"2026-10-16T06:48:37.352Z","kind":"task-created","id":"t-b2-polling-events","assignee":"antigravity","title":"B2 修复轮询事件路径与一致性（2 个 bug）"}
 {"at":"2026-10-16T06:48:37.354Z","kind":"task-updated","id":"t-b2-polling-events","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-16T07:08:01.907Z","kind":"task-created","id":"t-b3-desktop-robustness","assignee":"workbuddy","title":"B3 修复 Electron 桌面端缺陷（后端崩溃 + 单实例）"}
+{"at":"2026-10-16T07:08:01.909Z","kind":"task-updated","id":"t-b3-desktop-robustness","by":"dsh","status":"pending","note":"brief ok"}
