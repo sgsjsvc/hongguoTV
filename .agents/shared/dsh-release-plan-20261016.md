@@ -115,11 +115,11 @@
 
 | # | 步骤 | 负责 | 门禁 |
 | --- | --- | --- | --- |
-| 1 | **锁定确定代码版本**（业务改动提交或冻结工作树；当前 19 个业务文件未提交） | DSH 决定 + 各主责 | 无确定版本不构建 |
-| 2 | **在确定版本上重建全部产物**（web 6 包 + sync 2 包 + TV APK + 桌面 EXE） | opencode | 重建后**必须复跑** `npm test`、`typecheck`、`build`、`verify-release-packages.py`、`smoke` |
-| 3 | **校验新产物内含的是接线版**（断言包内 `custom-server/index.mjs` SHA256 == 源码 SHA256） | opencode 出证 + DSH 复核 | **这是 P1 的验收条件**，不通过则退回第 2 步 |
-| 4 | **确定并统一版本号**（含 `release/README.md`、产物内嵌名、tag、GH Release 标题） | DSH 决定 | 三者一致 |
-| 5 | **桌面 EXE 运行时验证**（可见桌面环境：启动/单实例/IPC/全屏） | antigravity | P2；未通过则桌面移出本次发布 |
+| 1 | **锁定确定代码版本** | DSH 决定 + 各主责 | ✅ **已完成 2026-10-16**：业务代码冻结于 **`a623f8a`**，工作树干净；详见 `dsh-v1.0.2-frozen-baseline.md` |
+| 2 | **在确定版本上重建全部产物**（web 6 包 + sync 2 包 + TV APK + 桌面 EXE） | opencode | ⏸ 待开启。**必须基于 `a623f8a`**；重建后**必须复跑** `npm test`、`typecheck`、`build`、`verify-release-packages.py`、`smoke`。⚠️ `outputs/runtime-cache` 已删，**需网络重新下载 Node 运行时**；`release/` 需**从零生成** |
+| 3 | **校验新产物内含的是接线版**（断言包内 `custom-server/index.mjs` SHA256 == `b2dbaea0…`） | opencode 出证 + DSH 复核 | **P1 的验收条件**，不通过则退回第 2 步 |
+| 4 | **确定并统一版本号 `v1.0.2`**（含从备份恢复并更新 `release/README.md`、产物内嵌名、tag、GH Release 标题） | DSH 决定 | 四处一致 |
+| 5 | **桌面 EXE 运行时验证**（可见桌面环境：启动/单实例/IPC/全屏） | antigravity | **已按用户 2026-10-16 指示并入「打包测试」任务一起下派验证**；未通过则桌面移出本次发布 |
 | 6 | **DSH 最终验收**（对照本文件与裁决书逐项核验） | DSH | — |
 | 7 | **发布执行**：打包上传 GH Release + 打 tag + 推送 `origin` | DSH 决定并执行 | 需用户明确"执行发布"指令 |
 | 8 | **发布说明**：含 P3（API22 未验证）、P4（命名变更对照）、不含手机端 | DSH | — |
