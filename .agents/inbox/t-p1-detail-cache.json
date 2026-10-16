@@ -1,7 +1,7 @@
 {
   "id": "t-p1-detail-cache",
   "createdAt": "2026-10-16T04:27:40.684Z",
-  "updatedAt": "2026-10-16T05:11:08.831Z",
+  "updatedAt": "2026-10-16T05:26:44.734Z",
   "assignee": "codex",
   "title": "P1 播放预取机制（消除切剧 2 秒等待）",
   "brief": "详见 .agents/inbox/t-p1-detail-cache.brief.md",
@@ -36,10 +36,12 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "claimed",
+  "status": "done",
   "claimedBy": "codex",
   "claimedAt": "2026-10-16T05:11:08.831Z",
-  "result": null,
+  "result": {
+    "summary": "预取API/取消/去重/限并发/foreground保护、fresh与X-Cache完成，151测试和3样本实流smoke通过。实网预取后详情0.93–3.19ms，5/6首段总耗时<300ms，另1样本媒体取流11.6s未达目标；客户端触发接入契约已交接。报告 .agents/shared/t-p1-prefetch-codex.md"
+  },
   "history": [
     {
       "at": "2026-10-16T04:27:40.685Z",
@@ -51,6 +53,12 @@
       "status": "claimed",
       "by": "codex",
       "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T05:26:44.735Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

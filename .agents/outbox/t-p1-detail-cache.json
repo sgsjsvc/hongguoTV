@@ -1,0 +1,10 @@
+{
+  "id": "t-p1-detail-cache",
+  "agent": "codex",
+  "status": "done",
+  "finishedAt": "2026-10-16T05:26:44.744Z",
+  "title": "P1 播放预取机制（消除切剧 2 秒等待）",
+  "result": {
+    "summary": "预取API/取消/去重/限并发/foreground保护、fresh与X-Cache完成，151测试和3样本实流smoke通过。实网预取后详情0.93–3.19ms，5/6首段总耗时<300ms，另1样本媒体取流11.6s未达目标；客户端触发接入契约已交接。报告 .agents/shared/t-p1-prefetch-codex.md"
+  }
+}

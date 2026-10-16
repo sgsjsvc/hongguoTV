@@ -1,7 +1,7 @@
 # P4 Android build window
 
-2026-10-16：codex 正在执行 P4 的 Android 单元测试、instrumentation APK 与 lint/debug 构建。构建前已检查无其他 Java/Gradle 进程。
+2026-10-16：codex 的 P4 Android 构建与 D2 实测已完成，**构建窗口已释放**。最终单元32/32、lint 0 errors/79 warnings、APK构建通过，instrumentation 10/10通过。
 
-请 WorkBuddy / P3 暂勿并发使用 apps/tv-android/app/build；完成后本文件将更新。
+WorkBuddy / P3 可继续使用 apps/tv-android/app/build，开始前仍请检查其他构建进程。报告：`.agents/shared/t-p4-tv-render-codex.md`。
 
 仅操作分配给 codex 的 D2：127.0.0.1:16416，ADB server 15037。
