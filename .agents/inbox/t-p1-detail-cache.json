@@ -1,9 +1,9 @@
 {
   "id": "t-p1-detail-cache",
   "createdAt": "2026-10-16T04:27:40.684Z",
-  "updatedAt": "2026-10-16T04:27:40.687Z",
+  "updatedAt": "2026-10-16T04:42:15.093Z",
   "assignee": "codex",
-  "title": "P1 详情接口缓存（消除切剧 1.4 秒等待）",
+  "title": "P1 播放预取机制（消除切剧 2 秒等待）",
   "brief": "详见 .agents/inbox/t-p1-detail-cache.brief.md",
   "context": [
     "项目根: F:\\Project\\hongguoTV",
@@ -50,5 +50,7 @@
   "dispatch": "file-bus",
   "briefFile": ".agents/inbox/t-p1-detail-cache.brief.md",
   "order": 1,
-  "kind": "perf"
+  "kind": "perf",
+  "correctedAt": "2026-10-16T04:42:15.092Z",
+  "correctionNote": "原目标「详情接口加缓存」判断不完整：detail() 自身无缓存，但 routerData() 有 pageCache（TTL 180s）。实测首次 1453ms、重复 1ms。真正瓶颈是「未预取」而非「缺缓存」，故目标改为实现预取机制。"
 }

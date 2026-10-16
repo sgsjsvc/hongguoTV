@@ -7,3 +7,4 @@
 {"at":"2026-10-16T04:35:03.351Z","kind":"task-created","id":"t-p4-tv-render","assignee":"antigravity","title":"P4 TV 端列表渲染与滚动流畅度"}
 {"at":"2026-10-16T04:35:03.352Z","kind":"task-updated","id":"t-p4-tv-render","by":"dsh","status":"pending","note":"brief ok"}
 {"at":"2026-10-16T04:36:32.397Z","kind":"task-updated","id":"t-p4-tv-render","by":"dsh","status":"pending","note":"改派给 codex：负载均衡"}
+{"at":"2026-10-16T04:42:15.094Z","kind":"task-updated","id":"t-p1-detail-cache","by":"dsh","status":"pending","note":"修正任务目标：加缓存 -> 预取"}
