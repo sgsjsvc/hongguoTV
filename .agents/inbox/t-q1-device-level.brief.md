@@ -143,6 +143,27 @@ node scripts/perf/quality-diff.mjs            # 「仅 1080P」应消失或大�
 
 ---
 
+### 3.5 TV 端同步（已确认无需手改）
+
+协调者已核实 `apps/tv-android/app/build.gradle.kts`：
+
+```kotlin
+// 行 59-65
+val bundledContentCore by tasks.registering(Copy::class) {
+    from(rootProject.file("../../shared/category-contract.cjs"))
+    from(rootProject.file("../../shared/content-core/hongguo.js"))   // ← 从这里复制
+    from(rootProject.file("../../shared/recommendation-core.cjs"))
+    into(layout.buildDirectory.dir("generated/content-assets"))
+}
+tasks.named("preBuild") { dependsOn(bundledContentCore) }
+```
+
+**即：Gradle 在 `preBuild` 时自动从 `shared/content-core/hongguo.js` 复制到 TV assets。**
+
+**所以只改 `shared` 即可，TV 端会自动同步 —— 不要手改 TV 的 assets 或 Kotlin。**
+
+---
+
 ## 四、硬性约束
 
 1. **可改文件**：
