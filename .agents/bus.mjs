@@ -15,7 +15,7 @@ import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
-const DIRS = {
+export const DIRS = {
   inbox: path.join(ROOT, "inbox"),
   outbox: path.join(ROOT, "outbox"),
   state: path.join(ROOT, "state"),

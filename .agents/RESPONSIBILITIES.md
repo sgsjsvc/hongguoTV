@@ -49,6 +49,25 @@
 
 ## 设备
 
+**2026-10-16 起改为动态声明制**：4 台设备（mumu-d1/d2/d3 模拟器 + mumu-r 真机）**谁要谁用**，
+但必须**先声明、后使用、用完释放**。完整规则与命令见 `.agents/mumu-device-allocation.md`。
+
+- 查空闲：`node .agents/cli.mjs mumu list`
+- 声明：`node .agents/cli.mjs mumu declare <设备> <身份> [用途]`
+  （中文用途用 `MUMU_PURPOSE` 环境变量传，避免 PowerShell 5.1 的 argv 乱码）
+- 释放：`node .agents/cli.mjs mumu release <设备> <身份>` —— **硬性要求**
+- 已被占用时**优先换空闲设备**；越权释放会被拒；**不自行删除他人锁文件**，冲突交 DSH 仲裁
+
+**实测现状**：d1 = API 32、d2 = API 35、d3 = API 32 均在线；**mumu-r 真机当前 offline**。
+**当前没有 API 22 的模拟器在线** —— 不得声称在模拟器上完成过 Android 5.1.1(API 22) 验证。
+
+**注意**：设备声明与「同一时间只允许一次 Gradle 构建」（边界规则第 6 条）是**两件独立的事**，两者都要遵守。
+
+---
+
+## 设备（历史记录，见 shared/device-allocation.md）
+
+
 已有设备分配与占用锁继续有效，参见 shared/device-allocation.md。Qoder / OpenCode初始不占用任何 Android 设备；不得直接操作已分给别人使用的 D1/D2/D3 或实体电视。需要设备时由 DSH明确借用时间、持有者和归还记录。新增成员不等于新增模拟器。
 
 ## 本轮落地状态
