@@ -1,7 +1,7 @@
 {
   "id": "t-w7-release-package",
   "createdAt": "2026-10-15T13:30:55.762Z",
-  "updatedAt": "2026-10-15T13:30:55.784Z",
+  "updatedAt": "2026-10-15T13:42:29.678Z",
   "assignee": "codex",
   "title": "W7 Web 与 Windows 端 Release 打包发布",
   "brief": "详见 .agents/inbox/t-w7-release-package.brief.md",
@@ -52,15 +52,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-15T13:33:55.867Z",
+  "result": {
+    "summary": "W7 发布门禁144项与3个真实取流样本通过；六平台Web及Windows双架构四包已收集release，真实解包载荷、架构及源码一致；Web/桌面实网播放与屏幕级全屏通过。Windows未签名；首次桌面样本播放失败证据保留待DSH跟进。报告 .agents/shared/t-w7-release-package-codex.md"
+  },
   "history": [
     {
       "at": "2026-10-15T13:30:55.763Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-15T13:33:55.868Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-15T13:42:29.679Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

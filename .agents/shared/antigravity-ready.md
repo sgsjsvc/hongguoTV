@@ -158,3 +158,41 @@ node .agents/cli.mjs show <id> # 查看 assignees 与 competitive 字段
 
 - 分工总览：`.agents/shared/fullscreen-task-split.md`
 - 需求更正：`.agents/shared/fullscreen-requirement-correction.md`
+
+---
+
+## 性能优化任务（2026-10-16）
+
+协调者已实测建立基线，见 `.agents/shared/perf-baseline.md`。
+
+### 实测数据
+
+| 环节 | 耗时 |
+| --- | --- |
+| **详情接口** | **1086–2035 ms（平均 1369，无缓存）** |
+| 推荐首屏 | 2514 ms（冷）/ 2 ms（热） |
+| 清晰度 | 0–1 ms（已缓存） |
+| 取流 | 32–37 ms（已缓存） |
+| 自动下一集（同剧） | 38 ms |
+| **自动切下一部剧** | **1407 ms** |
+
+### 任务分配（三方各一个，完全并行）
+
+| 任务 | 负责方 | 文件 |
+| --- | --- | --- |
+| `t-p1-detail-cache` | **codex** | `server/provider.mjs` |
+| `t-p2-web-video-reuse` | **antigravity** | `apps/web-pc/src/` |
+| `t-p3-tv-ui-reuse` | **workbuddy** | `apps/tv-android/` |
+
+### 测量脚本（验收需用同一脚本复测）
+
+```powershell
+node outputs/debug/measure-playback.mjs    # 基础链路
+node outputs/debug/measure-deep.mjs        # 冷热对比与并发
+```
+
+### 认领方式
+
+```powershell
+node .agents/cli.mjs claim <任务ID> <你的身份>
+```

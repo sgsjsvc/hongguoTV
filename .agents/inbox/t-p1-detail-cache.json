@@ -1,0 +1,54 @@
+{
+  "id": "t-p1-detail-cache",
+  "createdAt": "2026-10-16T04:27:40.684Z",
+  "updatedAt": "2026-10-16T04:27:40.687Z",
+  "assignee": "codex",
+  "title": "P1 详情接口缓存（消除切剧 1.4 秒等待）",
+  "brief": "详见 .agents/inbox/t-p1-detail-cache.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "用户需求：优化性能、算法、视频播放流畅度、自动下一集流畅度、短剧切换流畅度",
+    "协调者已实测建立基线，见 .agents/shared/perf-baseline.md",
+    "核心数据：",
+    "  详情接口 1086-2035 ms（平均 1369，无任何缓存）",
+    "  推荐首屏 2514 ms（冷），翻页 2 ms（热）",
+    "  清晰度 0-1 ms（已缓存）、取流 32-37 ms（已缓存）",
+    "  自动下一集（同剧）38 ms、自动切剧 1407 ms",
+    "根因（按影响排序）：",
+    "  1. server/provider.mjs:90 的 detail() 无缓存，每次请求上游",
+    "  2. RecommendStream.tsx:300 的 video 有 key，切集时 React 重建整个 video 元素",
+    "     （对比：TV 端用 setMediaItem+prepare 复用 ExoPlayer，是对的）",
+    "  3. MainActivity.kt:819 切集时 navigation.removeAllViews() 重建 UI 树",
+    "  4. 三端均无预加载机制",
+    "测量脚本（验收需用同一脚本复测）：",
+    "  node outputs/debug/measure-playback.mjs   基础链路",
+    "  node outputs/debug/measure-deep.mjs       冷热对比与并发",
+    "分发策略：三个任务文件互不重叠，三方各一个，完全并行",
+    "  P1 codex       -> server/provider.mjs",
+    "  P2 antigravity -> apps/web-pc/src/",
+    "  P3 workbuddy   -> apps/tv-android/",
+    "环境：Windows PowerShell 5.1（不支持 &&）；",
+    "  adb 需设 ANDROID_ADB_SERVER_PORT=15037，设备可能已断开需先 adb connect",
+    "不要改 shared/content-core/hongguo.js（三端共享，风险高）"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-16T04:27:40.685Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-p1-detail-cache.brief.md",
+  "order": 1,
+  "kind": "perf"
+}

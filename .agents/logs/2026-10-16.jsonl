@@ -1,0 +1,6 @@
+{"at":"2026-10-16T04:27:40.686Z","kind":"task-created","id":"t-p1-detail-cache","assignee":"codex","title":"P1 详情接口缓存（消除切剧 1.4 秒等待）"}
+{"at":"2026-10-16T04:27:40.687Z","kind":"task-updated","id":"t-p1-detail-cache","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-16T04:27:40.691Z","kind":"task-created","id":"t-p2-web-video-reuse","assignee":"antigravity","title":"P2 Web 端切集不重建 video 元素"}
+{"at":"2026-10-16T04:27:40.692Z","kind":"task-updated","id":"t-p2-web-video-reuse","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-16T04:27:40.694Z","kind":"task-created","id":"t-p3-tv-ui-reuse","assignee":"workbuddy","title":"P3 TV 端切集不重建 UI 树"}
+{"at":"2026-10-16T04:27:40.695Z","kind":"task-updated","id":"t-p3-tv-ui-reuse","by":"dsh","status":"pending","note":"brief ok"}
