@@ -1,0 +1,10 @@
+{
+  "id": "t-b7-algo-optimize",
+  "agent": "codex",
+  "status": "done",
+  "finishedAt": "2026-10-16T14:42:13.496Z",
+  "title": "B7 算法与预取优化",
+  "result": {
+    "summary": "完成预取指标与显式并发2接线，保留B6推荐前置/cache；实网两项预取成功峰值2，1000候选P95=1.0343ms、350对输出一致。214/214回归，独立复审通过。报告 .agents/shared/b5-b7-final-integration-codex.md。"
+  }
+}

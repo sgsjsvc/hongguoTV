@@ -1,7 +1,7 @@
 {
   "id": "t-b3-desktop-robustness",
   "createdAt": "2026-10-16T07:08:01.905Z",
-  "updatedAt": "2026-10-16T07:08:01.908Z",
+  "updatedAt": "2026-10-16T09:09:59.033Z",
   "assignee": "workbuddy",
   "title": "B3 修复 Electron 桌面端缺陷（后端崩溃 + 单实例）",
   "brief": "详见 .agents/inbox/t-b3-desktop-robustness.brief.md",
@@ -41,15 +41,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "workbuddy",
+  "claimedAt": "2026-10-16T08:56:32.138Z",
+  "result": {
+    "summary": "完成：两 Bug 已修复并实测。①Bug#5 后端运行期崩溃：抽出 launchBackend() 挂持久 on('exit') 监听（原 3 处全是 once），自动重启上限3次+超限 dialog 提示，崩溃写 bootlog。实测杀后端→backend-crashed→attempt=1→622ms 恢复（PID 4744→26724）；连杀3次后第4次无 attempt=4、后端不重生。②Bug#6 单实例锁：requestSingleInstanceLock + second-instance 聚焦，未拿锁仅 quit 且不启动后端。实测第二实例 exit code 0 秒退、starting-backend 计数仍=1、进程数不变。③可选日志轮转已做：2MB→.1（2097152B）。回归：正常退出 backend-crashed 计数=0（quitting 生效）；迁移全流程通过且重启不重跑；全屏代码零改动（diff 不涉及第10-51行）；npm test 178/178（连跑8次全绿）。⚠️环境陷阱：本机注入 ELECTRON_RUN_AS_NODE=1 会致 Electron 退化为纯 Node（app undefined），必须 env -u 清除、设空字符串无效。仅改 apps/web-pc/electron/main.cjs。报告：.agents/shared/t-b3-desktop-robustness-workbuddy.md"
+  },
   "history": [
     {
       "at": "2026-10-16T07:08:01.906Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T08:56:32.139Z",
+      "status": "claimed",
+      "by": "workbuddy",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T09:09:59.034Z",
+      "status": "done",
+      "by": "workbuddy",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

@@ -39,3 +39,28 @@
 {"at":"2026-10-16T07:39:01.606Z","kind":"task-updated","id":"t-b2-polling-events","by":"antigravity","status":"done","note":""}
 {"at":"2026-10-16T08:20:40.026Z","kind":"task-created","id":"t-q1-device-level","assignee":"codex","title":"Q1 修复清晰度档位缺失（device_level 3 -> 5）"}
 {"at":"2026-10-16T08:20:40.027Z","kind":"task-updated","id":"t-q1-device-level","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-16T08:26:47.528Z","kind":"task-updated","id":"t-q1-device-level","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T08:35:33.166Z","kind":"task-updated","id":"t-q1-device-level","by":"codex","status":"done","note":""}
+{"at":"2026-10-16T08:56:32.185Z","kind":"task-updated","id":"t-b3-desktop-robustness","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T09:09:59.056Z","kind":"task-updated","id":"t-b3-desktop-robustness","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-16T10:24:25.828Z","kind":"task-created","id":"t-q2-quality-labels","assignee":"codex","title":"Q2 修复清晰度档位推导（用 definition 而非 vheight）"}
+{"at":"2026-10-16T10:24:25.829Z","kind":"task-updated","id":"t-q2-quality-labels","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-16T11:33:57.352Z","kind":"task-updated","id":"t-q2-quality-labels","by":"orchestrator","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T11:34:19.650Z","kind":"task-updated","id":"t-q2-quality-labels","by":"orchestrator","status":"pending","note":"Correct own claim made without agent argument"}
+{"at":"2026-10-16T11:34:19.652Z","kind":"task-updated","id":"t-q2-quality-labels","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T11:40:34.231Z","kind":"task-updated","id":"t-q2-quality-labels","by":"codex","status":"done","note":""}
+{"at":"2026-10-16T12:08:13.539Z","kind":"task-created","id":"t-b5-perf-measurement","assignee":"codex","title":"B5 响应速度测量基建"}
+{"at":"2026-10-16T12:08:13.540Z","kind":"task-created","id":"t-b6-query-acceleration","assignee":"antigravity","title":"B6 查询接口加速"}
+{"at":"2026-10-16T12:08:13.541Z","kind":"task-created","id":"t-b7-algo-optimize","assignee":"codex","title":"B7 算法与预取优化"}
+{"at":"2026-10-16T12:08:13.559Z","kind":"task-created","id":"t-b8-build-optimize","assignee":"opencode","title":"B8 前端构建产物精简"}
+{"at":"2026-10-16T12:08:13.561Z","kind":"task-created","id":"t-b9-clean-up","assignee":"workbuddy","title":"B9 清理无用历史打包文件"}
+{"at":"2026-10-16T12:23:58.115Z","kind":"task-updated","id":"t-b5-perf-measurement","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T12:23:58.215Z","kind":"task-updated","id":"t-b7-algo-optimize","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T12:24:09.248Z","kind":"task-updated","id":"t-b6-query-acceleration","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T12:24:16.288Z","kind":"task-updated","id":"t-b8-build-optimize","by":"opencode","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T12:28:56.156Z","kind":"task-updated","id":"t-b9-clean-up","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T12:30:47.617Z","kind":"task-updated","id":"t-b8-build-optimize","by":"opencode","status":"done","note":""}
+{"at":"2026-10-16T12:31:14.422Z","kind":"task-updated","id":"t-b9-clean-up","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-16T12:40:56.986Z","kind":"task-updated","id":"t-b6-query-acceleration","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-16T14:42:13.354Z","kind":"task-updated","id":"t-b5-perf-measurement","by":"codex","status":"done","note":""}
+{"at":"2026-10-16T14:42:13.495Z","kind":"task-updated","id":"t-b7-algo-optimize","by":"codex","status":"done","note":""}

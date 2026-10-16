@@ -1,0 +1,49 @@
+{
+  "id": "t-b5-perf-measurement",
+  "createdAt": "2026-10-16T12:08:13.536Z",
+  "updatedAt": "2026-10-16T14:42:13.346Z",
+  "assignee": "codex",
+  "title": "B5 响应速度测量基建",
+  "brief": ".agents/inbox/t-b5-to-b9-optimization.brief.md (见 B5 要求)",
+  "context": [
+    "项目根：F:\\Project\\hongguoTV",
+    "原则：不增加视频缓存、不引入新服务、不破坏现有业务逻辑、所有改动可回退、必须加回归测试",
+    "各 agent 认领前必读 RESPONSIBILITIES.md + 本 brief，确认文件范围无冲突",
+    "项目根: F:\\Project\\hongguoTV",
+    "目标：建立端到端耗时测量框架（CDP + fetch，服务端注入追踪点）",
+    "基准对比：Q2 修复前（617c073）vs 当前版本（c2561f5）预期收益 ≥ 15%",
+    "必须加测试：tests/perf-measurement.test.mjs ±5% 误差"
+  ],
+  "acceptance": [
+    "实测 30 部剧集 API，生成 CSV + JSON 报告",
+    "提供前后对比图（heatmap + line chart）",
+    "报告 .agents/shared/b5-perf-baseline.md"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-16T12:23:58.092Z",
+  "result": {
+    "summary": "按DSH裁决方案A完成正式追踪接线，保留reqStart/B6缓存计时；四路由真实上游200+Server-Timing，214/214回归。原30剧图表/CSV保留，未伪称15%收益。报告 .agents/shared/b5-b7-final-integration-codex.md，交DSH验收。"
+  },
+  "history": [
+    {
+      "at": "2026-10-16T12:08:13.537Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T12:23:58.093Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T14:42:13.347Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
+    }
+  ]
+}

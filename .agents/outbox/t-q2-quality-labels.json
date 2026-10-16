@@ -1,0 +1,10 @@
+{
+  "id": "t-q2-quality-labels",
+  "agent": "codex",
+  "status": "done",
+  "finishedAt": "2026-10-16T11:40:34.232Z",
+  "title": "Q2 修复清晰度档位推导（用 definition 而非 vheight）",
+  "result": {
+    "summary": "definition优先及三份引擎同步；真实496px碰撞4→5档；30部零异常标签；Node189/189、Android32/32、QuickJS设备2/2。报告 .agents/shared/t-q2-quality-labels-codex.md，交DSH验收，尚未发布或重启用户服务。"
+  }
+}

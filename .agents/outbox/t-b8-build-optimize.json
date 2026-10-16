@@ -1,0 +1,10 @@
+{
+  "id": "t-b8-build-optimize",
+  "agent": "opencode",
+  "status": "done",
+  "finishedAt": "2026-10-16T12:30:47.618Z",
+  "title": "B8 前端构建产物精简",
+  "result": {
+    "summary": "B8 完成：code-splitting + 生产构建精简。首屏 JS 357538→277817 B(raw,-22.9%)，首屏 JS+CSS gzip 115664→99152 B(-14.3%)；未加新依赖。运行时验证：分类 Tab 触发懒加载 CategoryPanel chunk 并渲染真实内容。B8 回归测试 3/3 通过；全量 npm test 205 项中 7 项因 B5 在 custom-server/index.mjs:522 新增 console.log 导致（非 B8），建议转 B5。FCP<1.0s 因标签 visibilityState=hidden 无法实测。报告 .agents/shared/b8-build-optimize-opencode.md，证据 b8-build-optimize-tests.txt / b8-lighthouse.json"
+  }
+}

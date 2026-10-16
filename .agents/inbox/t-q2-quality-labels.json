@@ -1,0 +1,101 @@
+{
+  "id": "t-q2-quality-labels",
+  "createdAt": "2026-10-16T10:24:25.826Z",
+  "updatedAt": "2026-10-16T11:40:34.190Z",
+  "assignee": "codex",
+  "title": "Q2 修复清晰度档位推导（用 definition 而非 vheight）",
+  "brief": "详见 .agents/inbox/t-q2-quality-labels.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "背景：Q1（device_level 3->5）让档位齐全了，但暴露了一个既有缺陷",
+    "",
+    "现象：部分剧档位名非标准",
+    "  离婚后才知她是神明第二季 -> 1924P/1282P/962P/642P/480P",
+    "  开局系统逼我败家         -> 1080P/544P/540P/480P/360P",
+    "  公路求生                 -> 1080P/496P/480P/360P（只有 4 档，丢了一档）",
+    "  实测 24 部中 2 部（8%）非标准",
+    "",
+    "根因：上游有权威的 definition 字段（标准档位），但代码用变化的 vheight",
+    "  video_5: vheight=1924 definition='1080p'",
+    "  video_4: vheight=1282 definition='720p'",
+    "  video_3: vheight=962  definition='540p'",
+    "  video_1: vheight=642  definition='360p'",
+    "  公路求生致命案例：video_3 与 video_4 的 vheight 都是 496，",
+    "    但 definition 分别是 '540p' 和 '720p'",
+    "    -> 推导出的 key 都是 496P -> 被 seenKeys 去重丢掉一档",
+    "",
+    "关键洞察：Web 与 TV 都从 row.quality 推导，而 row.quality 来自引擎 qualityRows",
+    "  shared/content-core/hongguo.js 的 qualityRows:",
+    "    const quality = str(item.quality_desc || item.height || item.vheight || item.quality || key);",
+    "  definition 根本不在链里 -> row.quality 实际取到 vheight",
+    "  所以只要在引擎里把 definition 加到链首，Web 与 TV 同时修好",
+    "",
+    "修复（单点）：",
+    "  const quality = str(item.definition || item.quality_desc || item.height || item.vheight || item.quality || key);",
+    "  必须加注释说明原因",
+    "",
+    "同步 vendor（2 个副本，与 Q1 同样三处）",
+    "",
+    "验收：",
+    "  quality-label-scan.mjs 应显示 0 部非标准（修复前 2/30）",
+    "  碰撞丢档的剧应恢复 5 档",
+    "  必须加回归测试（能捕获本 bug）",
+    "  必须确保 device_level 仍为 5（不要破坏 Q1）",
+    "",
+    "验证脚本：",
+    "  node scripts/perf/quality-derive-compare.mjs  <- 核心",
+    "  node scripts/perf/quality-label-scan.mjs      <- 非标准比例",
+    "  node scripts/perf/quality-odd-dump.mjs        <- dump 原始字段",
+    "  注意：服务端口会递增，用 BASE 环境变量",
+    "",
+    "不要改：custom-server/index.mjs:710（用 row.quality，改引擎即可）、",
+    "  TV 的 content-api.js（引擎修好自动受益）、bytevc2 过滤、device_level",
+    "环境：Windows PowerShell 5.1；改含中文文件用 Node 或 edit 工具"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedAt": "2026-10-16T11:34:19.651Z",
+  "result": {
+    "summary": "definition优先及三份引擎同步；真实496px碰撞4→5档；30部零异常标签；Node189/189、Android32/32、QuickJS设备2/2。报告 .agents/shared/t-q2-quality-labels-codex.md，交DSH验收，尚未发布或重启用户服务。"
+  },
+  "history": [
+    {
+      "at": "2026-10-16T10:24:25.827Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T11:33:57.349Z",
+      "status": "claimed",
+      "by": "orchestrator",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T11:34:19.646Z",
+      "status": "pending",
+      "by": "orchestrator",
+      "note": "Correct own claim made without agent argument"
+    },
+    {
+      "at": "2026-10-16T11:34:19.652Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T11:40:34.192Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-q2-quality-labels.brief.md",
+  "order": 2,
+  "kind": "fix",
+  "claimedBy": "codex"
+}

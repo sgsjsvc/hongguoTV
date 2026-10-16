@@ -1,0 +1,48 @@
+{
+  "id": "t-b6-query-acceleration",
+  "createdAt": "2026-10-16T12:08:13.539Z",
+  "updatedAt": "2026-10-16T12:40:56.978Z",
+  "assignee": "antigravity",
+  "title": "B6 查询接口加速",
+  "brief": ".agents/inbox/t-b5-to-b9-optimization.brief.md (见 B6 要求)",
+  "context": [
+    "项目根：F:\\Project\\hongguoTV",
+    "原则：不增加视频缓存、不引入新服务、不破坏现有业务逻辑、所有改动可回退、必须加回归测试",
+    "各 agent 认领前必读 RESPONSIBILITIES.md + 本 brief，确认文件范围无冲突",
+    "目标：首页/分类/榜单/搜索/推荐接口冷启动 < 300 ms，热请求 < 50 ms",
+    "措施：pageCache TTL 提升、预取前置数据、搜索引擎批量化、Node LRU",
+    "禁止添加 Redis/Memcached 等外部服务"
+  ],
+  "acceptance": [
+    "30 次连续调用压测，统计冷/热启动分布",
+    "报告 .agents/shared/b6-query-acceleration-antigravity.md",
+    "wrk 压测日志"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-16T12:24:09.233Z",
+  "result": {
+    "summary": "B6 接口加速完成，包含冷/热耗时测试数据与压测报告"
+  },
+  "history": [
+    {
+      "at": "2026-10-16T12:08:13.539Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T12:24:09.233Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T12:40:56.979Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
+    }
+  ]
+}

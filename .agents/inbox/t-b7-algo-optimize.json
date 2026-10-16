@@ -1,0 +1,46 @@
+{
+  "id": "t-b7-algo-optimize",
+  "createdAt": "2026-10-16T12:08:13.540Z",
+  "updatedAt": "2026-10-16T14:42:13.470Z",
+  "assignee": "codex",
+  "title": "B7 算法与预取优化",
+  "brief": ".agents/inbox/t-b5-to-b9-optimization.brief.md (见 B7 要求)",
+  "context": [
+    "项目根：F:\\Project\\hongguoTV",
+    "原则：不增加视频缓存、不引入新服务、不破坏现有业务逻辑、所有改动可回退、必须加回归测试",
+    "各 agent 认领前必读 RESPONSIBILITIES.md + 本 brief，确认文件范围无冲突",
+    "目标：append() ≤ 3 ms，预取并发上限 2–3",
+    "措施：单次遍历计算 score+rank、uniqueSet 复用、seededRandom 缓存、bytevc2 过滤前置"
+  ],
+  "acceptance": [
+    "1000 条候选数据集，bench-append.benchmark.mjs P95 ≤ 3 ms",
+    "报告 .agents/shared/b7-algo-opt-codex.md"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-16T12:23:58.210Z",
+  "result": {
+    "summary": "完成预取指标与显式并发2接线，保留B6推荐前置/cache；实网两项预取成功峰值2，1000候选P95=1.0343ms、350对输出一致。214/214回归，独立复审通过。报告 .agents/shared/b5-b7-final-integration-codex.md。"
+  },
+  "history": [
+    {
+      "at": "2026-10-16T12:08:13.540Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T12:23:58.211Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T14:42:13.471Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
+    }
+  ]
+}

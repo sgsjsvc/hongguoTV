@@ -1,0 +1,10 @@
+{
+  "id": "t-b5-perf-measurement",
+  "agent": "codex",
+  "status": "done",
+  "finishedAt": "2026-10-16T14:42:13.354Z",
+  "title": "B5 响应速度测量基建",
+  "result": {
+    "summary": "按DSH裁决方案A完成正式追踪接线，保留reqStart/B6缓存计时；四路由真实上游200+Server-Timing，214/214回归。原30剧图表/CSV保留，未伪称15%收益。报告 .agents/shared/b5-b7-final-integration-codex.md，交DSH验收。"
+  }
+}

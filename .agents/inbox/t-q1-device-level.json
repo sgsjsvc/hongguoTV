@@ -1,7 +1,7 @@
 {
   "id": "t-q1-device-level",
   "createdAt": "2026-10-16T08:20:40.024Z",
-  "updatedAt": "2026-10-16T08:20:40.026Z",
+  "updatedAt": "2026-10-16T08:35:33.158Z",
   "assignee": "codex",
   "title": "Q1 修复清晰度档位缺失（device_level 3 -> 5）",
   "brief": "详见 .agents/inbox/t-q1-device-level.brief.md",
@@ -49,15 +49,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-16T08:26:47.513Z",
+  "result": {
+    "summary": "三份引擎device_level3→5并注明原因，保留bytevc2过滤；回归先RED4/5后GREEN5/5，完整178测试通过；实网18分集L3 38/90→L5 90/90，推荐前8部全部多档，记录1080P码率/size一致、12/12成功；TV32单元、APK资产一致及真实QuickJS2项通过。补充探索元数据差异保留，未重启旧服务/发布。报告 .agents/shared/t-q1-device-level-codex.md"
+  },
   "history": [
     {
       "at": "2026-10-16T08:20:40.025Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T08:26:47.514Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T08:35:33.159Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

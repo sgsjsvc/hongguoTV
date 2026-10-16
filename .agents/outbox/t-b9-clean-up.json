@@ -1,0 +1,10 @@
+{
+  "id": "t-b9-clean-up",
+  "agent": "workbuddy",
+  "status": "done",
+  "finishedAt": "2026-10-16T12:31:14.424Z",
+  "title": "B9 清理无用历史打包文件",
+  "result": {
+    "summary": "⚠️ 阻塞：未执行任何删除（当前状态完全可回退）。只读调查发现需 DSH 裁决的问题。①验收阈值不可达：brief 要求保留的 bundles/(1.16GB)+runtime-cache/(1.08GB)=2.24GB，已超'outputs/<2GB'线，三个方案均无法达标；②清空 outputs/ 会破坏证据链：≥10份 shared/ 报告引用 outputs/ 下文件（windows/ 6次、debug/ 7次、w7-release/ 5次、testing/ 8次、w6-tests/w5-tests/tv-android/p4-* 等），与 brief'保留校验链'意图冲突；③brief 体积估算偏差2.4倍：估~5GB，实测≈11.9GB；④.gradlele/caches 实测在 C:/Users/AnLin/.gradle/caches(6.4GB)属用户主目录，建议排除范围；⑤B5-B8 并发执行中。建议采纳方案B（清零引用大目录 version-snapshots 1.25GB + build-archives 1.22GB + testing/windows/w7-release 未引用部分≈9.5GB；被引用证据移入 .agents/archive/outputs-evidence/ 并留去向说明；release/ 仅清 6 个 Linux/darwin 包 251MB），阈值改 <2.3GB 或授权清理 runtime-cache 内 5 个 2025 年子目录。报告：.agents/shared/b9-clean-report-workbuddy.md（含待裁决 6 项）"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-16T12:34:35.145Z",
+  "scope": "proposed-hooks-isolated-source-copy-not-live-service",
+  "sourceDir": "F:\\Project\\hongguoTV\\outputs\\testing\\b7\\hook-validation-vnIuS5",
+  "serverTiming": "app;dur=0.197",
+  "stats": {
+    "active": 0,
+    "maxActive": 2,
+    "started": 2,
+    "succeeded": 2,
+    "failed": 0,
+    "cancelled": 0,
+    "elapsedMs": 5583.4601,
+    "activeTimeMs": 8861.423200000001,
+    "averageConcurrency": 1.5870845392089397
+  },
+  "targets": [
+    {
+      "kind": "detail",
+      "id": "7681976201933491224",
+      "state": "done"
+    },
+    {
+      "kind": "detail",
+      "id": "7683375233461406782",
+      "state": "done"
+    }
+  ]
+}

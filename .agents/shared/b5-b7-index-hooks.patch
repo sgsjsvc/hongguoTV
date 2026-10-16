@@ -1,0 +1,40 @@
+--- a/custom-server/index.mjs
++++ b/custom-server/index.mjs
+@@ -1,4 +1,6 @@
+ import http from "node:http";
++import { traceRequest } from "./request-timing.mjs";
++import { createPrefetchMetrics } from "./prefetch-metrics.mjs";
+ import fs from "node:fs";
+ import vm from "node:vm";
+ import crypto from "node:crypto";
+@@ -499,7 +501,8 @@
+ 
+ const hotLruCache = new LocalLRUCache(50 * 1024 * 1024, 300000);
+ 
+-const prefetchQueue = createPrefetchQueue(async (target, signal) => {
++const prefetchMetrics = createPrefetchMetrics();
++const prefetchQueue = createPrefetchQueue(async (target, signal) => prefetchMetrics.run(async () => {
+   if (target.kind === 'detail') {
+     const detail = await coreProvider.detail(target.id, { signal });
+     // A detail target also warms its first episode's existing video-info cache.
+@@ -511,17 +514,13 @@
+     if (!hgEngine) throw new Error('播放引擎不可用');
+     await sharedResource(`qualities:${target.id}`, () => hgEngine.fetchVideoInfo(target.id), { signal });
+   }
+-}, { enabled: process.env.HG_PREFETCH_ENABLED !== '0' });
++}), { enabled: process.env.HG_PREFETCH_ENABLED !== '0', concurrency: 2 });
+ 
+ const server = http.createServer(async (req, res) => {
+-  const reqStart = Date.now();
++  if (process.env.HG_TIMING === '1') traceRequest(req, res);
+   const u = new URL(req.url, `http://${req.headers.host || "localhost"}`);
+   const pathname = u.pathname;
+-  res.on("finish", () => {
+-    if (typeof console?.log === "function") {
+-      console.log(`[timing] ${pathname} cost=${Date.now() - reqStart}ms`);
+-    }
+-  });
++
+ 
+   if (req.method === "OPTIONS") {
+     res.writeHead(204, {

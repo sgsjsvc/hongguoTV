@@ -1,0 +1,66 @@
+{
+  "at": "2026-10-16T14:40:38.790Z",
+  "scope": "current-working-entry-isolated-data-and-port-not-user-service",
+  "sourceDir": "F:\\Project\\hongguoTV\\outputs\\testing\\b5-b7-final\\hook-validation-l7tzFE",
+  "entrySha256": "b2dbaea0a915b13d44348f88cb2ed2f1f8e0338044c9b84d99e10722001a0333",
+  "routes": [
+    {
+      "route": "/api/banners",
+      "status": 200,
+      "key": "banners",
+      "count": 4,
+      "serverTiming": "app;dur=2978.125",
+      "responseTime": "2978ms",
+      "cache": "MISS"
+    },
+    {
+      "route": "/api/sections",
+      "status": 200,
+      "key": "sections",
+      "count": 4,
+      "serverTiming": "app;dur=0.169",
+      "responseTime": "0ms",
+      "cache": "MISS"
+    },
+    {
+      "route": "/api/rank/types",
+      "status": 200,
+      "key": "types",
+      "count": 4,
+      "serverTiming": "app;dur=0.059",
+      "responseTime": "0ms"
+    },
+    {
+      "route": "/api/recommend",
+      "status": 200,
+      "key": "items",
+      "count": 24,
+      "serverTiming": "app;dur=2895.828",
+      "responseTime": "2896ms",
+      "cache": "MISS"
+    }
+  ],
+  "stats": {
+    "active": 0,
+    "maxActive": 2,
+    "started": 2,
+    "succeeded": 2,
+    "failed": 0,
+    "cancelled": 0,
+    "elapsedMs": 8274.8115,
+    "activeTimeMs": 4464.6885999999995,
+    "averageConcurrency": 0.539551698549266
+  },
+  "targets": [
+    {
+      "kind": "detail",
+      "id": "7695316703319690302",
+      "state": "done"
+    },
+    {
+      "kind": "detail",
+      "id": "7690876049193700377",
+      "state": "done"
+    }
+  ]
+}

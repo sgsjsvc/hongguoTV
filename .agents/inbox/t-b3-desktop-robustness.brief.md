@@ -8,6 +8,65 @@
 
 ---
 
+## ⚠️ 必读：启动 Electron 前必须清除 `ELECTRON_RUN_AS_NODE`
+
+**协调者实测发现**：当前 shell 环境中存在 **`ELECTRON_RUN_AS_NODE=1`**
+（由外部环境注入，非机器/用户级变量）。
+
+**设了该变量后，`electron.exe` 会以「纯 Node」模式运行**：
+
+| | 正常模式 | `ELECTRON_RUN_AS_NODE=1` |
+| --- | --- | --- |
+| `require('electron')` | 返回 Electron API | 返回**二进制路径字符串** |
+| `app` | 对象 | **`undefined`** |
+| 结果 | 窗口打开 | **崩溃退出** |
+
+**症状**（协调者实际遇到）：
+
+```
+TypeError: Cannot read properties of undefined (reading 'requestSingleInstanceLock')
+    at Object.<anonymous> (main.cjs:7:30)
+```
+
+**注意**：这**恰好会命中你新加的 `app.requestSingleInstanceLock()` 那一行**，
+但**不是你的代码缺陷** —— 是环境变量导致的。
+
+### 正确的启动方式
+
+```powershell
+Remove-Item Env:ELECTRON_RUN_AS_NODE -ErrorAction SilentlyContinue
+cd apps/web-pc
+$env:NODE_ENV = "development"
+& ".\node_modules\electron\dist\electron.exe" .
+```
+
+**协调者已验证**：清除后 Electron 正常启动
+（4 个进程：main/gpu/utility/renderer，窗口标题「红果短剧 - 多端客户端」）。
+
+### 另外：`cross-env` 未安装
+
+`npm run desktop:dev` 依赖 `cross-env`，但**它未安装**。
+**直接用上面的命令启动**（手动设 `NODE_ENV`），不要用 `desktop:dev`。
+
+### 验证成功的标志
+
+```powershell
+# 1. 进程存在（应有 4 个）
+Get-CimInstance Win32_Process -Filter "Name='electron.exe'" | Measure-Object
+
+# 2. 窗口标题正确
+Get-Process -Name electron | Where-Object { $_.MainWindowTitle } | Select-Object MainWindowTitle
+
+# 3. 启动阶段日志完整
+Get-Content "$env:APPDATA\hongguotv-web-pc\startup-stage.log"
+# 应包含：starting-backend → backend-ready → ... → creating-main-window
+
+# 4. 无启动错误
+Get-Content "$env:APPDATA\hongguotv-web-pc\startup-errors.log"
+```
+
+---
+
 ## 一、两个 Bug（协调者已定位）
 
 ### 🔴 Bug #5：后端崩溃后无任何处理（用户只见白屏）

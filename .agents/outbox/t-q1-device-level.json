@@ -1,0 +1,10 @@
+{
+  "id": "t-q1-device-level",
+  "agent": "codex",
+  "status": "done",
+  "finishedAt": "2026-10-16T08:35:33.167Z",
+  "title": "Q1 修复清晰度档位缺失（device_level 3 -> 5）",
+  "result": {
+    "summary": "三份引擎device_level3→5并注明原因，保留bytevc2过滤；回归先RED4/5后GREEN5/5，完整178测试通过；实网18分集L3 38/90→L5 90/90，推荐前8部全部多档，记录1080P码率/size一致、12/12成功；TV32单元、APK资产一致及真实QuickJS2项通过。补充探索元数据差异保留，未重启旧服务/发布。报告 .agents/shared/t-q1-device-level-codex.md"
+  }
+}
