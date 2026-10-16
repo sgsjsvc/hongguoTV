@@ -131,7 +131,7 @@ class BoundedCache extends Map {
         return this;
     }
 }
-const pageCache = new BoundedCache(100, 180000);
+const pageCache = new BoundedCache(100, 300000);
 const streamCache = new BoundedCache(24, 300000);
 const videoInfoCache = new BoundedCache(100, 300000, (id) => {
     if (id === null) { videoInfoPending.clear(); streamCache.clear(); return; }
@@ -184,7 +184,7 @@ function extractAssignedJson(source, marker = '_ROUTER_DATA') {
 
 async function routerData(url) {
     const cached = pageCache.get(url);
-    if (cached && Date.now() - cached.time < 180000) return cached.value;
+    if (cached && Date.now() - cached.time < 300000) return cached.value;
     const value = extractAssignedJson(await getText(url));
     pageCache.set(url, { time: Date.now(), value });
     return value;
@@ -205,7 +205,7 @@ function itemToCard(item) {
 }
 
 function categoryData(data) {
-    const page = data?.loaderData?.category_page || {};
+    const page = data?.loaderData?.category_page || data?.loaderData?.['category_$'] || {};
     return page.recommendList || page.categoryData?.recommendList || [];
 }
 
@@ -303,6 +303,7 @@ function filterValues(value) {
 async function categoryPage(query, page = 1) {
     const params = new URLSearchParams(query);
     if (page > 1) params.set('page', String(page));
+    params.sort();
     return routerData(`${SITE}/category?${params}`);
 }
 
@@ -488,6 +489,8 @@ function helios(khronos) {
 function branchOf(url, body, khronos) { const bodyMd5 = body ? crypto.createHash('md5').update(body).digest() : Buffer.alloc(16); const q = sm3(url.split('?')[1]); const iv = getIv(getIv(getIv(0x20230928, q), bodyMd5), le32(khronos)); const low = iv & 15; return low - (((low * 171) >> 9) * 3); }
 async function signedAppGet(values) {
     const khronos = Math.floor(Date.now() / 1000); const ticket = Date.now();
+    // 搜索接口同样要求一次性设备标识（签名内嵌 device_id）
+    const dev = freshDevice();
     const query = pythonUrlEncode({ ...values, ts: String(khronos), _rticket: String(ticket) });
     const url = `${APP_SEARCH_API}?${query}`;
     const random = Math.floor(Math.random() * 65536); const body = null;
@@ -497,7 +500,7 @@ async function signedAppGet(values) {
         'passport-sdk-version': '50561', 'x-xs-from-web': '0', 'x-khronos': String(khronos),
         'x-ladon': be32(khronos).toString('base64'), 'x-argus': le32(khronos).toString('base64'),
         'x-gorgon': xGorgon(query, body, khronos, random), 'x-helios': helios(khronos),
-        'x-medusa': buildMedusa(url, body, khronos), 'x-tt-dt': '',
+        'x-medusa': buildMedusa(url, body, khronos, dev), 'x-tt-dt': '',
     };
     const resp = await axios(url, { headers, timeout: 20000, responseType: 'text' });
     const data = jsonBody(resp.data);
@@ -505,33 +508,73 @@ async function signedAppGet(values) {
     return data;
 }
 
-function videoModelUrl() { const query = new URLSearchParams({ ...DEVICE }); return `${VIDEO_API}?${query}`; }
-
-function signedVideoRequest(payload) {
+// 构造一次性的 video_model 请求。
+// device 为必填：调用方必须现场 freshDevice()。
+// 不提供缺省回落——曾经因为「忘记传设备就用旧值」而让修复失效，
+// 因此这里选择直接抛错，让遗漏在开发阶段就暴露。
+function signedVideoRequest(payload, device) {
+    if (!device || !device.device_id || !device.iid) {
+        throw new Error('signedVideoRequest 需要一次性设备标识：请调用 freshDevice() 并显式传入');
+    }
+    const dev = device;
     const khronos = Math.floor(Date.now() / 1000); const body = Buffer.from(payload); const ticketBase = Date.now(); let requestTicket = ticketBase; let query = ''; let url = '';
     // branch 1 的签名变体服务端不认：抖动 _rticket 找一个可用的 branch（最多试 32 秒偏移）
-    for (let offset = 0; offset < 32; offset += 1) { requestTicket = ticketBase + offset; const values = { ...DEVICE, ts: String(khronos), _rticket: String(requestTicket) }; query = pythonUrlEncode(values); url = `${VIDEO_API}?${query}`; if (branchOf(url, body, khronos) !== 1) break; }
+    for (let offset = 0; offset < 32; offset += 1) { requestTicket = ticketBase + offset; const values = { ...dev, ts: String(khronos), _rticket: String(requestTicket) }; query = pythonUrlEncode(values); url = `${VIDEO_API}?${query}`; if (branchOf(url, body, khronos) !== 1) break; }
     const random = Math.floor(Math.random() * 65536); const headers = {
         'User-Agent': VIDEO_UA, Accept: 'application/json; charset=utf-8,application/x-protobuf', 'Content-Type': 'application/json; charset=UTF-8',
         'x-xs-from-web': '0', 'x-ss-req-ticket': String(requestTicket), 'x-tt-request-tag': 't=0;n=0', 'sdk-version': '2', 'passport-sdk-version': '50561',
         'x-vc-bdturing-sdk-version': '3.7.2.cn', 'x-ss-stub': md5(body), 'x-gorgon': xGorgon(query, body, khronos, random),
         'x-khronos': String(khronos), 'x-ladon': be32(khronos).toString('base64'), 'x-argus': le32(khronos).toString('base64'),
-        'x-helios': helios(khronos), 'x-medusa': buildMedusa(url, body, khronos), 'x-tt-dt': '',
+        'x-helios': helios(khronos), 'x-medusa': buildMedusa(url, body, khronos, dev), 'x-tt-dt': '',
     };
     return { url, headers, body };
 }
 
+// 上游健康度观测：记录最近一次 video_model 请求的结果分布。
+// 用于让健康检查与诊断脚本能如实反映「上游是否在静默降级」。
+const upstreamStats = { total: 0, empty: 0, ok: 0, error: 0, lastEmptyAt: 0, lastOkAt: 0 };
+function noteUpstream(kind) {
+    upstreamStats.total += 1;
+    upstreamStats[kind] += 1;
+    if (kind === 'empty') upstreamStats.lastEmptyAt = Date.now();
+    if (kind === 'ok') upstreamStats.lastOkAt = Date.now();
+}
+
 async function requestVideoModel(vid) {
+    // device_level=5 让上游为部分集的低档位返回 bytevc1（HEVC）；
+    // level=3 时这些档位可能只有私有 bytevc2，安全过滤后便只剩 1080P。
+    // 这是编码兼容性选择，不是提高清晰度上限；仍只展示实际返回的可播档位。
     const payload = JSON.stringify({
-        biz_param: { detail_page_version: 0, device_level: 3, disable_digg_stat: false, need_all_video_definition: true, need_mp4_align: false, use_os_player: false, use_server_dns: false, video_platform: 1024 },
+        biz_param: { detail_page_version: 0, device_level: 5, disable_digg_stat: false, need_all_video_definition: true, need_mp4_align: false, use_os_player: false, use_server_dns: false, video_platform: 1024 },
         video_id: str(vid),
     });
-    const signed = signedVideoRequest(payload);
-    const resp = await axios.post(signed.url, signed.body, { headers: signed.headers, timeout: 20000, responseType: 'text' });
-    const data = jsonBody(resp.data);
-    const status = Number(data?.BaseResp?.StatusCode ?? data?.Code ?? data?.code ?? -1);
-    if (resp.status !== 200 || !data || status !== 0) throw new Error(`video_model failed: ${data?.BaseResp?.StatusMessage || data?.Message || data?.message || resp.status}`);
-    return data;
+    // 上游对同一 device_id 只放行一次：必须每次用新设备。
+    // 空体是"设备已用尽"的信号，换设备重试即可（不改变业务语义）。
+    // 连续多次空体说明上游策略变了（例如全面封禁），此时快速失败并留下明确错误。
+    const attempts = 5;
+    let last = null;
+    let emptyCount = 0;
+    for (let i = 0; i < attempts; i += 1) {
+        const signed = signedVideoRequest(payload, freshDevice());
+        const resp = await axios.post(signed.url, signed.body, { headers: signed.headers, timeout: 20000, responseType: 'text' });
+        const data = jsonBody(resp.data);
+        last = { resp, data };
+        // 空体：该设备已被消耗，立即换一组重试
+        if (!data && resp.status === 200) { emptyCount += 1; noteUpstream('empty'); continue; }
+        const status = Number(data?.BaseResp?.StatusCode ?? data?.Code ?? data?.code ?? -1);
+        if (resp.status !== 200 || !data || status !== 0) {
+            noteUpstream('error');
+            throw new Error(`video_model failed: ${data?.BaseResp?.StatusMessage || data?.Message || data?.message || resp.status}`);
+        }
+        noteUpstream('ok');
+        return data;
+    }
+    // 全部为空体：这不是单次抖动，而是上游策略变化，错误信息要能直接指向原因
+    throw new Error(
+        `video_model failed: 上游连续 ${emptyCount} 次返回空响应体（HTTP 200）。` +
+        `这通常意味着设备标识被风控，或上游接口已变更。` +
+        `请运行 node scripts/diagnose-playback.mjs 定位。`
+    );
 }
 
 function modelForVideo(data, vid) {
@@ -564,7 +607,9 @@ function qualityRows(videoList) {
     if (!videoList || typeof videoList !== 'object') return rows;
     for (const [key, value] of Object.entries(videoList)) {
         const item = value && typeof value === 'object' ? value : {};
-        const quality = str(item.quality_desc || item.height || item.vheight || item.quality || key);
+        // definition 是标准档位；vheight 可能是竖屏长边或非标准编码尺寸。
+        // 540p 与 720p 甚至可能同为 496px，按高度推导会重名并被客户端去重丢档。
+        const quality = str(item.definition || item.quality_desc || item.height || item.vheight || item.quality || key);
         if (item.main_url && !rows.some((row) => row.quality === key)) rows.push({ key, quality, item });
     }
     return rows.sort((a, b) => qualityNumber(b.quality || b.key) - qualityNumber(a.quality || a.key));

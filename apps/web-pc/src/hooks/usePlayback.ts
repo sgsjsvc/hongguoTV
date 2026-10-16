@@ -72,6 +72,25 @@ export function usePlayback(
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const controlsTimerRef = useRef<NodeJS.Timeout | null>(null);
   const qualitySwitchTimeRef = useRef<number | null>(null);
+  const loadedEpisodeIdRef = useRef<string | undefined>(currentEpisode?.id);
+  const prefetchedNextEpQualitiesRef = useRef<string | null>(null);
+  const prefetchBatchIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    prefetchedNextEpQualitiesRef.current = null;
+    if (prefetchBatchIdRef.current) {
+      const oldId = prefetchBatchIdRef.current;
+      prefetchBatchIdRef.current = null;
+      void api.cancelPrefetch(oldId);
+    }
+    return () => {
+      if (prefetchBatchIdRef.current) {
+        const oldId = prefetchBatchIdRef.current;
+        prefetchBatchIdRef.current = null;
+        void api.cancelPrefetch(oldId);
+      }
+    };
+  }, [activeSeries?.id, currentEpisode?.id]);
 
   const resetControlsTimer = useCallback(() => {
     setShowControls(true);
@@ -93,9 +112,28 @@ export function usePlayback(
   const handleTimeUpdate = useCallback(() => {
     const video = videoRef.current;
     if (!video || !activeSeries || !currentEpisode) return;
+    if (loadedEpisodeIdRef.current !== currentEpisode.id) return;
     const cur = video.currentTime;
     setCurrentTime(cur);
-    setDuration(video.duration || 0);
+    const dur = video.duration || 0;
+    setDuration(dur);
+
+    // P6: 播放到 80% 时预取下一集清晰度（消除自动下一集等待）
+    if (dur > 0 && cur / dur >= 0.8 && activeSeries?.episodes) {
+      const nextIdx = currentEpisodeIndex + 1;
+      if (nextIdx < activeSeries.episodes.length) {
+        const nextEp = activeSeries.episodes[nextIdx];
+        const prefetchKey = `${activeSeries.id}-${nextEp.id}`;
+        if (prefetchedNextEpQualitiesRef.current !== prefetchKey) {
+          prefetchedNextEpQualitiesRef.current = prefetchKey;
+          void api.prefetch([{ kind: "qualities", id: nextEp.id, seriesId: activeSeries.id }])
+            .then((res) => {
+              if (res?.id) prefetchBatchIdRef.current = res.id;
+            })
+            .catch(() => {});
+        }
+      }
+    }
 
     const sec = Math.floor(cur);
     if (sec >= 0 && qualitySwitchTimeRef.current === null) {
@@ -112,6 +150,7 @@ export function usePlayback(
   }, [activeSeries, currentEpisode, currentEpisodeIndex]);
 
   const handleLoadedMetadata = useCallback((e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+    loadedEpisodeIdRef.current = currentEpisode?.id;
     const video = e.currentTarget;
     setDuration(video.duration || 0);
     video.playbackRate = playbackSpeed;
@@ -122,7 +161,7 @@ export function usePlayback(
     video.play().catch(() => {});
     setIsPlaying(true);
     resetControlsTimer();
-  }, [playbackSpeed, resetControlsTimer]);
+  }, [currentEpisode?.id, playbackSpeed, resetControlsTimer]);
 
   const handleSeek = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const time = parseFloat(e.target.value);

@@ -19,6 +19,22 @@ export default defineConfig(async ({command}) => {
   return {
   base: "./",
   plugins: [react()],
+  // B8：生产构建产物精简（tree-shaking / 分包 / 去除 debugger）
+  esbuild: { drop: ["debugger"] },
+  build: {
+    cssCodeSplit: true,
+    reportCompressedSize: true,
+    chunkSizeWarningLimit: 700,
+    rollupOptions: {
+      treeshake: "smallest",
+      output: {
+        manualChunks: {
+          react: ["react", "react-dom"],
+          vendor: ["axios", "lucide-react"],
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       "@shared": path.resolve(__dirname, "../../shared"),

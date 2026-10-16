@@ -131,7 +131,7 @@ class BoundedCache extends Map {
         return this;
     }
 }
-const pageCache = new BoundedCache(100, 180000);
+const pageCache = new BoundedCache(100, 300000);
 const streamCache = new BoundedCache(24, 300000);
 const videoInfoCache = new BoundedCache(100, 300000, (id) => {
     if (id === null) { videoInfoPending.clear(); streamCache.clear(); return; }
@@ -184,7 +184,7 @@ function extractAssignedJson(source, marker = '_ROUTER_DATA') {
 
 async function routerData(url) {
     const cached = pageCache.get(url);
-    if (cached && Date.now() - cached.time < 180000) return cached.value;
+    if (cached && Date.now() - cached.time < 300000) return cached.value;
     const value = extractAssignedJson(await getText(url));
     pageCache.set(url, { time: Date.now(), value });
     return value;
@@ -303,6 +303,7 @@ function filterValues(value) {
 async function categoryPage(query, page = 1) {
     const params = new URLSearchParams(query);
     if (page > 1) params.set('page', String(page));
+    params.sort();
     return routerData(`${SITE}/category?${params}`);
 }
 
@@ -540,8 +541,11 @@ function noteUpstream(kind) {
 }
 
 async function requestVideoModel(vid) {
+    // device_level=5 让上游为部分集的低档位返回 bytevc1（HEVC）；
+    // level=3 时这些档位可能只有私有 bytevc2，安全过滤后便只剩 1080P。
+    // 这是编码兼容性选择，不是提高清晰度上限；仍只展示实际返回的可播档位。
     const payload = JSON.stringify({
-        biz_param: { detail_page_version: 0, device_level: 3, disable_digg_stat: false, need_all_video_definition: true, need_mp4_align: false, use_os_player: false, use_server_dns: false, video_platform: 1024 },
+        biz_param: { detail_page_version: 0, device_level: 5, disable_digg_stat: false, need_all_video_definition: true, need_mp4_align: false, use_os_player: false, use_server_dns: false, video_platform: 1024 },
         video_id: str(vid),
     });
     // 上游对同一 device_id 只放行一次：必须每次用新设备。
@@ -603,7 +607,9 @@ function qualityRows(videoList) {
     if (!videoList || typeof videoList !== 'object') return rows;
     for (const [key, value] of Object.entries(videoList)) {
         const item = value && typeof value === 'object' ? value : {};
-        const quality = str(item.quality_desc || item.height || item.vheight || item.quality || key);
+        // definition 是标准档位；vheight 可能是竖屏长边或非标准编码尺寸。
+        // 540p 与 720p 甚至可能同为 496px，按高度推导会重名并被客户端去重丢档。
+        const quality = str(item.definition || item.quality_desc || item.height || item.vheight || item.quality || key);
         if (item.main_url && !rows.some((row) => row.quality === key)) rows.push({ key, quality, item });
     }
     return rows.sort((a, b) => qualityNumber(b.quality || b.key) - qualityNumber(a.quality || a.key));

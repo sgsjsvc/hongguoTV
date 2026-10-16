@@ -109,6 +109,52 @@ export const RecommendStream: React.FC<RecommendStreamProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState<boolean>(false);
 
+  const currentItem = streamList[streamIndex] || streamList[0];
+  const currentVideoSrc = (currentItem && streamCurrentEpisode)
+    ? api.getVideoStreamUrl(streamCurrentEpisode.id, streamQuality, currentItem.id)
+    : "";
+  const prevVideoSrcRef = useRef(currentVideoSrc);
+  const prevItemEpRef = useRef(currentItem && streamCurrentEpisode ? `${currentItem.id}-${streamCurrentEpisode.id}` : "");
+  const loadedStreamEpisodeKeyRef = useRef(currentItem && streamCurrentEpisode ? `${currentItem.id}-${streamCurrentEpisode.id}` : "");
+  const lastTimeUpdateRef = useRef(0);
+  const prefetchedNextEpQualitiesRef = useRef<string | null>(null);
+  const nextEpPrefetchBatchIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    prefetchedNextEpQualitiesRef.current = null;
+    if (nextEpPrefetchBatchIdRef.current) {
+      const oldId = nextEpPrefetchBatchIdRef.current;
+      nextEpPrefetchBatchIdRef.current = null;
+      void api.cancelPrefetch(oldId);
+    }
+    return () => {
+      if (nextEpPrefetchBatchIdRef.current) {
+        const oldId = nextEpPrefetchBatchIdRef.current;
+        nextEpPrefetchBatchIdRef.current = null;
+        void api.cancelPrefetch(oldId);
+      }
+    };
+  }, [currentItem?.id, streamCurrentEpisode?.id]);
+
+  useEffect(() => {
+    const video = streamVideoRef.current;
+    if (!video || !currentVideoSrc) return;
+    const currentItemEp = currentItem && streamCurrentEpisode ? `${currentItem.id}-${streamCurrentEpisode.id}` : "";
+    if (prevVideoSrcRef.current !== currentVideoSrc) {
+      const isSwitchItemOrEp = prevItemEpRef.current !== currentItemEp;
+      prevVideoSrcRef.current = currentVideoSrc;
+      prevItemEpRef.current = currentItemEp;
+
+      if (isSwitchItemOrEp && streamQualitySwitchTimeRef.current === null) {
+        video.currentTime = 0;
+      }
+      video.load();
+      if (streamIsPlaying) {
+        video.play().catch(() => {});
+      }
+    }
+  }, [currentVideoSrc, currentItem, streamCurrentEpisode, streamIsPlaying, streamQualitySwitchTimeRef, streamVideoRef]);
+
   // 监听全屏状态同步（DOM 与桌面端）
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -294,68 +340,62 @@ export const RecommendStream: React.FC<RecommendStreamProps> = ({
                 }
               }}
             >
-              {videoStreamUrl ? (
-                <video
-                  ref={streamVideoRef}
-                  key={`${currentItem.id}-${streamCurrentEpisode?.id || 0}`}
-                  src={api.getVideoStreamUrl(streamCurrentEpisode?.id || "", streamQuality, currentItem.id)}
-                  autoPlay
-                  playsInline
-                  className="w-full h-full object-contain transition-all duration-300"
-                  onLoadedMetadata={(e) => {
-                    const v = e.currentTarget;
-                    v.playbackRate = streamPlaybackSpeed;
-                    if (v.videoWidth && v.videoHeight) {
-                      setStreamIsLandscape(v.videoWidth > v.videoHeight);
-                    }
-                    if (streamQualitySwitchTimeRef.current !== null) {
-                      if (streamQualitySwitchTimeRef.current > 0) v.currentTime = streamQualitySwitchTimeRef.current;
-                      streamQualitySwitchTimeRef.current = null;
-                    }
-                    setStreamDuration(v.duration || 0);
-                  }}
-                  onTimeUpdate={() => {
-                    const v = streamVideoRef.current;
-                    if (v && !streamIsDraggingProgress && streamQualitySwitchTimeRef.current === null) {
-                      const cur = v.currentTime;
-                      setStreamCurrentTime(cur);
-                      setStreamDuration(v.duration || 0);
+              <video
+                ref={streamVideoRef}
+                src={videoStreamUrl ? api.getVideoStreamUrl(streamCurrentEpisode?.id || "", streamQuality, currentItem.id) : undefined}
+                autoPlay
+                playsInline
+                className={`w-full h-full object-contain transition-all duration-300 ${!videoStreamUrl ? "hidden" : ""}`}
+                onLoadedMetadata={(e) => {
+                  const v = e.currentTarget;
+                  loadedStreamEpisodeKeyRef.current = `${currentItem.id}-${streamCurrentEpisode?.id || 0}`;
+                  v.playbackRate = streamPlaybackSpeed;
+                  if (v.videoWidth && v.videoHeight) {
+                    setStreamIsLandscape(v.videoWidth > v.videoHeight);
+                  }
+                  if (streamQualitySwitchTimeRef.current !== null) {
+                    if (streamQualitySwitchTimeRef.current > 0) v.currentTime = streamQualitySwitchTimeRef.current;
+                    streamQualitySwitchTimeRef.current = null;
+                  }
+                  setStreamDuration(v.duration || 0);
+                  if (streamIsPlaying) {
+                    v.play().catch(() => {});
+                  }
+                }}
+                onTimeUpdate={() => {
+                  const currentEpKey = `${currentItem.id}-${streamCurrentEpisode?.id || 0}`;
+                  if (loadedStreamEpisodeKeyRef.current !== currentEpKey) return;
+                  const v = streamVideoRef.current;
+                  if (v && !streamIsDraggingProgress && streamQualitySwitchTimeRef.current === null) {
+                    const now = performance.now();
+                    if (now - lastTimeUpdateRef.current < 250) return;
+                    lastTimeUpdateRef.current = now;
 
-                      const sec = Math.floor(cur);
-                      if (sec >= 0 && streamCurrentEpisode) {
-                        saveProgress(currentItem.id, streamCurrentEpisode.id, sec, {
-                          title: currentItem.title,
-                          cover: currentItem.cover,
-                          badge: currentItem.badge,
-                          tags: currentItem.tags,
-                          episodeNumber: streamCurrentEpisode.number || streamEpisodeIndex + 1,
-                          duration: Math.floor(v.duration || 0),
-                          completed: v.ended,
-                        });
+                    const cur = v.currentTime;
+                    setStreamCurrentTime(cur);
+                    const dur = v.duration || 0;
+                    setStreamDuration(dur);
+
+                    // P6: 播放到 80% 时预取下一集清晰度（消除自动下一集等待）
+                    if (dur > 0 && cur / dur >= 0.8 && streamDetail?.episodes) {
+                      const nextIdx = streamEpisodeIndex + 1;
+                      if (nextIdx < streamDetail.episodes.length) {
+                        const nextEp = streamDetail.episodes[nextIdx];
+                        const prefetchKey = `${currentItem.id}-${nextEp.id}`;
+                        if (prefetchedNextEpQualitiesRef.current !== prefetchKey) {
+                          prefetchedNextEpQualitiesRef.current = prefetchKey;
+                          void api.prefetch([{ kind: "qualities", id: nextEp.id, seriesId: currentItem.id }])
+                            .then((res) => {
+                              if (res?.id) nextEpPrefetchBatchIdRef.current = res.id;
+                            })
+                            .catch(() => {});
+                        }
                       }
                     }
-                  }}
-                  onEnded={() => {
-                    if (streamCurrentEpisode) {
-                      saveProgress(currentItem.id, streamCurrentEpisode.id, Math.floor(streamDuration || 0), {
-                        title: currentItem.title,
-                        cover: currentItem.cover,
-                        badge: currentItem.badge,
-                        tags: currentItem.tags,
-                        episodeNumber: streamCurrentEpisode.number || streamEpisodeIndex + 1,
-                        duration: Math.floor(streamDuration || 0),
-                        completed: true,
-                      });
-                      void refreshHistory();
-                    }
-                    handleStreamNextEpisode(true);
-                  }}
-                  onPlay={() => setStreamIsPlaying(true)}
-                  onPause={() => {
-                    setStreamIsPlaying(false);
-                    const v = streamVideoRef.current;
-                    if (v && streamCurrentEpisode) {
-                      saveProgress(currentItem.id, streamCurrentEpisode.id, Math.floor(v.currentTime || 0), {
+
+                    const sec = Math.floor(cur);
+                    if (sec >= 0 && streamCurrentEpisode) {
+                      saveProgress(currentItem.id, streamCurrentEpisode.id, sec, {
                         title: currentItem.title,
                         cover: currentItem.cover,
                         badge: currentItem.badge,
@@ -364,11 +404,47 @@ export const RecommendStream: React.FC<RecommendStreamProps> = ({
                         duration: Math.floor(v.duration || 0),
                         completed: v.ended,
                       });
-                      void refreshHistory();
                     }
-                  }}
-                />
-              ) : (
+                  }
+                }}
+                onEnded={() => {
+                  const currentEpKey = `${currentItem.id}-${streamCurrentEpisode?.id || 0}`;
+                  if (loadedStreamEpisodeKeyRef.current !== currentEpKey) return;
+                  if (streamCurrentEpisode) {
+                    saveProgress(currentItem.id, streamCurrentEpisode.id, Math.floor(streamDuration || 0), {
+                      title: currentItem.title,
+                      cover: currentItem.cover,
+                      badge: currentItem.badge,
+                      tags: currentItem.tags,
+                      episodeNumber: streamCurrentEpisode.number || streamEpisodeIndex + 1,
+                      duration: Math.floor(streamDuration || 0),
+                      completed: true,
+                    });
+                    void refreshHistory();
+                  }
+                  handleStreamNextEpisode(true);
+                }}
+                onPlay={() => setStreamIsPlaying(true)}
+                onPause={() => {
+                  setStreamIsPlaying(false);
+                  const currentEpKey = `${currentItem.id}-${streamCurrentEpisode?.id || 0}`;
+                  if (loadedStreamEpisodeKeyRef.current !== currentEpKey) return;
+                  const v = streamVideoRef.current;
+                  if (v && streamCurrentEpisode) {
+                    saveProgress(currentItem.id, streamCurrentEpisode.id, Math.floor(v.currentTime || 0), {
+                      title: currentItem.title,
+                      cover: currentItem.cover,
+                      badge: currentItem.badge,
+                      tags: currentItem.tags,
+                      episodeNumber: streamCurrentEpisode.number || streamEpisodeIndex + 1,
+                      duration: Math.floor(v.duration || 0),
+                      completed: v.ended,
+                    });
+                    void refreshHistory();
+                  }
+                }}
+              />
+              {!videoStreamUrl && (
                 <img
                   src={currentItem.cover}
                   alt={currentItem.title}

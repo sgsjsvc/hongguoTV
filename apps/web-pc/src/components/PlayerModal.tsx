@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { 
   ArrowLeft, 
   Play, 
@@ -151,6 +151,30 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
   seasonsList,
   handleSwitchSeason,
 }) => {
+  const currentVideoSrc = currentEpisode
+    ? api.getVideoStreamUrl(currentEpisode.id, currentQuality, activeSeries.id)
+    : "";
+  const prevVideoSrcRef = useRef(currentVideoSrc);
+  const prevEpisodeIdRef = useRef(currentEpisode?.id);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !currentVideoSrc) return;
+    if (prevVideoSrcRef.current !== currentVideoSrc) {
+      const isEpisodeChange = prevEpisodeIdRef.current !== currentEpisode?.id;
+      prevVideoSrcRef.current = currentVideoSrc;
+      prevEpisodeIdRef.current = currentEpisode?.id;
+
+      if (isEpisodeChange) {
+        video.currentTime = 0;
+      }
+      video.load();
+      if (isPlaying) {
+        video.play().catch(() => {});
+      }
+    }
+  }, [currentVideoSrc, currentEpisode?.id, isPlaying, videoRef]);
+
   return (
     <div className="max-w-[1720px] mx-auto flex flex-col gap-8 pb-14 px-2 sm:px-4">
       {/* 上半部分：左侧播放器 + 右侧选集栏 */}
@@ -188,7 +212,6 @@ export const PlayerModal: React.FC<PlayerModalProps> = ({
               <>
                 <video
                   ref={videoRef}
-                  key={currentEpisode.id}
                   src={api.getVideoStreamUrl(currentEpisode.id, currentQuality, activeSeries.id)}
                   autoPlay
                   onTimeUpdate={handleTimeUpdate}

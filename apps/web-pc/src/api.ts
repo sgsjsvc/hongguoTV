@@ -1,6 +1,7 @@
 import axios from "axios";
 import { LibraryJournal } from "./library-journal.mjs";
 import { legacyOperations } from "@shared/legacy-migration.mjs";
+import { isVideoPlaying } from "./video-state";
 import {
   RecommendationMode, RecommendationSignal,
   BannerItem,
@@ -69,7 +70,61 @@ export async function removeHistoryItem(id:string,_source:HistorySource="all"){o
 export async function clearHistory(_source:HistorySource="all"){operation("history","*","clear");await journal.flush();await refreshLibrary();}
 export function getSyncStatus(){return cache.sync;}
 export async function configureSync(url:string,key:string,enabled=true){const data=(await client().post("/api/library/sync",enabled?{url,key}:{enabled:false})).data;cache.sync=data;await refreshLibrary();return data;}
-if(!migrationOnly){setInterval(()=>void refreshLibrary().catch(()=>{}),1000);window.addEventListener("online",()=>void refreshLibrary().catch(warning));}
+export { isVideoPlaying };
+if(!migrationOnly && typeof window !== "undefined"){
+  let pollingTimer: any = null;
+  let backoffMs = 10000;
+
+  const scheduleNextPoll = (delay: number) => {
+    if (pollingTimer) clearTimeout(pollingTimer);
+    pollingTimer = setTimeout(async () => {
+      if (typeof document !== "undefined" && document.hidden) {
+        pollingTimer = null;
+        return;
+      }
+      if (isVideoPlaying()) {
+        scheduleNextPoll(10000);
+        return;
+      }
+      try {
+        await refreshLibrary();
+        backoffMs = 10000;
+      } catch {
+        backoffMs = Math.min(backoffMs * 2, 30000);
+      }
+      scheduleNextPoll(backoffMs);
+    }, delay);
+  };
+
+  scheduleNextPoll(10000);
+
+  if (typeof document !== "undefined") {
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) {
+        backoffMs = 10000;
+        // 播放中不立即拉取，避免与视频流争用，安排下一次轮询
+        if (!isVideoPlaying()) {
+          void refreshLibrary().catch(() => {});
+        }
+        scheduleNextPoll(10000);
+      } else {
+        if (pollingTimer) {
+          clearTimeout(pollingTimer);
+          pollingTimer = null;
+        }
+      }
+    });
+  }
+
+  window.addEventListener("online", () => {
+    backoffMs = 10000;
+    // 播放中不立即拉取，避免与视频流争用，安排下一次轮询
+    if (!isVideoPlaying()) {
+      void refreshLibrary().catch(warning);
+    }
+    scheduleNextPoll(10000);
+  });
+}
 
 export const api = {
   // 1. 官方首页大轮播 Banner
@@ -197,6 +252,44 @@ export const api = {
         badge: series.badge,
         isCurrent: true
       }];
+    }
+  },
+
+  // 13. 后台智能预取接口 (支持 detail 与 qualities 预热)
+  async prefetch(
+    targets: Array<
+      | { kind: "detail"; id: string }
+      | { kind: "qualities"; id: string; seriesId: string }
+    >
+  ): Promise<{ id: string; state: string; targets: any[]; enabled?: boolean } | null> {
+    if (!targets || targets.length === 0) return null;
+    try {
+      const res = await client().post("/api/prefetch", { targets });
+      return res.data;
+    } catch {
+      return null;
+    }
+  },
+
+  // 14. 取消预取任务批次
+  async cancelPrefetch(id: string): Promise<boolean> {
+    if (!id) return false;
+    try {
+      await client().delete(`/api/prefetch/${encodeURIComponent(id)}`);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+
+  // 15. 查询预取任务状态
+  async getPrefetchStatus(id: string): Promise<any> {
+    if (!id) return null;
+    try {
+      const res = await client().get(`/api/prefetch/${encodeURIComponent(id)}`);
+      return res.data;
+    } catch {
+      return null;
     }
   },
 };

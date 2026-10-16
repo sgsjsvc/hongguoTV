@@ -71,6 +71,10 @@ class MainActivity : ComponentActivity() {
     private lateinit var timeText: TextView
     private lateinit var progressBar: ProgressBar
     private lateinit var pauseIndicator: View
+    // Series id whose series-level text is currently rendered in the in-player overlay.
+    // Switching episodes inside the same series only refreshes the badge/subtitle and keeps
+    // the existing view tree, so no rebuild (removeAllViews) or artwork reload is needed.
+    private var chromeSeriesId: String? = null
 
     // Center Seek HUD
     private lateinit var seekHud: LinearLayout
@@ -805,18 +809,25 @@ class MainActivity : ComponentActivity() {
         player?.pause(); player?.clearMediaItems(); activeIndex = index; savedPosition = position
         pauseIndicator.visibility = View.GONE
 
-        // Update In-Player Overlays
+        // 切集（同一部剧）只更新会变化的集数徽标与副标题，保留既有视图树；
+        // 仅当切换剧集（series 变化）时才刷新系列级字段、清空导航容器并重新加载封面。
+        val seriesChanged = chromeSeriesId != detail.series.id
+        chromeSeriesId = detail.series.id
         episodeBadge.text = "第 ${episode.number} 集"
-        infoTitle.text = "@${detail.series.title}  ${detail.series.badge}"
         infoSubtitle.text = "第 ${episode.number} 集 · 《${detail.series.title}》 第 ${episode.number} 集"
-        val tagList = if (detail.series.tags.isNotBlank()) detail.series.tags.split("/").joinToString("  ") { "#${it.trim()}" } else "#短剧  #爆款"
-        infoTags.text = "#短剧  $tagList"
-        infoDesc.text = detail.series.description.ifBlank { "精彩短剧连播，高潮迭起，逆袭反转不停歇！" }
-        collectionButton.text = "合集：${detail.series.title} | 全${detail.episodes.size}集 >"
         playButton.text = if (player?.isPlaying == true) "暂停播放" else "继续播放"
+        if (seriesChanged) {
+            // Update series-level In-Player Overlays
+            infoTitle.text = "@${detail.series.title}  ${detail.series.badge}"
+            val tagList = if (detail.series.tags.isNotBlank()) detail.series.tags.split("/").joinToString("  ") { "#${it.trim()}" } else "#短剧  #爆款"
+            infoTags.text = "#短剧  $tagList"
+            infoDesc.text = detail.series.description.ifBlank { "精彩短剧连播，高潮迭起，逆袭反转不停歇！" }
+            collectionButton.text = "合集：${detail.series.title} | 全${detail.episodes.size}集 >"
+            navigation.removeAllViews()
+            artwork.load(detail.series.cover, backdrop)
+        }
         updateFavState()
 
-        navigation.removeAllViews()
         if (showSwitchHint) {
             hideChromeNow()
             showSwitchHint(
@@ -828,7 +839,6 @@ class MainActivity : ComponentActivity() {
             revealChrome()
         }
         if (!overlayVisible) focusPlayback()
-        artwork.load(detail.series.cover, backdrop)
 
         playbackJob = scope.launch {
             try {
@@ -858,6 +868,7 @@ class MainActivity : ComponentActivity() {
         player?.pause(); overlayVisible = true; revealChrome()
         infoSubtitle.text = message
         collectionButton.text = "重试加载"
+        chromeSeriesId = null
         collectionButton.setOnClickListener {
             resumePaused = false; overlayVisible = false; loadEpisode(activeIndex, savedPosition)
         }
@@ -961,6 +972,7 @@ class MainActivity : ComponentActivity() {
         infoTitle.text = "@红果短剧"
         infoSubtitle.text = message
         collectionButton.text = "重新加载推荐"
+        chromeSeriesId = null
         collectionButton.setOnClickListener { startFeed() }
         collectionButton.requestFocus()
     }

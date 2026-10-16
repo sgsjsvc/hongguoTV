@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { historyUuid } from "../history-outbox.mjs";
 import { RecommendationSession, RecommendationWatch } from "../recommendation-session.mjs";
 import { api, getPlaybackPreferences, savePlaybackPreference, saveProgress, commitRecommendationPreferences, saveRecommendationSignal } from "../api";
@@ -38,6 +38,19 @@ export function useStreamFeed(showToast: (msg: string) => void) {
   const streamQualitySwitchTimeRef = useRef<number | null>(null);
   const streamVideoRef = useRef<HTMLVideoElement>(null);
   const streamWheelLockRef = useRef(false);
+  const prefetchBatchIdRef = useRef<string | null>(null);
+  const prefetchedSeriesIdsRef = useRef<Set<string>>(new Set());
+  const prefetchDisabledRef = useRef<boolean>(false);
+
+  useEffect(() => {
+    return () => {
+      if (prefetchBatchIdRef.current) {
+        const oldId = prefetchBatchIdRef.current;
+        prefetchBatchIdRef.current = null;
+        void api.cancelPrefetch(oldId);
+      }
+    };
+  }, []);
 
   if (!detailWatchRef.current) detailWatchRef.current = new RecommendationWatch(saveRecommendationSignal);
   if (!streamWatchRef.current) streamWatchRef.current = new RecommendationWatch(saveRecommendationSignal);
@@ -60,6 +73,11 @@ export function useStreamFeed(showToast: (msg: string) => void) {
       if (append) await streamFeedRef.current.load(targetPage);
       else {
         const request = ++streamStartRequest.current, generation = navigationGeneration.current;
+        if (prefetchBatchIdRef.current) {
+          const oldBatchId = prefetchBatchIdRef.current;
+          prefetchBatchIdRef.current = null;
+          void api.cancelPrefetch(oldBatchId);
+        }
         streamFeedRef.current.cancel();
         streamWatchRef.current.leave(); streamVideoRef.current?.pause();
         streamDetailRequest.current++;
@@ -75,6 +93,11 @@ export function useStreamFeed(showToast: (msg: string) => void) {
     if (!series) return;
     const request = ++streamDetailRequest.current;
     const session = streamFeedRef.current.id;
+    if (prefetchBatchIdRef.current) {
+      const oldBatchId = prefetchBatchIdRef.current;
+      prefetchBatchIdRef.current = null;
+      void api.cancelPrefetch(oldBatchId);
+    }
     streamWatchRef.current.pause(); streamVideoRef.current?.pause();
     setStreamCurrentEpisode(null); setStreamDetail(null);
     if (streamWatchRef.current.active?.value.seriesId !== series.id) beginRecommendationExposure(series, session);
@@ -94,6 +117,27 @@ export function useStreamFeed(showToast: (msg: string) => void) {
       setStreamEpisodeIndex(0); setStreamCurrentEpisode(ep);
       if (ep) saveProgress(series.id, ep.id, 0, { title: detail.title, cover: detail.cover, badge: detail.badge, tags: detail.tags, episodeNumber: ep.number, duration: 0 });
       setStreamIsPlaying(true); streamQualitySwitchTimeRef.current = 0;
+
+      // 预取时机 1：详情加载后，立即预取推荐流中同页的下一部短剧详情（P1 的 detail 预取也会自动预热首集清晰度）
+      if (!prefetchDisabledRef.current && streamFeedRef.current) {
+        const items = streamFeedRef.current.items || [];
+        const nextIndex = streamFeedRef.current.index + 1;
+        if (nextIndex < items.length) {
+          const nextSeries = items[nextIndex];
+          const nextId = String(nextSeries?.id || "");
+          if (nextId && !prefetchedSeriesIdsRef.current.has(nextId)) {
+            prefetchedSeriesIdsRef.current.add(nextId);
+            void api.prefetch([{ kind: "detail", id: nextId }]).then((res) => {
+              if (res) {
+                if (res.enabled === false) prefetchDisabledRef.current = true;
+                if (request === streamDetailRequest.current) {
+                  prefetchBatchIdRef.current = res.id;
+                }
+              }
+            }).catch(() => {});
+          }
+        }
+      }
 
       if (ep) {
         setStreamQualitiesLoading(true);

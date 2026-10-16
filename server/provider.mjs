@@ -2,7 +2,124 @@ import fs from "node:fs";
 import vm from "node:vm";
 import crypto from "node:crypto";
 import axios from "axios";
+import { AsyncLocalStorage } from "node:async_hooks";
 import categoryContract from '../shared/category-contract.cjs';
+
+const requestContext = new AsyncLocalStorage();
+export const upstreamRequestSignal = () => requestContext.getStore();
+const resourcePending = new Map();
+const detailRefreshes = new Map();
+
+// A cancelled speculative subscriber must not abort a foreground subscriber.
+export function sharedResource(key, load, { signal = upstreamRequestSignal() } = {}) {
+  if (signal?.aborted) return Promise.reject(signal.reason);
+  let entry = resourcePending.get(key);
+  if (!entry) {
+    const controller = new AbortController();
+    entry = { controller, subscribers: 0 };
+    resourcePending.set(key, entry);
+    try { entry.promise = Promise.resolve(requestContext.run(controller.signal, load)); }
+    catch (error) { entry.promise = Promise.reject(error); }
+    const cleanup = () => { if (resourcePending.get(key) === entry) resourcePending.delete(key); };
+    entry.promise.then(cleanup, cleanup);
+  }
+  entry.subscribers++;
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    const finish = (callback, value) => {
+      if (settled) return;
+      settled = true; signal?.removeEventListener('abort', abort);
+      entry.subscribers--; callback(value);
+    };
+    const abort = () => {
+      finish(reject, signal.reason);
+      if (!entry.subscribers) {
+        if (resourcePending.get(key) === entry) resourcePending.delete(key);
+        entry.controller.abort();
+      }
+    };
+    signal?.addEventListener('abort', abort, { once: true });
+    entry.promise.then(value => finish(resolve, value), error => finish(reject, error));
+  });
+}
+
+export function createPrefetchQueue(load, { enabled = true, concurrency = 1 } = {}) {
+  const batches = new Map(), tasks = new Map();
+  let running = 0, foreground = 0, scheduled = false, closed = false;
+  const schedule = () => {
+    if (scheduled || closed) return;
+    scheduled = true;
+    setImmediate(() => { scheduled = false; pump(); });
+  };
+  const pump = () => {
+    if (closed || foreground) return;
+    for (const task of tasks.values()) {
+      if (running >= Math.max(1, Math.min(2, concurrency))) break;
+      if (task.state !== 'queued') continue;
+      task.state = 'running'; running++;
+      Promise.resolve().then(() => requestContext.run(task.controller.signal, () => load(task.target, task.controller.signal)))
+        .then(() => { if (task.state !== 'cancelled') task.state = 'done'; }, () => { if (task.state !== 'cancelled') task.state = 'failed'; })
+        .finally(() => {
+          running--; if (tasks.get(task.key) === task) tasks.delete(task.key);
+          for (const batch of task.batches) if (batch.tasks.every(row => !['queued', 'running'].includes(row.state))) batch.finishedAt = Date.now();
+          schedule();
+        });
+    }
+  };
+  const status = id => {
+    const batch = batches.get(id);
+    if (!batch) return null;
+    return { id, enabled, state: batch.cancelled ? 'cancelled' : batch.tasks.some(row => ['queued', 'running'].includes(row.state)) ? 'pending' : 'complete',
+      targets: batch.tasks.map(row => ({ ...row.target, state: row.state })) };
+  };
+  const cancel = id => {
+    const batch = batches.get(id);
+    if (!batch) return null;
+    batch.cancelled = true; batch.finishedAt = Date.now();
+    for (const task of batch.tasks) {
+      task.batches.delete(batch);
+      if (!task.batches.size && ['queued', 'running'].includes(task.state)) {
+        task.state = 'cancelled'; task.controller.abort();
+        if (tasks.get(task.key) === task) tasks.delete(task.key);
+      }
+    }
+    schedule(); return status(id);
+  };
+  return {
+    submit(targets) {
+      if (closed) throw Object.assign(new Error('预取服务已关闭'), { status: 503 });
+      if (!Array.isArray(targets) || !targets.length || targets.length > 8) throw Object.assign(new Error('每次预取需包含 1–8 个目标'), { status: 400 });
+      const normalized = targets.map(target => {
+        if (!target || !['detail', 'qualities'].includes(target.kind)) throw Object.assign(new Error('不支持的预取类型'), { status: 400 });
+        if (typeof target.id !== 'string' || !/^\d{1,30}$/.test(target.id) || (target.seriesId !== undefined && (typeof target.seriesId !== 'string' || !/^\d{1,30}$/.test(target.seriesId)))) throw Object.assign(new Error('ID 必须是数字字符串'), { status: 400 });
+        return { kind: target.kind, id: target.id, ...(target.seriesId ? { seriesId: target.seriesId } : {}) };
+      });
+      if (!enabled) return { enabled: false, id: null, state: 'disabled', targets: [] };
+      for (const [id, batch] of batches) if (batch.finishedAt && Date.now() - batch.finishedAt > 60000) batches.delete(id);
+      if (batches.size >= 64) for (const [id, batch] of batches) { if (batch.finishedAt) batches.delete(id); if (batches.size < 64) break; }
+      const additional = new Set(normalized.map(target => `${target.kind}:${target.id}`).filter(key => !tasks.has(key))).size;
+      if (tasks.size + additional > 32 || batches.size >= 64) throw Object.assign(new Error('预取队列已满'), { status: 429 });
+      const batch = { id: crypto.randomUUID(), tasks: [], cancelled: false };
+      for (const target of normalized) {
+        const key = `${target.kind}:${target.id}`;
+        let task = tasks.get(key);
+        if (!task) { task = { key, target, state: 'queued', batches: new Set(), controller: new AbortController() }; tasks.set(key, task); }
+        task.batches.add(batch); if (!batch.tasks.includes(task)) batch.tasks.push(task);
+      }
+      batches.set(batch.id, batch); schedule(); return status(batch.id);
+    },
+    status, cancel,
+    async foreground(work) { foreground++; try { return await work(); } finally { foreground--; schedule(); } },
+    close() { closed = true; for (const id of batches.keys()) cancel(id); batches.clear(); },
+  };
+}
+
+const upstreamClient = axios.create({ maxContentLength: 16 * 1024 * 1024, maxBodyLength: 1024 * 1024 });
+upstreamClient.interceptors.request.use(config => {
+  const signal = upstreamRequestSignal();
+  if (signal) config.signal = signal;
+  return config;
+});
 
 // Trusted, pinned GPL source. This is a compatibility wrapper, not a sandbox for user scripts.
 const source = fs.readFileSync(
@@ -17,10 +134,7 @@ const context = vm.createContext({
   Buffer,
   URL,
   URLSearchParams,
-  axios: axios.create({
-    maxContentLength: 16 * 1024 * 1024,
-    maxBodyLength: 1024 * 1024,
-  }),
+  axios: upstreamClient,
 });
 vm.runInContext(
   source +
@@ -72,22 +186,75 @@ export const provider = {
     return { items: cards(pageData.recommendList.map(api.itemToCard)), page };
   },
   async search(keyword, page = 1) {
-    try {
+    const fetchApp = async () => {
       const result = await api.appSearchPage(keyword, 11, page, 20);
-      if (result.list.length) return { items: cards(result.list), page };
-    } catch {
-      /* Website fallback; failure below remains an error, never an empty success. */
+      return Array.isArray(result.list) ? cards(result.list) : [];
+    };
+    const fetchWeb = async () => {
+      const data = await api.routerData(
+        `${SITE}/search/${encodeURIComponent(keyword)}?page=${page}`
+      );
+      const pageData =
+        data?.loaderData?.["search_(keyword)/page"] ||
+        data?.loaderData?.search_page;
+      if (!Array.isArray(pageData?.searchList)) throw new Error("搜索数据不可用");
+      return cards(pageData.searchList.map(api.itemToCard));
+    };
+
+    let timer;
+    const timeout = (ms) => new Promise((_, reject) => { timer = setTimeout(() => reject(new Error("搜索请求超时")), ms); });
+    try {
+      const [appRes, webRes] = await Promise.allSettled([
+        Promise.race([fetchApp(), timeout(2000)]),
+        Promise.race([fetchWeb(), timeout(2000)]),
+      ]);
+
+      const items = [];
+      const seen = new Set();
+      const addItem = (item) => {
+        if (item && item.id && !seen.has(String(item.id))) {
+          seen.add(String(item.id));
+          items.push(item);
+        }
+      };
+
+      if (appRes.status === "fulfilled" && Array.isArray(appRes.value)) {
+        appRes.value.forEach(addItem);
+      }
+      if (webRes.status === "fulfilled" && Array.isArray(webRes.value)) {
+        webRes.value.forEach(addItem);
+      }
+
+      if (!items.length) {
+        if (appRes.status === "rejected" && webRes.status === "rejected") {
+          throw (webRes.reason?.message !== "搜索请求超时" ? webRes.reason : appRes.reason);
+        }
+      }
+      return { items, page };
+    } finally {
+      if (timer) clearTimeout(timer);
     }
-    const data = await api.routerData(
-      `${SITE}/search/${encodeURIComponent(keyword)}?page=${page}`
-    );
-    const pageData =
-      data?.loaderData?.["search_(keyword)/page"] ||
-      data?.loaderData?.search_page;
-    if (!Array.isArray(pageData?.searchList)) throw new Error("搜索数据不可用");
-    return { items: cards(pageData.searchList.map(api.itemToCard)), page };
   },
-  async detail(id) {
+  detailCacheStatus(id) {
+    if (detailRefreshes.has(id)) return 'MISS';
+    return api.pageCache.get(`${SITE}/detail?series_id=${id}`) ? 'HIT' : 'MISS';
+  },
+  async detail(id, { fresh = false, signal = upstreamRequestSignal() } = {}) {
+    if (typeof id !== 'string' || !/^\d{1,30}$/.test(id)) throw Object.assign(new Error('剧集 ID 必须是数字字符串'), { status: 400 });
+    if (signal?.aborted) throw signal.reason;
+    let refreshKey = detailRefreshes.get(id);
+    if (fresh && !refreshKey) {
+      refreshKey = `detail:${id}:fresh:${crypto.randomUUID()}`;
+      detailRefreshes.set(id, refreshKey);
+    }
+    const key = refreshKey || `detail:${id}`;
+    const result = sharedResource(key, async () => {
+    if (refreshKey) {
+      const old = resourcePending.get(`detail:${id}`);
+      if (old) await old.promise.catch(() => {});
+      upstreamRequestSignal()?.throwIfAborted();
+      api.pageCache.delete(`${SITE}/detail?series_id=${id}`);
+    }
     const data = await api.routerData(`${SITE}/detail?series_id=${id}`);
     const series = data?.loaderData?.detail_page?.seriesDetail;
     if (!series || !Array.isArray(series.vid_list) || !series.vid_list.length)
@@ -103,6 +270,12 @@ export const provider = {
     )
       throw new Error("分集数据异常");
     return { ...card(api.itemToCard(series)), id, episodes };
+    }, { signal });
+    if (refreshKey) {
+      const clear = () => { if (detailRefreshes.get(id) === refreshKey) detailRefreshes.delete(id); };
+      resourcePending.get(key)?.promise.then(clear, clear);
+    }
+    return result;
   },
   async stream(id, fresh = false) {
     if (fresh) {

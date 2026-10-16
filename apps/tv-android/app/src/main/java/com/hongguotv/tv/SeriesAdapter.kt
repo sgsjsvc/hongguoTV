@@ -30,7 +30,17 @@ internal class SeriesAdapter(
         val title: TextView,
         val badge: TextView,
         val progress: ProgressBar
-    ) : RecyclerView.ViewHolder(card)
+    ) : RecyclerView.ViewHolder(card) {
+        private val rankRadius = TvUi.dimen(card.context, R.dimen.series_rank_badge_radius).toFloat()
+        val rankBackgrounds = arrayOf(
+            intArrayOf(0xffffd700.toInt(), 0xfff59e0b.toInt()),
+            intArrayOf(0xffe2e8f0.toInt(), 0xff94a3b8.toInt()),
+            intArrayOf(0xfff97316.toInt(), 0xffea580c.toInt()),
+            intArrayOf(0xcc1e293b.toInt(), 0xaa0f172a.toInt())
+        ).map { colors ->
+            GradientDrawable(GradientDrawable.Orientation.TL_BR, colors).apply { cornerRadius = rankRadius }
+        }
+    }
 
     init { setHasStableIds(true) }
     override fun getItemId(position: Int) = rows[position].id.toLongOrNull() ?: rows[position].id.hashCode().toLong()
@@ -132,16 +142,7 @@ internal class SeriesAdapter(
         if (isRank || series.badge.contains("榜")) {
             holder.rankBadge.visibility = android.view.View.VISIBLE
             holder.rankBadge.text = "Top ${position + 1}"
-            val bgGradient = when (position) {
-                0 -> intArrayOf(0xffffd700.toInt(), 0xfff59e0b.toInt()) // Gold
-                1 -> intArrayOf(0xffe2e8f0.toInt(), 0xff94a3b8.toInt()) // Silver
-                2 -> intArrayOf(0xfff97316.toInt(), 0xffea580c.toInt()) // Bronze
-                else -> intArrayOf(0xcc1e293b.toInt(), 0xaa0f172a.toInt())
-            }
-            val cornerRadiusPx = TvUi.dimen(holder.itemView.context, R.dimen.series_rank_badge_radius).toFloat()
-            holder.rankBadge.background = GradientDrawable(GradientDrawable.Orientation.TL_BR, bgGradient).apply {
-                cornerRadius = cornerRadiusPx
-            }
+            holder.rankBadge.background = holder.rankBackgrounds[position.coerceAtMost(3)]
         } else {
             holder.rankBadge.visibility = android.view.View.GONE
         }
@@ -158,5 +159,22 @@ internal class SeriesAdapter(
             }
         }
         artwork.load(series.cover, holder.image)
+    }
+
+    override fun onViewRecycled(holder: Holder) {
+        artwork.clear(holder.image)
+        holder.card.setOnClickListener(null)
+        holder.card.onFocusChangeListener = null
+        holder.card.scaleX = 1f
+        holder.card.scaleY = 1f
+        holder.card.contentDescription = null
+        holder.title.text = ""
+        holder.badge.text = ""
+        holder.badge.visibility = android.view.View.GONE
+        holder.rankBadge.text = ""
+        holder.rankBadge.visibility = android.view.View.GONE
+        holder.progress.progress = 0
+        holder.progress.visibility = android.view.View.GONE
+        super.onViewRecycled(holder)
     }
 }

@@ -1,4 +1,8 @@
 import {test} from 'node:test';
+import {createPrefetchMetrics} from '../custom-server/prefetch-metrics.mjs';
+import {traceRequest} from '../custom-server/request-timing.mjs';
+import {createPrefetchQueue,sharedResource,upstreamRequestSignal} from '../server/provider.mjs';
+import {readJson} from '../shared/http-json.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -31,11 +35,29 @@ for(const file of engines){
 
 function fixture(engine){
   const source=fs.readFileSync('custom-server/index.mjs','utf8');
-  const c=vm.createContext({http,URL,Buffer,AbortController,hgEngine:engine,byteRange,serveStatic:()=>false,handleLibrary:async()=>false,handleHistory:async()=>false,vidToSeriesMap:new Map(),console:{warn(){},error(){}}});
+  const c=vm.createContext({http,URL,Buffer,AbortController,process,createPrefetchQueue,sharedResource,createPrefetchMetrics,traceRequest,readJson,hgEngine:engine,byteRange,serveStatic:()=>false,handleLibrary:async()=>false,handleHistory:async()=>false,vidToSeriesMap:new Map(),console:{warn(){},error(){}}});
   vm.runInContext(source.slice(source.indexOf('function json('),source.indexOf('listenWithFallback(server, PORT'))+'\nthis.serverForTest=server;',c);return c.serverForTest;
 }
 async function serve(t,engine){const server=fixture(engine);await new Promise(r=>server.listen(0,'127.0.0.1',r));t.after(async()=>{server.closeAllConnections();await new Promise(r=>server.close(r));});return `http://127.0.0.1:${server.address().port}`;}
 function stub(total,chunk){return {resolveStream:async()=>({}),prepareHeader:async()=>({total}),remoteRange:chunk,decryptPartial:b=>b};}
+
+test('cancelling qualities prefetch cannot interrupt a foreground stream sharing video metadata',async t=>{
+  let enter,release,signal,pending;
+  const entered=new Promise(r=>enter=r);
+  const fetchVideoInfo=()=>pending??=(new Promise((resolve,reject)=>{
+    signal=upstreamRequestSignal();release=()=>resolve({rows:[]});enter();
+    signal?.addEventListener('abort',()=>reject(Error('metadata aborted')),{once:true});
+  }));
+  const engine={...stub(16,async(_s,start,end)=>({data:Buffer.alloc(end-start+1)})),fetchVideoInfo,resolveStream:async()=>{await fetchVideoInfo();return {};}};
+  const root=await serve(t,engine);
+  const job=await(await fetch(root+'/api/prefetch',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({targets:[{kind:'qualities',id:'123'}]})})).json();
+  await entered;
+  const stream=fetch(root+'/api/episodes/123/stream');
+  await new Promise(r=>setTimeout(r,20));
+  await fetch(root+'/api/prefetch/'+job.id,{method:'DELETE'});
+  assert.equal(signal.aborted,false,'foreground stream must retain metadata subscription');
+  release();const response=await stream;assert.equal(response.status,200);assert.equal((await response.arrayBuffer()).byteLength,16);
+});
 function get(root,headers={}){
   return new Promise((resolve,reject)=>{
     let settled=false,bytes=0,status,type;

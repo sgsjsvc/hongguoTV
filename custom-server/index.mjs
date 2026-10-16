@@ -1,4 +1,6 @@
 import http from "node:http";
+import { traceRequest } from "./request-timing.mjs";
+import { createPrefetchMetrics } from "./prefetch-metrics.mjs";
 import fs from "node:fs";
 import vm from "node:vm";
 import crypto from "node:crypto";
@@ -8,7 +10,8 @@ import axios from "axios";
 import { listenWithFallback, serviceListenOptions } from "../shared/listen-port.mjs";
 import { HistoryStore } from "./history-store.mjs";
 import { createHistoryHandler } from "./history-routes.mjs";
-import { provider as coreProvider } from "../server/provider.mjs";
+import { provider as coreProvider, createPrefetchQueue, sharedResource, upstreamRequestSignal } from "../server/provider.mjs";
+import { readJson } from "../shared/http-json.mjs";
 import { LibraryStore } from "../shared/library-store.mjs";
 import { LibrarySync } from "./library-sync.mjs";
 import { createLibraryHandler } from "./library-routes.mjs";
@@ -99,10 +102,15 @@ try {
       Buffer,
       URL,
       URLSearchParams,
-      axios: axios.create({
-        maxContentLength: 16 * 1024 * 1024,
-        maxBodyLength: 1024 * 1024,
-      }),
+      axios: (() => {
+        const client = axios.create({ maxContentLength: 16 * 1024 * 1024, maxBodyLength: 1024 * 1024 });
+        client.interceptors.request.use(config => {
+          const signal = upstreamRequestSignal();
+          if (signal) config.signal = signal;
+          return config;
+        });
+        return client;
+      })(),
     });
     vm.runInContext(
       source + "\nthis.api = {fetchVideoInfo, resolveStream, qualityLabel, qualityNumber, prepareHeader, remoteRange, decryptPartial, rankData, upstreamStats};",
@@ -417,20 +425,108 @@ async function fetchOfficialRankPage(slug = "hot-drama", page = 1) {
   return fallbackResult;
 }
 
-function json(res, data, status = 200) {
+function json(res, data, status = 200, headers = {}, reqStart = null) {
   if (res.headersSent) return;
+  const elapsed = reqStart !== null ? Date.now() - reqStart : null;
   res.writeHead(status, {
     "Content-Type": "application/json; charset=utf-8",
     "Access-Control-Allow-Origin": "*",
     "Access-Control-Allow-Headers": "Content-Type, Authorization, Range",
     "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
+    "Access-Control-Expose-Headers": "X-Cache, X-Response-Time",
+    ...(elapsed !== null ? { "X-Response-Time": `${elapsed}ms` } : {}),
+    ...headers,
   });
   res.end(JSON.stringify(data));
 }
 
+// B6: 内存层 50MB 本地 LRU Cache，热点接口 TTL 300s
+class LocalLRUCache {
+  constructor(maxBytes = 50 * 1024 * 1024, defaultTtlMs = 300000) {
+    this.maxBytes = maxBytes;
+    this.defaultTtlMs = defaultTtlMs;
+    this.currentBytes = 0;
+    this.cache = new Map();
+  }
+
+  estimateSize(val) {
+    if (typeof val === "string") return val.length * 2;
+    try {
+      return Buffer.byteLength(JSON.stringify(val), "utf8");
+    } catch {
+      return 1024;
+    }
+  }
+
+  get(key) {
+    const entry = this.cache.get(key);
+    if (!entry) return null;
+    if (Date.now() > entry.expiresAt) {
+      this.delete(key);
+      return null;
+    }
+    this.cache.delete(key);
+    this.cache.set(key, entry);
+    return entry.value;
+  }
+
+  set(key, value, ttlMs = this.defaultTtlMs) {
+    this.delete(key);
+    const size = this.estimateSize(value) + (key.length * 2);
+    while (this.currentBytes + size > this.maxBytes && this.cache.size > 0) {
+      const oldestKey = this.cache.keys().next().value;
+      this.delete(oldestKey);
+    }
+    this.cache.set(key, {
+      value,
+      expiresAt: Date.now() + ttlMs,
+      size,
+    });
+    this.currentBytes += size;
+  }
+
+  delete(key) {
+    const entry = this.cache.get(key);
+    if (entry) {
+      this.currentBytes -= entry.size;
+      this.cache.delete(key);
+    }
+  }
+
+  clear() {
+    this.cache.clear();
+    this.currentBytes = 0;
+  }
+}
+
+const hotLruCache = new LocalLRUCache(50 * 1024 * 1024, 300000);
+
+const prefetchMetrics = createPrefetchMetrics();
+const prefetchQueue = createPrefetchQueue(async (target, signal) => prefetchMetrics.run(async () => {
+  if (target.kind === 'detail') {
+    const detail = await coreProvider.detail(target.id, { signal });
+    // A detail target also warms its first episode's existing video-info cache.
+    const episode = detail.episodes[0];
+    if (episode && hgEngine) {
+      await sharedResource(`qualities:${episode.id}`, () => hgEngine.fetchVideoInfo(episode.id), { signal });
+    }
+  } else {
+    if (!hgEngine) throw new Error('播放引擎不可用');
+    await sharedResource(`qualities:${target.id}`, () => hgEngine.fetchVideoInfo(target.id), { signal });
+  }
+}), { enabled: process.env.HG_PREFETCH_ENABLED !== '0', concurrency: 2 });
+
 const server = http.createServer(async (req, res) => {
+  const reqStart = Date.now();
+  // Keep B6's reqStart/X-Response-Time chain; monotonic tracing is opt-in.
+  if (process.env.HG_TIMING === '1') traceRequest(req, res);
   const u = new URL(req.url, `http://${req.headers.host || "localhost"}`);
   const pathname = u.pathname;
+  res.on("finish", () => {
+    if (typeof console?.log === "function") {
+      console.log(`[timing] ${pathname} cost=${Date.now() - reqStart}ms`);
+    }
+  });
 
   if (req.method === "OPTIONS") {
     res.writeHead(204, {
@@ -476,24 +572,51 @@ const server = http.createServer(async (req, res) => {
   }
 
   try {
+    if (pathname === '/api/prefetch' && req.method === 'POST') {
+      const input = await readJson(req);
+      const result = prefetchQueue.submit(input.targets);
+      return json(res, result, result.enabled ? 202 : 200, { 'Cache-Control': 'no-store' });
+    }
+    const prefetchMatch = /^\/api\/prefetch\/([a-f0-9-]{36})$/.exec(pathname);
+    if (prefetchMatch && ['GET', 'DELETE'].includes(req.method)) {
+      const result = req.method === 'DELETE' ? prefetchQueue.cancel(prefetchMatch[1]) : prefetchQueue.status(prefetchMatch[1]);
+      return json(res, result || { error: '预取任务不存在或已过期' }, result ? 200 : 404, { 'Cache-Control': 'no-store' });
+    }
     if (await handleLibrary(req, res, u)) return;
   if (await handleHistory(req, res, u)) return;
     // 2. 官方大轮播 Banner API
     if (pathname === "/api/banners") {
+      const cached = hotLruCache.get("hot:banners");
+      if (cached) return json(res, cached, 200, { "X-Cache": "HIT" }, reqStart);
       const data = await fetchOfficialHome();
-      return json(res, { banners: data.banners });
+      const payload = { banners: data.banners };
+      hotLruCache.set("hot:banners", payload);
+      return json(res, payload, 200, { "X-Cache": "MISS" }, reqStart);
     }
 
     // 2.1 官方首页专区列表 (GET /api/sections)
     if (pathname === "/api/sections") {
+      const cached = hotLruCache.get("hot:sections");
+      if (cached) return json(res, cached, 200, { "X-Cache": "HIT" }, reqStart);
       const data = await fetchOfficialHome();
-      return json(res, { sections: data.sections });
+      const payload = { sections: data.sections };
+      hotLruCache.set("hot:sections", payload);
+      return json(res, payload, 200, { "X-Cache": "MISS" }, reqStart);
     }
 
     // 3. 官方分类标签池 (GET /api/category/tags)
     if (pathname === "/api/category/tags") {
-      try{return json(res,await coreProvider.categoryMetadata(u.searchParams.get("type")||"real-drama"));}
-      catch(error){return json(res,{error:error.message},error.status||502);}
+      const type = u.searchParams.get("type") || "real-drama";
+      const cacheKey = `hot:cat:tags:${type}`;
+      const cached = hotLruCache.get(cacheKey);
+      if (cached) return json(res, cached, 200, { "X-Cache": "HIT" }, reqStart);
+      try {
+        const payload = await coreProvider.categoryMetadata(type);
+        hotLruCache.set(cacheKey, payload);
+        return json(res, payload, 200, { "X-Cache": "MISS" }, reqStart);
+      } catch(error) {
+        return json(res, { error: error.message }, error.status || 502, {}, reqStart);
+      }
     }
 
     // 4. 官方分类短剧列表 (GET /api/category/list?type=real-drama&tag=romance&page=1)
@@ -501,63 +624,107 @@ const server = http.createServer(async (req, res) => {
       const type = u.searchParams.get("type") || "real-drama";
       const tag = u.searchParams.get("tag") || "";
       const page = Number(u.searchParams.get("page") || "1");
-      try{return json(res,await coreProvider.categoryList(type,tag,page));}
-      catch(error){return json(res,{error:error.message},error.status||502);}
+      const cacheKey = `hot:cat:list:${type}:${tag}:${page}`;
+      const cached = hotLruCache.get(cacheKey);
+      if (cached) return json(res, cached, 200, { "X-Cache": "HIT" }, reqStart);
+      try {
+        const payload = await coreProvider.categoryList(type, tag, page);
+        hotLruCache.set(cacheKey, payload);
+        return json(res, payload, 200, { "X-Cache": "MISS" }, reqStart);
+      } catch(error) {
+        return json(res, { error: error.message }, error.status || 502, {}, reqStart);
+      }
     }
 
     // 5. 官方排行榜类别 (GET /api/rank/types)
     if (pathname === "/api/rank/types") {
-      return json(res, { types: OFFICIAL_RANK_TYPES });
+      return json(res, { types: OFFICIAL_RANK_TYPES }, 200, {}, reqStart);
     }
 
     // 5.1 官方四大排行榜分页列表 (GET /api/rank/list?type=hot-drama&page=1)
     if (pathname === "/api/rank/list" || pathname === "/api/rank/page") {
       const slug = u.searchParams.get("type") || u.searchParams.get("slug") || "hot-drama";
       const page = parseInt(u.searchParams.get("page") || "1", 10);
+      const cacheKey = `hot:rank:${slug}:${page}`;
+      const cached = hotLruCache.get(cacheKey);
+      if (cached) return json(res, cached, 200, { "X-Cache": "HIT" }, reqStart);
       const data = await fetchOfficialRankPage(slug, page);
-      return json(res, data);
+      hotLruCache.set(cacheKey, data);
+      return json(res, data, 200, { "X-Cache": "MISS" }, reqStart);
     }
 
     // 5.2 兼容旧版全量四大排行榜 (GET /api/ranks)
     if (pathname === "/api/ranks") {
+      const cached = hotLruCache.get("hot:ranks:all");
+      if (cached) return json(res, cached, 200, { "X-Cache": "HIT" }, reqStart);
       const home = await fetchOfficialHome();
       const ranks = home.sections.map((sec) => ({
         key: sec.type,
         title: sec.name.includes("榜") ? sec.name : `${sec.name}榜`,
         items: sec.items,
       }));
-      return json(res, { ranks });
+      const payload = { ranks };
+      hotLruCache.set("hot:ranks:all", payload);
+      return json(res, payload, 200, { "X-Cache": "MISS" }, reqStart);
     }
 
     // 6. 全库短剧综合推荐接口 (GET /api/recommend 或 GET /api/home)
     if (pathname === "/api/recommend") {
       try {
-        const page=Number(u.searchParams.get("page")||1);
-        const session=u.searchParams.get("session")||crypto.randomUUID();
-        return json(res,await recommendations.page(session,page));
+        const page = Number(u.searchParams.get("page") || 1);
+        const session = u.searchParams.get("session") || "default";
+        const cacheKey = `hot:recommend:${session}:${page}`;
+        const cached = hotLruCache.get(cacheKey);
+        if (cached) return json(res, cached, 200, { "X-Cache": "HIT" }, reqStart);
+        const data = await recommendations.page(session, page);
+        hotLruCache.set(cacheKey, data, 60000);
+        // B6: 预取推荐前置短剧详情与首集清晰度，利用空闲连接加速切剧
+        if (data && Array.isArray(data.items) && data.items.length > 0) {
+          const targets = data.items.slice(0, 2)
+            .filter((it) => it && it.id && /^\d+$/.test(String(it.id)))
+            .map((it) => ({ kind: "detail", id: String(it.id) }));
+          if (targets.length) {
+            try { prefetchQueue.submit(targets); } catch (_) {}
+          }
+        }
+        return json(res, data, 200, { "X-Cache": "MISS" }, reqStart);
       } catch(error) {
-        return json(res,{error:error.message||'推荐读取失败'},error instanceof RecommendationError?error.status:502);
+        return json(res, { error: error.message || '推荐读取失败' }, error instanceof RecommendationError ? error.status : 502, {}, reqStart);
       }
     }
     if (pathname === "/api/home") {
       const page = parseInt(u.searchParams.get("page") || "1", 10);
+      const cacheKey = `hot:home:${page}`;
+      const cached = hotLruCache.get(cacheKey);
+      if (cached) return json(res, cached, 200, { "X-Cache": "HIT" }, reqStart);
       try {
-        const upstreamRes = {data: await coreProvider.home(page)};
+        const upstreamRes = { data: await coreProvider.home(page) };
         if (upstreamRes.data && Array.isArray(upstreamRes.data.items) && upstreamRes.data.items.length > 0) {
-          return json(res, upstreamRes.data);
+          hotLruCache.set(cacheKey, upstreamRes.data);
+          return json(res, upstreamRes.data, 200, { "X-Cache": "MISS" }, reqStart);
         }
       } catch (err) {
         // 上游不可用时自动降级到官方 Web 分类推荐池
       }
       const cat = await fetchOfficialCategory("real-drama", "", page);
-      return json(res, { items: cat.items, page });
+      const payload = { items: cat.items, page };
+      hotLruCache.set(cacheKey, payload);
+      return json(res, payload, 200, { "X-Cache": "MISS" }, reqStart);
     }
 
 
     // 7. 搜索接口 (GET /api/search?q=...)
     if (pathname === "/api/search") {
-      const upstreamRes = {data: await coreProvider.search(u.searchParams.get("q") || "", Number(u.searchParams.get("page") || 1))};
-      return json(res, upstreamRes.data);
+      const q = u.searchParams.get("q") || "";
+      const page = Number(u.searchParams.get("page") || 1);
+      const cacheKey = `hot:search:${q}:${page}`;
+      const cached = hotLruCache.get(cacheKey);
+      if (cached) return json(res, cached, 200, { "X-Cache": "HIT" }, reqStart);
+      const upstreamRes = { data: await coreProvider.search(q, page) };
+      if (upstreamRes.data && Array.isArray(upstreamRes.data.items) && upstreamRes.data.items.length > 0) {
+        hotLruCache.set(cacheKey, upstreamRes.data, 180000);
+      }
+      return json(res, upstreamRes.data, 200, { "X-Cache": "MISS" }, reqStart);
     }
 
     // 8. 单剧相关推荐 / 猜你喜欢 (GET /api/series/:id/related 或 GET /api/series/:id/recommend)
@@ -637,14 +804,17 @@ const server = http.createServer(async (req, res) => {
 
     // 8.1 剧集详情 (GET /api/series/:id)
     if (pathname.startsWith("/api/series/")) {
-      const upstreamRes = {data: await coreProvider.detail(decodeURIComponent(pathname.slice("/api/series/".length)))};
+      const id = decodeURIComponent(pathname.slice("/api/series/".length));
+      const fresh = u.searchParams.get('fresh') === '1' || u.searchParams.get('fresh') === 'true';
+      const cacheStatus = fresh ? 'BYPASS' : coreProvider.detailCacheStatus(id);
+      const upstreamRes = {data: await prefetchQueue.foreground(() => coreProvider.detail(id, { fresh }))};
       const seriesData = upstreamRes.data;
       if (seriesData && Array.isArray(seriesData.episodes)) {
         for (const ep of seriesData.episodes) {
           vidToSeriesMap.set(String(ep.id), String(seriesData.id));
         }
       }
-      return json(res, seriesData);
+      return json(res, seriesData, 200, { 'X-Cache': cacheStatus, 'Cache-Control': 'no-store' });
     }
 
 
@@ -669,7 +839,7 @@ const server = http.createServer(async (req, res) => {
 
       if (hgEngine) {
         try {
-          const info = await hgEngine.fetchVideoInfo(episodeId);
+          const info = await prefetchQueue.foreground(() => sharedResource(`qualities:${episodeId}`, () => hgEngine.fetchVideoInfo(episodeId)));
           if (info.rows && Array.isArray(info.rows)) {
             for (const row of info.rows) {
               const qNum = hgEngine.qualityNumber(row.quality || row.item?.vheight || row.key);
@@ -744,6 +914,11 @@ const server = http.createServer(async (req, res) => {
         const cancel = () => controller.abort();
         res.once("close", cancel);
         try {
+          // resolveStream shares videoInfoPending with qualities prefetch. Subscribe
+          // before parsing so cancelling the background batch cannot abort playback.
+          if (typeof hgEngine.fetchVideoInfo === 'function') {
+            await prefetchQueue.foreground(() => sharedResource(`qualities:${episodeId}`, () => hgEngine.fetchVideoInfo(episodeId), { signal: controller.signal }));
+          }
           const stream = await hgEngine.resolveStream(episodeId, quality);
           const prepared = await hgEngine.prepareHeader(stream);
           if (res.destroyed || controller.signal.aborted) return;
@@ -818,7 +993,7 @@ const server = http.createServer(async (req, res) => {
     return json(res, { error: "404 Not Found" }, 404);
   } catch (err) {
     console.error("[API Gateway Error]:", err.message);
-    return json(res, { error: err.message }, 500);
+    return json(res, { error: err.message }, err.status || 500);
   }
 });
 
@@ -831,11 +1006,14 @@ listenWithFallback(server, PORT, process.env.HG_HOST || "0.0.0.0", listenOptions
   console.log(`📡 监听地址: http://localhost:${actualPort}`);
   console.log(`🎬 包含板块: 官方首页Banner、24题材分类、官方四大热播榜(Top 100 分页)、MP4解密流代理`);
   console.log(`===============================================`);
+  if (process.env.NODE_ENV !== "test") {
+    fetchOfficialHome().catch(() => {});
+  }
 }).catch(error => { console.error(error.message); librarySync.stop(); libraryStore.close(); historyStore.close(); process.exitCode=1; if(process.connected)process.disconnect(); });
 
 let shuttingDown = false;
 function shutdown() {
-  if (shuttingDown) return; shuttingDown = true; librarySync.stop();
+  if (shuttingDown) return; shuttingDown = true; librarySync.stop(); prefetchQueue.close();
   const addressFile=path.join(DATA_DIR,"service-address.json");
   try { if(JSON.parse(fs.readFileSync(addressFile,"utf8")).pid===process.pid)fs.unlinkSync(addressFile); } catch {}
   server.close(() => { libraryStore.close(); historyStore.close(); process.exit(0); });

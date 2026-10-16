@@ -11,6 +11,7 @@ import {
   getSyncStatus, 
   refreshLibrary
 } from "./api";
+import { isVideoPlaying } from "./video-state";
 import { 
   Detail, 
   Episode, 
@@ -19,13 +20,22 @@ import {
 
 import { Header, NavTab } from "./components/Header";
 import { HomePanel } from "./components/HomePanel";
-import { RecommendStream } from "./components/RecommendStream";
-import { CategoryPanel } from "./components/CategoryPanel";
-import { RankPanel } from "./components/RankPanel";
-import { SearchPanel } from "./components/SearchPanel";
-import { LibraryPanel } from "./components/LibraryPanel";
-import { SettingsPanel } from "./components/SettingsPanel";
-import { PlayerModal } from "./components/PlayerModal";
+
+// B8：非首屏组件按需加载（code-splitting），缩小首屏 JS。
+// 首屏必需的 Header / HomePanel 保持同步加载；其余 Tab 与播放器仅在进入时拉取。
+const RecommendStream = React.lazy(() => import("./components/RecommendStream").then((m) => ({ default: m.RecommendStream })));
+const CategoryPanel = React.lazy(() => import("./components/CategoryPanel").then((m) => ({ default: m.CategoryPanel })));
+const RankPanel = React.lazy(() => import("./components/RankPanel").then((m) => ({ default: m.RankPanel })));
+const SearchPanel = React.lazy(() => import("./components/SearchPanel").then((m) => ({ default: m.SearchPanel })));
+const LibraryPanel = React.lazy(() => import("./components/LibraryPanel").then((m) => ({ default: m.LibraryPanel })));
+const SettingsPanel = React.lazy(() => import("./components/SettingsPanel").then((m) => ({ default: m.SettingsPanel })));
+const PlayerModal = React.lazy(() => import("./components/PlayerModal").then((m) => ({ default: m.PlayerModal })));
+
+const PanelFallback: React.FC = () => (
+  <div role="status" aria-live="polite" className="flex items-center justify-center py-24 text-slate-500 text-sm">
+    加载中…
+  </div>
+);
 
 import { useCatalog } from "./hooks/useCatalog";
 import { useLibrary } from "./hooks/useLibrary";
@@ -162,7 +172,11 @@ export default function App() {
   useEffect(() => {
     if (tab !== "favorites" || activeSeries) return;
     void library.refreshHistory();
-    const timer = setInterval(() => void library.refreshHistory(), 1000);
+    const timer = setInterval(() => {
+      if (document.hidden) return;
+      if (isVideoPlaying()) return;
+      void library.refreshHistory();
+    }, 10000);
     return () => { clearInterval(timer); };
   }, [tab, activeSeries]);
 
@@ -519,6 +533,7 @@ export default function App() {
 
       {/* 主界面区域 */}
       <main className={`flex-1 ${!activeSeries && tab === "recommend" ? "overflow-hidden p-0" : "overflow-y-auto px-4 md:px-8 py-6"}`}>
+        <React.Suspense fallback={<PanelFallback />}>
         {/* 1. 播放与选集详情界面 */}
         {activeSeries ? (
           <PlayerModal
@@ -761,6 +776,7 @@ export default function App() {
             getSyncStatus={sync.getSyncStatus}
           />
         )}
+        </React.Suspense>
       </main>
     </div>
   );

@@ -53,7 +53,10 @@
         if(this.emitted.has(row.id)||this.completed.has(row.id)||this.mode!=='mixed'&&row.contentType!==this.mode)continue;
         if(!unique.has(row.id))unique.set(row.id,row);
       }
-      const pool=[...unique.values()].sort((a,b)=>this.score(b)-this.score(a)||a.id.localeCompare(b.id));
+      // Scores are constant within one append. Computing them in the comparator
+      // repeats tag parsing and seeded hashing O(n log n) times.
+      const ranked=[...unique.values()].map(row=>({row,score:this.score(row)}));
+      ranked.sort((a,b)=>b.score-a.score||a.row.id.localeCompare(b.row.id));
       const result=[];const selected=new Set();const counts=Object.fromEntries(TYPES.map(t=>[t,0]));
       const desired=Object.fromEntries(TYPES.map(t=>[t,this.mode==='mixed'?limit*this.weights[t]:t===this.mode?limit:0]));
       const add=row=>{result.push(row);selected.add(row.id);counts[row.contentType]++;};
@@ -62,21 +65,42 @@
         if(last!==undefined && this.now-last<7*DAY)return false;
         return row.source==='latest'||row.source==='discovery'||tagsOf(row.tags).every(tag=>(this.interests.get(tag)||0)<=0);
       };
+      // Build sorted queues once; cursors skip selected rows without filtering
+      // the whole pool again for every output slot. No caller dedup flag is trusted.
+      const queues=Object.fromEntries(TYPES.map(t=>[t,{all:[],explore:[],marked:[],allIndex:0,exploreIndex:0,markedIndex:0}]));
+      for(const {row} of ranked){
+        const queue=queues[row.contentType];queue.all.push(row);
+        if(exploration(row)){
+          queue.explore.push(row);
+          if(row.source==='latest'||row.source==='discovery')queue.marked.push(row);
+        }
+      }
+      const peek=(queue,key)=>{
+        const index=key+'Index';
+        while(queue[index]<queue[key].length&&selected.has(queue[key][queue[index]].id))queue[index]++;
+        return queue[key][queue[index]];
+      };
+      const nextType=key=>{
+        let type,deficit=-Infinity;
+        for(const t of TYPES)if(peek(queues[t],key)&&(!type||desired[t]-counts[t]>deficit)){
+          type=t;deficit=desired[t]-counts[t];
+        }
+        return type;
+      };
       // Reserve 20% for unseen or unfamiliar candidates while respecting the same type quotas.
       for(let slot=0;slot<Math.ceil(limit*.2);slot++) {
-        const available=pool.filter(row=>!selected.has(row.id)&&exploration(row));
-        if(!available.length)break;
-        const type=TYPES.filter(t=>available.some(r=>r.contentType===t)).sort((a,b)=>(desired[b]-counts[b])-(desired[a]-counts[a]))[0];
-        const marked=available.filter(r=>r.contentType===type&&['latest','discovery'].includes(r.source));
-        add((marked.length?marked:available.filter(r=>r.contentType===type))[0]);
+        const type=nextType('explore');if(!type)break;
+        add(peek(queues[type],'marked')||peek(queues[type],'explore'));
       }
       while(result.length<limit) {
-        const available=pool.filter(row=>!selected.has(row.id));if(!available.length)break;
-        const type=TYPES.filter(t=>available.some(r=>r.contentType===t)).sort((a,b)=>(desired[b]-counts[b])-(desired[a]-counts[a]))[0];
-        add(available.find(row=>row.contentType===type));
+        const type=nextType('all');if(!type)break;
+        add(peek(queues[type],'all'));
       }
       // Spread types through the feed instead of grouping all exploration at the start.
-      result.sort((a,b)=>hash(`${this.seed}|${this.size}|order|${a.id}`)-hash(`${this.seed}|${this.size}|order|${b.id}`));
+      const orderPrefix=`${this.seed}|${this.size}|order|`;
+      const ordered=result.map(row=>({row,rank:hash(orderPrefix+row.id)}));
+      ordered.sort((a,b)=>a.rank-b.rank);
+      result.splice(0,result.length,...ordered.map(entry=>entry.row));
       result.forEach(row=>this.emitted.add(row.id));return result;
     }
   }

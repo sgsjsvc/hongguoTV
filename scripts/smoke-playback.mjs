@@ -15,6 +15,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
+import { randomUUID } from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
@@ -80,7 +81,10 @@ async function main() {
   // 2. 取若干真实剧集，逐个验证 qualities 与 stream
   let items = [];
   try {
-    const rec = await (await fetch(base + "/api/recommend?page=1", { signal: AbortSignal.timeout(60000) })).json();
+    // 推荐接口要求每个客户端携带私有 session（^[-_A-Za-z0-9]{16,128}$）。
+    // 冒烟测试是合成客户端，必须自造合法 session，否则服务端按无效会话返回 400。
+    const session = randomUUID().replace(/-/g, "");
+    const rec = await (await fetch(base + "/api/recommend?page=1&session=" + session, { signal: AbortSignal.timeout(60000) })).json();
     items = (rec.items || []).slice(0, samples);
     record("推荐接口", items.length > 0, `${items.length} 条`);
   } catch (e) {
