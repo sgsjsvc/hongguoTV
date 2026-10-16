@@ -1,7 +1,7 @@
 {
   "id": "t-v102-rebuild",
   "createdAt": "2026-10-16T15:53:10.772Z",
-  "updatedAt": "2026-10-16T15:53:10.772Z",
+  "updatedAt": "2026-10-16T16:13:27.376Z",
   "assignee": "opencode",
   "title": "T3 v1.0.2 全终端产物重建+校验+桌面运行时验证",
   "brief": ".agents/inbox/t-v102-rebuild.brief.md",
@@ -27,15 +27,21 @@
     "t-v102-version-tv"
   ],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
+  "status": "claimed",
+  "claimedBy": "opencode",
+  "claimedAt": "2026-10-16T16:13:27.376Z",
   "result": null,
   "history": [
     {
       "at": "2026-10-16T15:53:10.772Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T16:13:27.376Z",
+      "status": "claimed",
+      "by": "opencode",
+      "note": "claimed"
     }
   ]
 }

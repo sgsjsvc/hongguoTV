@@ -1,0 +1,10 @@
+{
+  "id": "t-v102-version-tv",
+  "agent": "qoder",
+  "status": "done",
+  "finishedAt": "2026-10-16T16:10:38.757Z",
+  "title": "T2 v1.0.2 版本号统一（Android TV）",
+  "result": {
+    "summary": "T2 完成：apps/tv-android/app/build.gradle.kts 仅改两行 -> versionCode 3 / versionName 1.0.2（历史最大已发布 versionCode=1，取证 t-b3-badging.txt）；minSdk22/targetSdk35/compileSdk35/四ABI/签名配置未变，git diff --numstat=2/2 单文件。本轮未运行 Gradle、未占设备、未提交未推送（构建互斥，badging 交 T3）。报告 .agents/shared/t-v102-version-tv-qoder.md"
+  }
+}

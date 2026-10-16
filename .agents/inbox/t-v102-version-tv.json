@@ -1,7 +1,7 @@
 {
   "id": "t-v102-version-tv",
   "createdAt": "2026-10-16T15:53:10.770Z",
-  "updatedAt": "2026-10-16T15:53:10.770Z",
+  "updatedAt": "2026-10-16T16:10:38.748Z",
   "assignee": "qoder",
   "title": "T2 v1.0.2 版本号统一（Android TV）",
   "brief": ".agents/inbox/t-v102-version-tv.brief.md",
@@ -20,15 +20,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "qoder",
+  "claimedAt": "2026-10-16T16:09:06.381Z",
+  "result": {
+    "summary": "T2 完成：apps/tv-android/app/build.gradle.kts 仅改两行 -> versionCode 3 / versionName 1.0.2（历史最大已发布 versionCode=1，取证 t-b3-badging.txt）；minSdk22/targetSdk35/compileSdk35/四ABI/签名配置未变，git diff --numstat=2/2 单文件。本轮未运行 Gradle、未占设备、未提交未推送（构建互斥，badging 交 T3）。报告 .agents/shared/t-v102-version-tv-qoder.md"
+  },
   "history": [
     {
       "at": "2026-10-16T15:53:10.770Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T16:09:06.381Z",
+      "status": "claimed",
+      "by": "qoder",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T16:10:38.749Z",
+      "status": "done",
+      "by": "qoder",
+      "note": ""
     }
   ]
 }

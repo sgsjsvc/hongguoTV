@@ -1,7 +1,7 @@
 {
   "id": "t-v102-mobile-port",
   "createdAt": "2026-10-16T15:53:10.774Z",
-  "updatedAt": "2026-10-16T16:02:26.987Z",
+  "updatedAt": "2026-10-16T16:09:10.778Z",
   "assignee": "workbuddy",
   "title": "T4 手机端（仅 Android）基于 Web 代码移植可行性验证",
   "brief": ".agents/inbox/t-v102-mobile-port.brief.md",
@@ -21,9 +21,9 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
+  "status": "claimed",
+  "claimedBy": "workbuddy",
+  "claimedAt": "2026-10-16T16:09:10.777Z",
   "result": null,
   "history": [
     {
@@ -42,6 +42,12 @@
       "status": "pending",
       "by": "dsh",
       "note": "交回待领取：派发=建单(pending)，认领由执行方自行完成"
+    },
+    {
+      "at": "2026-10-16T16:09:10.778Z",
+      "status": "claimed",
+      "by": "workbuddy",
+      "note": "claimed"
     }
   ]
 }
