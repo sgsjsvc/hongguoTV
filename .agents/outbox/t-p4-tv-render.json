@@ -1,0 +1,10 @@
+{
+  "id": "t-p4-tv-render",
+  "agent": "codex",
+  "status": "done",
+  "finishedAt": "2026-10-16T05:29:37.714Z",
+  "title": "P4 TV 端列表渲染与滚动流畅度",
+  "result": {
+    "summary": "图片缓存命中不清空、回收取消/清tag、ABA旧响应隔离、真实HTTP并发4、Holder徽标复用完成；32单元/lint/APK通过，root在D2独立复跑10项通过。三页前后gfx/mem已记录，帧率提升不显著，API22真机长期验证待验收。报告 .agents/shared/t-p4-tv-render-codex.md"
+  }
+}

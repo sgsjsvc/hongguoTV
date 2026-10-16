@@ -1,0 +1,10 @@
+{
+  "id": "t-p5-polling",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-16T05:32:49.708Z",
+  "title": "P5 Web 端轮询优化（消除每天 1.2 GB 流量）",
+  "result": {
+    "summary": "已优化轮询间隔至10s，并在不可见及播放视频时暂停，前台即时拉取，每天节省逾1GB流量，报告位于 .agents/shared/t-p5-polling-antigravity.md"
+  }
+}

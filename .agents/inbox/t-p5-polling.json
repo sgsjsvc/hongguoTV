@@ -1,7 +1,7 @@
 {
   "id": "t-p5-polling",
   "createdAt": "2026-10-16T04:54:17.466Z",
-  "updatedAt": "2026-10-16T05:12:22.323Z",
+  "updatedAt": "2026-10-16T05:32:49.702Z",
   "assignee": "antigravity",
   "title": "P5 Web 端轮询优化（消除每天 1.2 GB 流量）",
   "brief": "详见 .agents/inbox/t-p5-polling.brief.md",
@@ -44,10 +44,12 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "claimed",
+  "status": "done",
   "claimedBy": "antigravity",
   "claimedAt": "2026-10-16T05:12:22.323Z",
-  "result": null,
+  "result": {
+    "summary": "已优化轮询间隔至10s，并在不可见及播放视频时暂停，前台即时拉取，每天节省逾1GB流量，报告位于 .agents/shared/t-p5-polling-antigravity.md"
+  },
   "history": [
     {
       "at": "2026-10-16T04:54:17.467Z",
@@ -59,6 +61,12 @@
       "status": "claimed",
       "by": "antigravity",
       "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T05:32:49.703Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

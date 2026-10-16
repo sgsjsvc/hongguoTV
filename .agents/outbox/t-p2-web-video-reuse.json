@@ -1,0 +1,10 @@
+{
+  "id": "t-p2-web-video-reuse",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-16T05:32:27.552Z",
+  "title": "P2 Web 端切集不重建 video 元素",
+  "result": {
+    "summary": "已移除 key 并在切集/切剧时完全复用 video 元素，消除了黑屏重建，实测 isSameElement 为 true，报告位于 .agents/shared/t-p2-web-video-reuse-antigravity.md"
+  }
+}

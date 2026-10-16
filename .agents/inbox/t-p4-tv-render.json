@@ -1,7 +1,7 @@
 {
   "id": "t-p4-tv-render",
   "createdAt": "2026-10-16T04:35:03.349Z",
-  "updatedAt": "2026-10-16T05:11:08.990Z",
+  "updatedAt": "2026-10-16T05:29:37.705Z",
   "assignee": "codex",
   "title": "P4 TV 端列表渲染与滚动流畅度",
   "brief": "详见 .agents/inbox/t-p4-tv-render.brief.md",
@@ -36,10 +36,12 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "claimed",
+  "status": "done",
   "claimedBy": "codex",
   "claimedAt": "2026-10-16T05:11:08.989Z",
-  "result": null,
+  "result": {
+    "summary": "图片缓存命中不清空、回收取消/清tag、ABA旧响应隔离、真实HTTP并发4、Holder徽标复用完成；32单元/lint/APK通过，root在D2独立复跑10项通过。三页前后gfx/mem已记录，帧率提升不显著，API22真机长期验证待验收。报告 .agents/shared/t-p4-tv-render-codex.md"
+  },
   "history": [
     {
       "at": "2026-10-16T04:35:03.350Z",
@@ -51,6 +53,12 @@
       "status": "claimed",
       "by": "codex",
       "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T05:29:37.707Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

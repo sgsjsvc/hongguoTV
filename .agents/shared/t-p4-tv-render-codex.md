@@ -81,3 +81,9 @@ adb -P 15037 -s 127.0.0.1:16416 shell am instrument -w -r -e class com.hongguotv
 最终 `apps/tv-android/app/build/outputs/apk/debug/app-debug.apk` SHA256：`F037F14DE0F43AC33B525640A6D2E0192D1F14A6425B1E1D0550BFEA0DE370C0`。D2 已安装最终新包，无 release 发布或用户实体电视安装。API 22 实体电视、真实内容源、长期滚动与严谨泄漏分析未验证，交给 DSH 后续验收。
 
 Android 构建窗口已结束，root 可以独立审查。本子执行不调用 claim/done，不提交 Git。
+
+## Root 独立验收
+
+root/codex 已读取业务 diff、最终构建日志、32 份单元测试统计（32 tests / 0 failures）、APK SHA256 和修正后的 gfx/mem 对照，并实际查看最终榜单截图。另由只读审查者复核 enqueue 限并发、取消、ABA 隔离、缓存命中、回收和 API 22 兼容，未发现阻断问题。
+
+root 在 D2 独立重跑 ArtworkRenderingTest 与 CatalogRenderingTest：**OK (10 tests)**，日志 `outputs/p4-root-verify.log`，耗时 11.36 秒，使用 p4Label=codex-root-verify。文件 SHA256 与子执行报告一致。认可行为修复完成，保留低端真机长期滚动、严谨泄漏分析及帧率收益未证实的限制。

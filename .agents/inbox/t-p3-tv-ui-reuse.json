@@ -1,7 +1,7 @@
 {
   "id": "t-p3-tv-ui-reuse",
   "createdAt": "2026-10-16T04:27:40.693Z",
-  "updatedAt": "2026-10-16T04:27:40.694Z",
+  "updatedAt": "2026-10-16T05:34:35.634Z",
   "assignee": "workbuddy",
   "title": "P3 TV 端切集不重建 UI 树",
   "brief": "详见 .agents/inbox/t-p3-tv-ui-reuse.brief.md",
@@ -36,15 +36,21 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
+  "status": "claimed",
+  "claimedBy": "workbuddy",
+  "claimedAt": "2026-10-16T05:34:35.633Z",
   "result": null,
   "history": [
     {
       "at": "2026-10-16T04:27:40.693Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T05:34:35.634Z",
+      "status": "claimed",
+      "by": "workbuddy",
+      "note": "claimed"
     }
   ],
   "dispatch": "file-bus",

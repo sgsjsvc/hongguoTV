@@ -1,7 +1,7 @@
 {
   "id": "t-w6-verify-fullscreen",
   "createdAt": "2026-10-15T10:20:59.563Z",
-  "updatedAt": "2026-10-15T10:20:59.566Z",
+  "updatedAt": "2026-10-16T05:34:35.083Z",
   "assignee": "workbuddy",
   "title": "W6 W4/W5 全屏成果 — 独立复核",
   "brief": "详见 .agents/inbox/t-w6-verify-fullscreen.brief.md",
@@ -40,15 +40,21 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
+  "status": "claimed",
+  "claimedBy": "workbuddy",
+  "claimedAt": "2026-10-16T05:34:35.082Z",
   "result": null,
   "history": [
     {
       "at": "2026-10-15T10:20:59.564Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T05:34:35.083Z",
+      "status": "claimed",
+      "by": "workbuddy",
+      "note": "claimed"
     }
   ],
   "dispatch": "file-bus",

@@ -1,7 +1,7 @@
 {
   "id": "t-p2-web-video-reuse",
   "createdAt": "2026-10-16T04:27:40.690Z",
-  "updatedAt": "2026-10-16T05:11:53.965Z",
+  "updatedAt": "2026-10-16T05:32:27.547Z",
   "assignee": "antigravity",
   "title": "P2 Web 端切集不重建 video 元素",
   "brief": "详见 .agents/inbox/t-p2-web-video-reuse.brief.md",
@@ -36,10 +36,12 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "claimed",
+  "status": "done",
   "claimedBy": "antigravity",
   "claimedAt": "2026-10-16T05:11:53.965Z",
-  "result": null,
+  "result": {
+    "summary": "已移除 key 并在切集/切剧时完全复用 video 元素，消除了黑屏重建，实测 isSameElement 为 true，报告位于 .agents/shared/t-p2-web-video-reuse-antigravity.md"
+  },
   "history": [
     {
       "at": "2026-10-16T04:27:40.690Z",
@@ -51,6 +53,12 @@
       "status": "claimed",
       "by": "antigravity",
       "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T05:32:27.547Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

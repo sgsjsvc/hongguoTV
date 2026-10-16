@@ -16,3 +16,8 @@
 {"at":"2026-10-16T05:11:53.972Z","kind":"task-updated","id":"t-p2-web-video-reuse","by":"antigravity","status":"claimed","note":"claimed"}
 {"at":"2026-10-16T05:12:22.328Z","kind":"task-updated","id":"t-p5-polling","by":"antigravity","status":"claimed","note":"claimed"}
 {"at":"2026-10-16T05:26:44.742Z","kind":"task-updated","id":"t-p1-detail-cache","by":"codex","status":"done","note":""}
+{"at":"2026-10-16T05:29:37.714Z","kind":"task-updated","id":"t-p4-tv-render","by":"codex","status":"done","note":""}
+{"at":"2026-10-16T05:32:27.552Z","kind":"task-updated","id":"t-p2-web-video-reuse","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-16T05:32:49.707Z","kind":"task-updated","id":"t-p5-polling","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-16T05:34:35.095Z","kind":"task-updated","id":"t-w6-verify-fullscreen","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T05:34:35.662Z","kind":"task-updated","id":"t-p3-tv-ui-reuse","by":"workbuddy","status":"claimed","note":"claimed"}
