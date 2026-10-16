@@ -1,0 +1,10 @@
+{
+  "id": "t-p6-prefetch-wire",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-16T06:38:45.166Z",
+  "title": "P6 接入预取触发器（让 P1 的预取真正生效）",
+  "result": {
+    "summary": "P6 预取触发器接入完成，切剧命中热缓存 X-Cache: HIT 耗时 < 50ms，80% 下一集 qualities 预取与切集切剧取消已落地，详见 .agents/shared/t-p6-prefetch-wire-antigravity.md"
+  }
+}

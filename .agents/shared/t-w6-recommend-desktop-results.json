@@ -1,0 +1,209 @@
+{
+  "tag": "t-w6-recommend-desktop",
+  "part": "recommend",
+  "mode": "desktop",
+  "at": "2026-10-16T06:23:39.006Z",
+  "checks": {
+    "W4-1 推荐流存在全屏按钮": {
+      "pass": true,
+      "detail": {
+        "count": 1
+      }
+    },
+    "W4-2 点击后进入全屏": {
+      "pass": true
+    },
+    "W4-3 全屏下控件不丢失": {
+      "pass": true,
+      "detail": {
+        "badge": true,
+        "speed": true,
+        "quality": true,
+        "collection": true,
+        "progress": true,
+        "exitBtn": true,
+        "arrows": true
+      }
+    },
+    "W4-4 竖版视频居中留黑边": {
+      "pass": true,
+      "detail": {
+        "objectFit": "contain",
+        "contentW": 864,
+        "contentH": 1536,
+        "boxW": 2304,
+        "boxH": 1536,
+        "barLeft": 720,
+        "barRight": 720
+      }
+    },
+    "W4-5 Escape 退出全屏且不关闭播放器": {
+      "pass": true,
+      "detail": {
+        "exited": true,
+        "videoCount": 1
+      }
+    },
+    "W4-6 双击切换全屏": {
+      "pass": true,
+      "detail": {
+        "dblIn": true,
+        "dblOut": true
+      }
+    },
+    "W4-7 F 键切换全屏": {
+      "pass": true,
+      "detail": {
+        "fIn": true,
+        "fOut": true
+      }
+    },
+    "W4-8 反复切换 10 次稳定": {
+      "pass": true
+    },
+    "W4-9 全屏下自动下一集": {
+      "pass": true,
+      "detail": {
+        "ended": 1,
+        "src": "http://127.0.0.1:10940/api/episodes/1002/stream?quality=1080P&seriesId=9000000000000000001",
+        "domFullscreen": false,
+        "fsElementClass": null,
+        "rootHasFixed": true,
+        "fs": true
+      }
+    },
+    "W4-10 全屏失败有提示": {
+      "pass": true
+    }
+  },
+  "evidence": {
+    "geometryFullscreen": {
+      "screen": [
+        2304,
+        1536
+      ],
+      "inner": [
+        2304,
+        1536
+      ],
+      "outer": [
+        2304,
+        1536
+      ],
+      "fsElement": null,
+      "isDesktop": true,
+      "hasFocus": true,
+      "videoCount": 1,
+      "player": {
+        "x": 0,
+        "y": 0,
+        "w": 2304,
+        "h": 1536,
+        "position": "absolute"
+      },
+      "videoNatural": [
+        360,
+        640
+      ],
+      "videoRect": {
+        "x": 0,
+        "y": 0,
+        "w": 2304,
+        "h": 1536
+      }
+    },
+    "controls": {
+      "badge": true,
+      "speed": true,
+      "quality": true,
+      "collection": true,
+      "progress": true,
+      "exitBtn": true,
+      "arrows": true
+    },
+    "letterbox": {
+      "objectFit": "contain",
+      "contentW": 864,
+      "contentH": 1536,
+      "boxW": 2304,
+      "boxH": 1536,
+      "barLeft": 720,
+      "barRight": 720
+    },
+    "autoNext": {
+      "srcBefore": "http://127.0.0.1:10940/api/episodes/1001/stream?quality=1080P&seriesId=9000000000000000001",
+      "ended": 1,
+      "src": "http://127.0.0.1:10940/api/episodes/1002/stream?quality=1080P&seriesId=9000000000000000001",
+      "domFullscreen": false,
+      "fsElementClass": null,
+      "rootHasFixed": true,
+      "fs": true
+    }
+  },
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/banners"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sections"
+    },
+    {
+      "method": "GET",
+      "path": "/api/rank/types"
+    },
+    {
+      "method": "GET",
+      "path": "/api/category/tags"
+    },
+    {
+      "method": "GET",
+      "path": "/api/category/list"
+    },
+    {
+      "method": "GET",
+      "path": "/api/rank/list"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library"
+    },
+    {
+      "method": "GET",
+      "path": "/api/recommend"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/series/9000000000000000001"
+    },
+    {
+      "method": "GET",
+      "path": "/api/episodes/1001/qualities"
+    },
+    {
+      "method": "GET",
+      "path": "/api/episodes/1001/stream"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library"
+    },
+    {
+      "method": "GET",
+      "path": "/api/episodes/1002/stream"
+    }
+  ]
+}

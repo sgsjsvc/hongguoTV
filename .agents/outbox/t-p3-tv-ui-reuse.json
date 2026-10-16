@@ -1,0 +1,10 @@
+{
+  "id": "t-p3-tv-ui-reuse",
+  "agent": "workbuddy",
+  "status": "done",
+  "finishedAt": "2026-10-16T06:38:43.654Z",
+  "title": "P3 TV 端切集不重建 UI 树",
+  "result": {
+    "summary": "完成：切集（同一部剧）只更新集数徽标/副标题并保留既有视图树，仅切剧才刷新系列级字段并重建。实测切集(知许不许 第1→2集,徽标+副标题更新,焦点保留)/切剧(→绿意萌熹,标题/标签/描述/合集全刷新)/切清晰度(1080P→720P,UI不变)/自动下一集(第2→3集)全部通过；构建 BUILD SUCCESSFUL(38s)，TV 单测 32/32 通过。⚠️重要更正：任务书核心前提不成立——feedOverlay(PlayerOverlay)挂在 root 上、与 navigation 平级，播放中 navigation 子节点数=0，跨5次采样视图对象ID完全不变，改动前已是 no-op，收益≈0；建议从 perf-baseline.md 移除该「问题3」。未验证项：全剧结束切下一部(需播完117集)、封面无闪烁视觉证据，均已在报告显式标注。报告：.agents/shared/t-p3-tv-ui-reuse-workbuddy.md"
+  }
+}

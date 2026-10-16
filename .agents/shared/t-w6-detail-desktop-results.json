@@ -1,0 +1,281 @@
+{
+  "tag": "t-w6-detail-desktop",
+  "part": "detail",
+  "mode": "desktop",
+  "at": "2026-10-16T06:24:03.253Z",
+  "checks": {
+    "W5-1 详情页有底栏全屏按钮": {
+      "pass": true,
+      "detail": {
+        "count": 1
+      }
+    },
+    "W5-2 详情页无冗余悬浮全屏按钮": {
+      "pass": true,
+      "detail": {
+        "count": 1,
+        "btns": [
+          {
+            "aria": "全屏",
+            "title": "全屏 (F)",
+            "txt": ""
+          }
+        ]
+      }
+    },
+    "W5-3 非全屏时播放器不是 fixed 满屏": {
+      "pass": true,
+      "detail": {
+        "position": "relative",
+        "rect": {
+          "w": 721,
+          "h": 405
+        }
+      }
+    },
+    "W5-4 详情页可进入全屏": {
+      "pass": true
+    },
+    "W5-5 播放器填满屏幕(2304x1536 级)": {
+      "pass": true,
+      "detail": {
+        "x": 0,
+        "y": 0,
+        "w": 2304,
+        "h": 1536,
+        "position": "fixed"
+      }
+    },
+    "W5-6 屏幕级全屏(inner==screen)": {
+      "pass": true,
+      "detail": {
+        "inner": [
+          2304,
+          1536
+        ],
+        "screen": [
+          2304,
+          1536
+        ],
+        "outer": [
+          2304,
+          1536
+        ]
+      }
+    },
+    "W5-7 全屏下自动下一集并保持全屏": {
+      "pass": true,
+      "detail": {
+        "ended": 1,
+        "src": "http://127.0.0.1:7957/api/episodes/1002/stream?quality=1080P&seriesId=9000000000000000001",
+        "fs": true
+      }
+    },
+    "W5-8 Escape 退出全屏且不关闭播放器": {
+      "pass": true,
+      "detail": {
+        "exited": true,
+        "videoCount": 1
+      }
+    },
+    "W5-9 反复切换 10 次稳定": {
+      "pass": true
+    },
+    "W5-10 全屏失败有提示": {
+      "pass": true
+    }
+  },
+  "evidence": {
+    "detailLayout": {
+      "fsBtnCount": 1,
+      "fsBtns": [
+        {
+          "aria": "全屏",
+          "title": "全屏 (F)",
+          "txt": ""
+        }
+      ],
+      "playerRect": {
+        "w": 721,
+        "h": 405
+      },
+      "position": "relative",
+      "className": "bg-black overflow-hidden flex items-center justify-center group relative aspect-[9/16] max-h-[72vh] lg:max-h-none lg:aspect-video w-full rounded-2xl border border-slate-800 shadow-2xl"
+    },
+    "geometryFullscreen": {
+      "screen": [
+        2304,
+        1536
+      ],
+      "inner": [
+        2304,
+        1536
+      ],
+      "outer": [
+        2304,
+        1536
+      ],
+      "fsElement": null,
+      "isDesktop": true,
+      "hasFocus": true,
+      "videoCount": 1,
+      "player": {
+        "x": 0,
+        "y": 0,
+        "w": 2304,
+        "h": 1536,
+        "position": "fixed"
+      },
+      "videoNatural": [
+        360,
+        640
+      ],
+      "videoRect": {
+        "x": 0,
+        "y": 0,
+        "w": 2304,
+        "h": 1536
+      }
+    },
+    "autoNext": {
+      "srcBefore": "http://127.0.0.1:7957/api/episodes/1001/stream?quality=1080P&seriesId=9000000000000000001",
+      "ended": 1,
+      "src": "http://127.0.0.1:7957/api/episodes/1002/stream?quality=1080P&seriesId=9000000000000000001",
+      "fs": true
+    }
+  },
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/banners"
+    },
+    {
+      "method": "GET",
+      "path": "/api/sections"
+    },
+    {
+      "method": "GET",
+      "path": "/api/rank/types"
+    },
+    {
+      "method": "GET",
+      "path": "/api/category/tags"
+    },
+    {
+      "method": "GET",
+      "path": "/api/category/list"
+    },
+    {
+      "method": "GET",
+      "path": "/api/rank/list"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library"
+    },
+    {
+      "method": "GET",
+      "path": "/api/series/9000000000000000001"
+    },
+    {
+      "method": "GET",
+      "path": "/api/library"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/episodes/1001/qualities"
+    },
+    {
+      "method": "GET",
+      "path": "/api/series/9000000000000000001/related"
+    },
+    {
+      "method": "GET",
+      "path": "/api/recommend"
+    },
+    {
+      "method": "GET",
+      "path": "/api/episodes/1001/stream"
+    },
+    {
+      "method": "GET",
+      "path": "/api/search"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "GET",
+      "path": "/api/episodes/1002/qualities"
+    },
+    {
+      "method": "GET",
+      "path": "/api/episodes/1002/stream"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    },
+    {
+      "method": "POST",
+      "path": "/api/library/operations"
+    }
+  ]
+}

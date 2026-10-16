@@ -1,0 +1,10 @@
+{
+  "id": "t-w6-verify-fullscreen",
+  "agent": "workbuddy",
+  "status": "done",
+  "finishedAt": "2026-10-16T06:27:50.565Z",
+  "title": "W6 W4/W5 全屏成果 — 独立复核",
+  "result": {
+    "summary": "通过(Pass)：40/40项检查全通过。W4推荐流全屏按钮/控件完整/竖版居中留黑边(720px)/双击/F键/Escape/失败提示/反复10次稳定；W5详情页修前1104x621 relative→修后2304x1536 fixed(Web与Electron独立复现)；屏幕级全屏 inner==screen 2304x1536；全屏下自动下一集真实ended验证通过且保持全屏；两端一致(Web走DOM API/桌面走原生桥接 outer==screen)。无越界改动、无调试日志残留；npm test 156/156。报告：.agents/shared/t-w6-verify-fullscreen-workbuddy.md"
+  }
+}

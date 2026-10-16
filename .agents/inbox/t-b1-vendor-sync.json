@@ -1,0 +1,44 @@
+{
+  "id": "t-b1-vendor-sync",
+  "createdAt": "2026-10-16T06:48:37.345Z",
+  "updatedAt": "2026-10-16T06:48:37.348Z",
+  "assignee": "codex",
+  "title": "B1 修复 vendor 回退副本（缺 upstreamStats 导致崩溃）",
+  "brief": "详见 .agents/inbox/t-b1-vendor-sync.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "用户要求：发现 bug 并分配任务，直到无法检查出 bug 为止",
+    "协调者已做第二轮系统性排查，报告见 .agents/shared/bughunt-round2.md",
+    "确认的 3 个 bug（其余 6 个候选经验证已排除）：",
+    "  Bug#1 vendor 回退副本缺 upstreamStats -> 回退路径崩溃（已复现）",
+    "  Bug#2 visibilitychange/online 绕过 isVideoPlaying 检查",
+    "  Bug#3 App.tsx 追剧页轮询缺 isVideoPlaying 检查",
+    "排查方法：静态（编码/语法）+ 边界（空值/越界/并发）+ 契约 + 实测（浏览器/设备）",
+    "新增 14 个排查脚本在 scripts/perf/bughunt-*.mjs，可复现",
+    "已验证正确的部分：编码 0 乱码、语法 0 错误、PlaybackPolicy 28 项边界全通过、",
+    "  服务端异常路径健壮、API 契约齐全、前端 0 运行时异常",
+    "当前测试 161 项全绿",
+    "环境：Windows PowerShell 5.1；改含中文文件时用 Node 或 edit 工具",
+    "  （PowerShell 的 Get-Content+Set-Content 会破坏 UTF-8 编码）"
+  ],
+  "acceptance": [
+    "见 brief 文件"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-16T06:48:37.346Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-b1-vendor-sync.brief.md",
+  "order": 1,
+  "kind": "fix"
+}

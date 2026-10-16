@@ -1,0 +1,75 @@
+{
+  "id": "t-p6-prefetch-wire",
+  "createdAt": "2026-10-16T06:27:00.421Z",
+  "updatedAt": "2026-10-16T06:38:45.159Z",
+  "assignee": "antigravity",
+  "title": "P6 接入预取触发器（让 P1 的预取真正生效）",
+  "brief": "详见 .agents/inbox/t-p6-prefetch-wire.brief.md",
+  "context": [
+    "项目根: F:\\Project\\hongguoTV",
+    "背景：P1（codex）已完成预取基础设施并验收通过，但接口尚未被任何客户端调用",
+    "  codex 明确说明：预取接口尚未自动接到任何客户端触发器，需要客户端维护方按需接入",
+    "  协调者核实：apps/web-pc/src 下 grep prefetch 无结果",
+    "  所以「切剧等 1.4 秒」目前还没有真正改善",
+    "P1 实测效果（协调者已验收）：详情 1453ms -> 1.7ms，清晰度 254ms -> 0.6ms",
+    "接口契约：",
+    "  POST /api/prefetch { targets: [{kind:'detail',id}, {kind:'qualities',id,seriesId}] }",
+    "  GET  /api/prefetch/:id  查状态",
+    "  DELETE /api/prefetch/:id 取消",
+    "已具备特性：后台 1 并发、队列容量限制、错误静默隔离、前台请求时不启动新预取、",
+    "  HG_PREFETCH_ENABLED=0 可关闭",
+    "建议触发时机（codex 建议 + 协调者补充）：",
+    "  1. 详情加载后预取同页后一部（收益最大）",
+    "  2. 播放到当前集 80% 时预取下一集 qualities",
+    "  3. 离开/切换时 DELETE 旧批次",
+    "⚠️ 关键限制：不要预取推荐分页",
+    "  recommendation-service.mjs:28 有硬性约束 page !== state.pages.size + 1 会报 409",
+    "  预取未来页会破坏会话顺序",
+    "实现要求：不阻塞主流程、失败静默、可取消、不重复预取、尊重开关、不预取推荐分页",
+    "文件边界：只改 apps/web-pc/src/hooks/useStreamFeed.ts、api.ts、App.tsx",
+    "  不要动 server/provider.mjs 与 custom-server（P1 成果已验收）",
+    "  不要动 apps/tv-android（P3/P4 职责）",
+    "环境：Windows PowerShell 5.1；本机 DSH 沙箱拒绝 6300 以下 loopback 端口"
+  ],
+  "acceptance": [
+    "客户端调用 /api/prefetch（网络面板可见）",
+    "切剧时详情 < 50 ms（当前 1453 ms）",
+    "预取失败不影响主流程",
+    "离开时取消旧批次（DELETE 可见）",
+    "无重复预取",
+    "无推荐分页预取",
+    "typecheck 通过",
+    "报告写入 .agents/shared/t-p6-prefetch-wire-antigravity.md"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-16T06:28:32.173Z",
+  "result": {
+    "summary": "P6 预取触发器接入完成，切剧命中热缓存 X-Cache: HIT 耗时 < 50ms，80% 下一集 qualities 预取与切集切剧取消已落地，详见 .agents/shared/t-p6-prefetch-wire-antigravity.md"
+  },
+  "history": [
+    {
+      "at": "2026-10-16T06:27:00.422Z",
+      "status": "pending",
+      "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T06:28:32.173Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T06:38:45.160Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
+    }
+  ],
+  "dispatch": "file-bus",
+  "briefFile": ".agents/inbox/t-p6-prefetch-wire.brief.md",
+  "order": 6,
+  "kind": "perf"
+}

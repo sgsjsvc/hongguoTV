@@ -21,3 +21,13 @@
 {"at":"2026-10-16T05:32:49.707Z","kind":"task-updated","id":"t-p5-polling","by":"antigravity","status":"done","note":""}
 {"at":"2026-10-16T05:34:35.095Z","kind":"task-updated","id":"t-w6-verify-fullscreen","by":"workbuddy","status":"claimed","note":"claimed"}
 {"at":"2026-10-16T05:34:35.662Z","kind":"task-updated","id":"t-p3-tv-ui-reuse","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T06:27:00.423Z","kind":"task-created","id":"t-p6-prefetch-wire","assignee":"antigravity","title":"P6 接入预取触发器（让 P1 的预取真正生效）"}
+{"at":"2026-10-16T06:27:00.438Z","kind":"task-updated","id":"t-p6-prefetch-wire","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-16T06:27:50.560Z","kind":"task-updated","id":"t-w6-verify-fullscreen","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-16T06:28:32.180Z","kind":"task-updated","id":"t-p6-prefetch-wire","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T06:38:43.650Z","kind":"task-updated","id":"t-p3-tv-ui-reuse","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-16T06:38:45.166Z","kind":"task-updated","id":"t-p6-prefetch-wire","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-16T06:48:37.347Z","kind":"task-created","id":"t-b1-vendor-sync","assignee":"codex","title":"B1 修复 vendor 回退副本（缺 upstreamStats 导致崩溃）"}
+{"at":"2026-10-16T06:48:37.349Z","kind":"task-updated","id":"t-b1-vendor-sync","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-16T06:48:37.352Z","kind":"task-created","id":"t-b2-polling-events","assignee":"antigravity","title":"B2 修复轮询事件路径与一致性（2 个 bug）"}
+{"at":"2026-10-16T06:48:37.354Z","kind":"task-updated","id":"t-b2-polling-events","by":"dsh","status":"pending","note":"brief ok"}
