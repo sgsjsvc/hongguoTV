@@ -225,4 +225,37 @@
 
 ---
 
+## DSH 最终验收：B5/B7 接线（2026-10-16 22:40–22:55）
+
+**codex 已交付并置 done**（`t-b5-perf-measurement`、`t-b7-algo-optimize`，`finishedAt=2026-10-16T14:42:13Z`），交付报告 `.agents/shared/b5-b7-final-integration-codex.md`。DSH 按其报告逐项独立复核（**未采信其结论，全部自测**）：
+
+| # | 验收项 | DSH 独立实测 | 判定 |
+| --- | --- | --- | --- |
+| 1 | 入口哈希与其报告一致 | 实测 `b2dbaea0a915b13d44348f88cb2ed2f1f8e0338044c9b84d99e10722001a0333` == 报告值 | ✅ |
+| 2 | 共享引擎三副本未被本轮改动 | 三份 SHA256 均 `cf3d685cc60d3045336805e41150d72340c052de1a600caab96b794d48042bf2`，与被裁决前**完全一致** | ✅ |
+| 3 | 4 条路由真实可用（不依赖其脚手架） | `verify-wiring.mjs` 真实 fork 进程：4 条全部 **200、无 error 字段、JSON 可解析**；两种 `HG_TIMING` 均 pass | ✅ |
+| 4 | `Server-Timing` opt-in 语义 | `HG_TIMING=1` → 存在（`app;dur=0.066`~`2536.530`）；`HG_TIMING=0` → **不存在**（null） | ✅ |
+| 5 | 无 `reqStart` 类运行时错误 | 服务端日志 0 条 `reqStart`/`ReferenceError`/`API Gateway Error` | ✅ |
+| 6 | 全量回归 | **214/214 通过、0 失败、0 跳过**（独立复跑 2 次，含验收前与验收后） | ✅ |
+| 7 | B7 性能声明可复现 | DSH 独立重跑 `bench-append.benchmark.mjs` **3 次**：P95 after = **0.8767 / 0.8628 / 1.0343 ms**，均 **≤3ms**；改善 **86.6%–88.1%**（codex 报 88.09%） | ✅ |
+| 8 | B5 未虚报 15% 收益 | 报告与既有 `b5-perf-baseline.md` 一致声明"未观察到 ≥15%"，未补造 `serverMs`/`qualityCount` | ✅ |
+
+**验收结论**：**裁定 1 关闭——B5/B7 接线通过 DSH 最终验收**（执行方交付 + 独立复核通过）。裁定 1 第 3 条的"路由级验证"硬条件已由 codex 的 `tests/backend-instrumentation.test.mjs`（含针对本缺陷的变异测试）**与** DSH 的 `verify-wiring.mjs` 双重满足。
+**注意**：B5/B7 的 done **仍不等于发布**——发布由 DSH 另行安排（见下）。
+
+### 验收期间 DSH 的操作与遗留
+
+1. **⚠️ 我的一次操作失误并已修复**：首次复核 B7 时我直接运行 `node scripts/perf/bench-append.benchmark.mjs`，该脚本默认**覆盖** `outputs/testing/b7/append-benchmark.json`（`bench-append.benchmark.mjs:35`，`OUT` 环境变量可控）。我发现后**已用 codex 的权威副本 `outputs/testing/b5-b7-final/append-benchmark.json` 原样还原**该文件（现为 `p95_after=1.0343ms / 88.09%`），此后改用 `OUT=outputs/testing/dsh-adjudication/…` **不再写共享路径**。**未影响任何被测源码，未改动他人报告。**
+2. **codex 越界写入 `tests/`**：其报告称修改了 `tests/{prefetch-routes,prefetch-wire,quality-labels,quality-tiers,query-acceleration,playback-p0}` 为 VM 上下文补导入。实测 `git diff --stat -- tests/` **仅 `playback-p0.test.mjs` 有未提交差异**（+23/−1）；其余文件的改动**已在裁决前的提交历史中**，非本轮新增。`tests/` 属 **opencode** 领域（裁决 2 路由已如此定义），codex 本轮实际写入属**轻度越界**——**裁定：不追责回退**（改动必要且为接线适配、未改断言语义），但**记录在案**：后续涉及 `tests/` 的写入须由 opencode 或经 DSH 明确授权。
+3. **失效产物仍在库**：`.agents/shared/b5-b7-index-hooks.patch`、`outputs/testing/b7/staged-index.mjs` 均存在（**故意保留作审计痕迹**）。codex 已在报告中声明"禁止用于安装/接线"。**DSH 裁定**：保留，但建议 codex 在这两个文件/其引用处加一句废弃标注（**由 codex 执行，DSH 不代写**）。
+4. **过期表述未更新**：`b5-perf-baseline.md:12,48` 与 `b7-algo-opt-codex.md:44,48` 仍写"模块尚未接入""尚待协调的接线""未应用"。**这些表述已被实现取代**。裁定：**由 codex 补一个文件末尾的"现行状态（已被接线取代）"段落**，**不重写历史内容**（保留原报告审计价值）。
+5. **本裁决书文末错字修正**：上一版末尾多了一行重复的斜体尾注，已清理。
+
+### 发布安排（DSH 决定）
+
+- **不发布、不推送**。理由：(a) 接线改动**仍是未提交的工作区改动**，无确定代码版本可发布；(b) `release/` 产物早于当前工作区（裁决 6.2，已判定不可用）；(c) 用户当前运行的服务需**由 DSH 安排更新/重启**才会加载新入口，本轮**未重启任何服务**。
+- **下一步发布前置**（按顺序）：① codex 更新上述过期表述并加废弃标注 → ② opencode 修复 loopback flaky（裁决 6.1）并重建产物/跑发布门禁 → ③ DSH 复核并决定版本与发布窗口。**任一步未完成前不进入发布。**
+
+---
+
 *本裁决书由 DSH 依据本轮实测写成；所有"实测"结论来自 2026-10-16 本会话真实命令，未验证项已明确标注。修订历史保留在本文件内，不覆盖他人报告。*
