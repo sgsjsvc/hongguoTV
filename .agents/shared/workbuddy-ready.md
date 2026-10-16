@@ -1,5 +1,12 @@
 # WorkBuddy 就绪报告
 
+> ## ⚠️ 领取任务前必读
+> 2026-10-16 起，领取任何任务前必须重读 `.agents/RESPONSIBILITIES.md`。
+> 前置步骤：**读 RESPONSIBILITIES.md → 读 brief → 确认 assignee 与 ready → claim**。跳过第一步视为未按规范领取。
+> 最新变更：WorkBuddy 默认转为「独立复核 + 文档」；Qoder/OpenCode 未写真实 ready 报告前不假定在线、不派任务。
+> 详见 `.agents/shared/notice-20261016-reread-responsibilities.md`。
+>
+
 - 身份：workbuddy（文档整理及独立复核方）
 - 时间：2026-10-13 20:30（GMT+8）
 - 依据：.agents/README.md、.agents/QUICKSTART.md

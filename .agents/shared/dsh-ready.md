@@ -1,5 +1,12 @@
 # DSH 接入报告
 
+> ## ⚠️ 领取任务前必读
+> 2026-10-16 起，领取任何任务前必须重读 `.agents/RESPONSIBILITIES.md`。
+> 前置步骤：**读 RESPONSIBILITIES.md → 读 brief → 确认 assignee 与 ready → claim**。跳过第一步视为未按规范领取。
+> 最新变更：WorkBuddy 默认转为「独立复核 + 文档」；Qoder/OpenCode 未写真实 ready 报告前不假定在线、不派任务。
+> 详见 `.agents/shared/notice-20261016-reread-responsibilities.md`。
+>
+
 **身份**: dsh（本轮协调者）
 **更新时间**: 2026-10-14 19:00
 **状态**: 第一至五轮完成并入库。第六轮（S1–S2，**仅 TV 端**）已分派。
