@@ -152,3 +152,35 @@ node scripts/perf/measure-real-switch.mjs
 ```powershell
 node .agents/cli.mjs done t-p1-detail-cache codex "缁撹鍙婃姤鍛婅矾寰?
 ```
+
+---
+
+## 九、补充：预取应设计为通用能力
+
+**协调者后续测量发现**：榜单与分类接口**也是同一模式**（缓存有效但首次慢）。
+
+| 接口 | 首次 | 重复 |
+| --- | --- | --- |
+| 详情 `/api/series/:id` | 1453 ms | 1 ms |
+| 榜单 `/api/rank/list`（新页） | 1456–2079 ms | 0–1 ms |
+| 分类 `/api/category/list`（新标签） | 854–938 ms | 1 ms |
+
+**所以预取接口应支持多种资源类型**，避免只为详情定制：
+
+```javascript
+POST /api/prefetch
+{ "targets": [
+    { "kind": "detail",    "id": "7694..." },
+    { "kind": "qualities", "id": "7694...", "seriesId": "7693..." },
+    { "kind": "rank",      "type": "rank_hot", "page": 4 },
+    { "kind": "category",  "type": "real-drama", "tag": "romance", "page": 1 }
+] }
+```
+
+**优先级**：
+
+1. **必须实现**：`detail` 与 `qualities`（切剧场景收益最大：省 1453 ms）
+2. **建议实现**：`rank` / `category`（翻页场景：省 0.9–2 秒）
+3. 若时间有限，后两者可预留接口但不实现
+
+详见 `.agents/shared/perf-list-cache-verdict.md`。
