@@ -33,3 +33,9 @@
 {"at":"2026-10-16T06:48:37.354Z","kind":"task-updated","id":"t-b2-polling-events","by":"dsh","status":"pending","note":"brief ok"}
 {"at":"2026-10-16T07:08:01.907Z","kind":"task-created","id":"t-b3-desktop-robustness","assignee":"workbuddy","title":"B3 修复 Electron 桌面端缺陷（后端崩溃 + 单实例）"}
 {"at":"2026-10-16T07:08:01.909Z","kind":"task-updated","id":"t-b3-desktop-robustness","by":"dsh","status":"pending","note":"brief ok"}
+{"at":"2026-10-16T07:32:49.858Z","kind":"task-updated","id":"t-b1-vendor-sync","by":"codex","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T07:32:57.316Z","kind":"task-updated","id":"t-b2-polling-events","by":"antigravity","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T07:38:23.844Z","kind":"task-updated","id":"t-b1-vendor-sync","by":"codex","status":"done","note":""}
+{"at":"2026-10-16T07:39:01.606Z","kind":"task-updated","id":"t-b2-polling-events","by":"antigravity","status":"done","note":""}
+{"at":"2026-10-16T08:20:40.026Z","kind":"task-created","id":"t-q1-device-level","assignee":"codex","title":"Q1 修复清晰度档位缺失（device_level 3 -> 5）"}
+{"at":"2026-10-16T08:20:40.027Z","kind":"task-updated","id":"t-q1-device-level","by":"dsh","status":"pending","note":"brief ok"}

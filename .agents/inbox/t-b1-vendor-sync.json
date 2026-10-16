@@ -1,7 +1,7 @@
 {
   "id": "t-b1-vendor-sync",
   "createdAt": "2026-10-16T06:48:37.345Z",
-  "updatedAt": "2026-10-16T06:48:37.348Z",
+  "updatedAt": "2026-10-16T07:38:23.835Z",
   "assignee": "codex",
   "title": "B1 修复 vendor 回退副本（缺 upstreamStats 导致崩溃）",
   "brief": "详见 .agents/inbox/t-b1-vendor-sync.brief.md",
@@ -26,15 +26,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "codex",
+  "claimedAt": "2026-10-16T07:32:49.833Z",
+  "result": {
+    "summary": "两份vendor完整同步权威shared；动态消费者导出与空体换设备/五次重试上限9项回归先RED后GREEN；最终npm test173/173，三份MD5一致；重打win-x64 Web包并验证真实shared缺失时健康200/engineLoaded=true。报告 .agents/shared/t-b1-vendor-sync-codex.md"
+  },
   "history": [
     {
       "at": "2026-10-16T06:48:37.346Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T07:32:49.834Z",
+      "status": "claimed",
+      "by": "codex",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T07:38:23.837Z",
+      "status": "done",
+      "by": "codex",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

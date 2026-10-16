@@ -1,0 +1,10 @@
+{
+  "id": "t-b2-polling-events",
+  "agent": "antigravity",
+  "status": "done",
+  "finishedAt": "2026-10-16T07:39:01.607Z",
+  "title": "B2 修复轮询事件路径与一致性（2 个 bug）",
+  "result": {
+    "summary": "B2 轮询事件路径与一致性修复完成，提取共享 isVideoPlaying，修复 visibilitychange/online 与追剧页轮询争用，8 项行为验证与 173 项测试全绿，详见 .agents/shared/t-b2-polling-events-antigravity.md"
+  }
+}

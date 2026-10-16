@@ -1,7 +1,7 @@
 {
   "id": "t-b2-polling-events",
   "createdAt": "2026-10-16T06:48:37.351Z",
-  "updatedAt": "2026-10-16T06:48:37.353Z",
+  "updatedAt": "2026-10-16T07:39:01.601Z",
   "assignee": "antigravity",
   "title": "B2 修复轮询事件路径与一致性（2 个 bug）",
   "brief": "详见 .agents/inbox/t-b2-polling-events.brief.md",
@@ -26,15 +26,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
-  "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "status": "done",
+  "claimedBy": "antigravity",
+  "claimedAt": "2026-10-16T07:32:57.259Z",
+  "result": {
+    "summary": "B2 轮询事件路径与一致性修复完成，提取共享 isVideoPlaying，修复 visibilitychange/online 与追剧页轮询争用，8 项行为验证与 173 项测试全绿，详见 .agents/shared/t-b2-polling-events-antigravity.md"
+  },
   "history": [
     {
       "at": "2026-10-16T06:48:37.351Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-16T07:32:57.259Z",
+      "status": "claimed",
+      "by": "antigravity",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-16T07:39:01.602Z",
+      "status": "done",
+      "by": "antigravity",
+      "note": ""
     }
   ],
   "dispatch": "file-bus",

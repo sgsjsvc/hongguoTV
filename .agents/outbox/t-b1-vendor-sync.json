@@ -1,0 +1,10 @@
+{
+  "id": "t-b1-vendor-sync",
+  "agent": "codex",
+  "status": "done",
+  "finishedAt": "2026-10-16T07:38:23.845Z",
+  "title": "B1 修复 vendor 回退副本（缺 upstreamStats 导致崩溃）",
+  "result": {
+    "summary": "两份vendor完整同步权威shared；动态消费者导出与空体换设备/五次重试上限9项回归先RED后GREEN；最终npm test173/173，三份MD5一致；重打win-x64 Web包并验证真实shared缺失时健康200/engineLoaded=true。报告 .agents/shared/t-b1-vendor-sync-codex.md"
+  }
+}
