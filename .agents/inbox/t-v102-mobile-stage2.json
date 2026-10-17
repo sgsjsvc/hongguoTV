@@ -1,7 +1,7 @@
 {
   "id": "t-v102-mobile-stage2",
   "createdAt": "2026-10-17T03:15:52.288Z",
-  "updatedAt": "2026-10-17T03:15:52.290Z",
+  "updatedAt": "2026-10-17T05:08:03.449Z",
   "assignee": "workbuddy",
   "title": "T5 手机端第二段：建 apps/mobile（Capacitor）并完成安卓实测",
   "brief": ".agents/inbox/t-v102-mobile-stage2.brief.md",
@@ -24,15 +24,29 @@
   ],
   "blockedBy": [],
   "priority": "normal",
-  "status": "pending",
+  "status": "failed",
   "claimedBy": null,
-  "claimedAt": null,
-  "result": null,
+  "claimedAt": "2026-10-17T03:18:05.828Z",
+  "result": {
+    "reason": "DSH 叫停：用户要求改为彻底重构手机端 UI，改由新任务 t-v102-mobile-redesign 承接。非执行方失败。"
+  },
   "history": [
     {
       "at": "2026-10-17T03:15:52.290Z",
       "status": "pending",
       "by": "orchestrator"
+    },
+    {
+      "at": "2026-10-17T03:18:05.829Z",
+      "status": "claimed",
+      "by": "workbuddy",
+      "note": "claimed"
+    },
+    {
+      "at": "2026-10-17T05:08:03.450Z",
+      "status": "failed",
+      "by": "dsh",
+      "note": "DSH 叫停（用户改向：彻底重构 UI）"
     }
   ]
 }

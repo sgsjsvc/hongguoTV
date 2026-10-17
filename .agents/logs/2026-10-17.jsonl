@@ -1,3 +1,6 @@
 {"at":"2026-10-17T03:15:52.291Z","kind":"task-created","id":"t-v102-mobile-stage2","assignee":"workbuddy","title":"T5 手机端第二段：建 apps/mobile（Capacitor）并完成安卓实测"}
 {"at":"2026-10-17T03:18:05.919Z","kind":"task-updated","id":"t-v102-mobile-stage2","by":"workbuddy","status":"claimed","note":"claimed"}
 {"at":"2026-10-17T04:22:20.029Z","kind":"task-created","id":"t-v102-mobile-compat","assignee":"workbuddy","title":"T6 手机端兼容性验证与适配（精细版）"}
+{"at":"2026-10-17T05:08:03.457Z","kind":"task-updated","id":"t-v102-mobile-stage2","by":"dsh","status":"failed","note":"DSH 叫停（用户改向：彻底重构 UI）"}
+{"at":"2026-10-17T05:08:11.998Z","kind":"task-updated","id":"t-v102-mobile-compat","by":"dsh","status":"failed","note":"DSH 取消（用户改向：重构取代兼容验证）"}
+{"at":"2026-10-17T05:16:06.315Z","kind":"task-created","id":"t-v102-mobile-redesign","assignee":"workbuddy","title":"T7 手机端 UI 彻底重构（短视频流式，竖屏）"}

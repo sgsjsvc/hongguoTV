@@ -1,0 +1,44 @@
+{
+  "id": "t-v102-mobile-redesign",
+  "createdAt": "2026-10-17T05:16:06.313Z",
+  "updatedAt": "2026-10-17T05:16:06.314Z",
+  "assignee": "workbuddy",
+  "title": "T7 手机端 UI 彻底重构（短视频流式，竖屏）",
+  "brief": ".agents/inbox/t-v102-mobile-redesign.brief.md",
+  "context": [
+    "用户 2026-10-17 决策：保留 Capacitor+React，仅重写 UI 层，改为短视频流式（竖屏信息流+上下滑切剧+底部Tab）；取代此前「复制 Web 代码做兼容」的指令",
+    "T5 t-v102-mobile-stage2 已由 DSH 叫停（failed，非执行方失败）；T6 t-v102-mobile-compat 已由 DSH 取消（failed）；无在途冲突",
+    "实测失败根因：Header.tsx 用 tv-nav-item 类、顶部7按钮横排+overflow-x-auto、24处 md: 断点（桌面优先）、0 处底部导航 —— UI 是桌面/TV 形态塞进手机",
+    "重构分层：UI 层（App/index.css/components/*）全部重写；数据逻辑层（api.ts/usePlayback/useStreamFeed/useCatalog/useLibrary/useSearch/useSync/native/fullscreen/BackendSetup/types/video-state/library-journal/history-outbox/recommendation-session）默认保留或最小改",
+    "禁止改 apps/web-pc、apps/tv-android、custom-server、server、shared 引擎与推荐核心；apps/mobile/android/** 若需改须逐条列明理由",
+    "设备：4 模拟器全 x86_64（API32 x3 + API35 x1）；无 API24-31；无 ARM 真机；电视 ADB 不可达",
+    "去重规则：只测 API32 一台 + API35 一台",
+    "必须设备实测：安装-启动-底部Tab-首页-竖滑3条-播放真实画面-清晰度-横屏；证据落 outputs/testing/mobile-redesign-20261017/",
+    "构建互斥 + 设备先 declare 后用后 release；不提交不推送不发布不打 tag"
+  ],
+  "acceptance": [
+    "底部 Tab 导航存在可用；顶部7按钮横排导航已移除（截图对比）",
+    "推荐页为竖屏全屏视频流，上下滑至少切换3条且自动播放（截图x3）",
+    "tv-nav-item 等 TV 类名已清除；无 md:/lg: 作为主要布局依据（DSH grep 复核）",
+    "安全区 env(safe-area-inset-*) 已适配；可点区域 >=44px",
+    "API32 与 API35 各一台实测通过：安装-启动-Tab-首页-播放真实画面-清晰度-横屏",
+    "无 FATAL EXCEPTION/ANR；冷启动耗时已记录",
+    "视觉保持暗色基调与品牌色",
+    "apps/web-pc、apps/tv-android、shared、custom-server 零改动（DSH git diff 复核）",
+    "设备已全部释放；构建占用记录已释放",
+    "报告如实区分实测/未验证，未完成项明确列出"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-17T05:16:06.314Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ]
+}
