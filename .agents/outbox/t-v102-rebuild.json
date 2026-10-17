@@ -1,0 +1,10 @@
+{
+  "id": "t-v102-rebuild",
+  "agent": "opencode",
+  "status": "done",
+  "finishedAt": "2026-10-16T16:30:50.129Z",
+  "title": "T3 v1.0.2 全终端产物重建+校验+桌面运行时验证",
+  "result": {
+    "summary": "T3 完成：产物自 a623f8a 业务基线重建（HEAD 3d7b0de，仅 3 个版本文件差异）；内置入口全部 == b2dbaea0…、引擎 == cf3d685c…；npm test 214/214、smoke 3/3+3/3；verify-release-packages.py web 6/6（另桌面 2/2）；桌面运行时验证通过（可见窗口 visible=True + 单实例二次启动退出 + IPC/全屏 false→true→false + 内置后端 /api/sections 200）；release/ 16 产物 SHA256 16/16 OK。偏离：步骤3用 --web-only（dist-win 已空壳）、步骤5改道 %TEMP%（Qoder CN PID39584 / WorkBuddy AI PID43064 锁 default_app.asar）。未提交/未推送/未发布。报告 .agents/shared/t-v102-rebuild-opencode.md"
+  }
+}

@@ -80,3 +80,5 @@
 {"at":"2026-10-16T16:09:10.800Z","kind":"task-updated","id":"t-v102-mobile-port","by":"workbuddy","status":"claimed","note":"claimed"}
 {"at":"2026-10-16T16:10:38.756Z","kind":"task-updated","id":"t-v102-version-tv","by":"qoder","status":"done","note":""}
 {"at":"2026-10-16T16:13:27.379Z","kind":"task-updated","id":"t-v102-rebuild","by":"opencode","status":"claimed","note":"claimed"}
+{"at":"2026-10-16T16:15:43.122Z","kind":"task-updated","id":"t-v102-mobile-port","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-16T16:30:50.129Z","kind":"task-updated","id":"t-v102-rebuild","by":"opencode","status":"done","note":""}
