@@ -1,0 +1,42 @@
+{
+  "id": "t-v102-mobile-compat",
+  "createdAt": "2026-10-17T04:22:20.008Z",
+  "updatedAt": "2026-10-17T04:22:20.028Z",
+  "assignee": "workbuddy",
+  "title": "T6 手机端兼容性验证与适配（精细版）",
+  "brief": ".agents/inbox/t-v102-mobile-compat.brief.md",
+  "context": [
+    "依赖 t-v102-mobile-stage2 交付并经 DSH 验收后才可开工（避免与在途双写 apps/mobile）",
+    "已建 apps/mobile：appId com.hongguotv.mobile、minSdk 24 / targetSdk 36 / compileSdk 36、Capacitor 8.5.3",
+    "已有适配文件 src/components/BackendSetup.tsx、src/native/fullscreen.ts；cleartext 已开、androidScheme=http、allowMixedContent=true",
+    "设备实测：4 台模拟器全为 x86_64（API32 x3、API35 x1）；无 API 24-31 设备；无 ARM 真机；电视 ADB 不可达",
+    "用户规则：相同系统不重复测试 —— 只测 API32 一台 + API35 一台",
+    "关键盲区：模拟器全 x86_64，ARM 真机行为与 HEVC 硬解无法代表；API 24 下限不可测",
+    "唯一写者：只可改 apps/mobile/**；禁止改 apps/web-pc、shared 引擎、apps/tv-android、custom-server",
+    "构建互斥 + 设备先 declare 后用后 release；不提交不推送不发布不打 tag"
+  ],
+  "acceptance": [
+    "兼容性矩阵完整（系统 x 屏幕(标尺寸覆盖) x 功能项），每格实测值或未测(原因)",
+    "aapt badging 的 ABI 列表核对，是否含 arm64-v8a 有明确结论",
+    "全屏/混合内容/触控/自动播放/生命周期五项有设备实测结论",
+    "HEVC 与 API 24 明确标注未验证及原因，未用模拟器冒充真机结论",
+    "报告如实区分实测/未实测，含缺陷清单(严重度+复现+证据)",
+    "apps/web-pc、shared、apps/tv-android 零改动（DSH 用 git diff 复核）",
+    "设备已释放；构建占用记录已释放"
+  ],
+  "blockedBy": [
+    "t-v102-mobile-stage2"
+  ],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-17T04:22:20.028Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ]
+}
