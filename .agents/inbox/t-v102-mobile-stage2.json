@@ -1,0 +1,38 @@
+{
+  "id": "t-v102-mobile-stage2",
+  "createdAt": "2026-10-17T03:15:52.288Z",
+  "updatedAt": "2026-10-17T03:15:52.290Z",
+  "assignee": "workbuddy",
+  "title": "T5 手机端第二段：建 apps/mobile（Capacitor）并完成安卓实测",
+  "brief": ".agents/inbox/t-v102-mobile-stage2.brief.md",
+  "context": [
+    "用户 2026-10-17 放行第二段：建 apps/mobile 并测",
+    "已定：仅 Android；移植/复制 Web 代码；Capacitor 8；minSdk 24（不用 22）；目录 apps/mobile/",
+    "第一段报告 t-v102-mobile-port-workbuddy.md：Web 代码约 70% 可复用，11 项适配点，高优先级含全屏 spike 与 HEVC 真机解码",
+    "唯一写者：只可新建/改 apps/mobile/**；禁止改 apps/web-pc/**、shared/ 引擎与推荐核心（codex 唯一写者）、apps/tv-android/**、custom-server/**",
+    "在线设备：mumu-d1(API32)/d2(API35)/d3(API32)；mumu-r(API22) offline，且本任务 minSdk 24 不需 API22",
+    "构建互斥：同一副本一次只允许一次 Android Gradle 构建，需写占用记录并释放",
+    "本任务成果不并入已发布的 v1.0.2；不提交、不推送、不发布、不打 tag"
+  ],
+  "acceptance": [
+    "apps/mobile 建成，npm run build 通过，能产出 Android APK",
+    "至少一台设备完成真实播放（非仅安装/HTTP 成功），有截图与 logcat 证据",
+    "全屏 spike 与 HEVC 解码两项必须有实测结论",
+    "apps/web-pc、shared、apps/tv-android 零改动（DSH 用 git diff 复核）",
+    "设备已释放；构建互斥占用记录已释放",
+    "报告 .agents/shared/t-v102-mobile-stage2-workbuddy.md 如实区分实测/未实测"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-17T03:15:52.290Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ]
+}
