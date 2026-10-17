@@ -20,13 +20,15 @@ import { DIRS } from "./bus.mjs";
 
 const [cmd, ...args] = process.argv.slice(2);
 
-// MuMu device management
+// MuMu device management（2026-10-17 实测更新：共 5 台 = 1 实体机电视 + 4 模拟器）
 if (cmd === "mumu") {
   const devices = [
-    { id: "mumu-d1", host: "127.0.0.1", port: 16384, api: 32 },
-    { id: "mumu-d2", host: "127.0.0.1", port: 16416, api: 35 },
-    { id: "mumu-d3", host: "127.0.0.1", port: 16448, api: 32 },
-    { id: "mumu-r", host: "192.168.1.120", port: 5555, api: 22 },
+    { id: "mumu-d1", host: "127.0.0.1", port: 16384, api: 32, model: "23113RKC6C", note: "720x1280 override 1280x720" },
+    { id: "mumu-d2", host: "127.0.0.1", port: 16416, api: 35, model: "V2203A", note: "1080x1920" },
+    { id: "mumu-d3", host: "127.0.0.1", port: 16448, api: 32, model: "22041211A", note: "1080x1920 override 1280x720 density192" },
+    { id: "mumu-d4", host: "127.0.0.1", port: 16480, api: 32, model: "23113RKC6C", note: "900x1600 新增" },
+    // 电视实体机：用户 2026-10-17 告知新 IP；DSH 实测网络可达但 adb 端口未开放（当前不可达）
+    { id: "mumu-r", host: "192.168.1.112", port: 5555, api: 22, model: "TV", note: "电视实机；ADB 当前不可达" },
   ];
 
   if (args[0] === "list") {
