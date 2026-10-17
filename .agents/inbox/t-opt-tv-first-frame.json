@@ -1,0 +1,40 @@
+{
+  "id": "t-opt-tv-first-frame",
+  "createdAt": "2026-10-17T12:00:43.450Z",
+  "updatedAt": "2026-10-17T12:00:43.450Z",
+  "assignee": "qoder",
+  "title": "O4 TV端首帧与切集延迟实测",
+  "brief": ".agents/inbox/t-opt-tv-first-frame.brief.md",
+  "context": [
+    "TV经QuickJS JNI执行与Web/手机同一份 shared/content-core/hongguo.js",
+    "DSH 实测该引擎取流首块间歇性约12秒(顺序回退 primary→backup)，t-opt-stream-latency 正在修",
+    "TV端首帧/切集延迟此前从未测量过 — 本任务建立基线，并在引擎修复后复测验证收益",
+    "须区分等待来源：共享引擎prepareHeader / ExoPlayer缓冲解码 / 网络下载 / UI焦点",
+    "已完成勿重复：P3(切集不重建UI树)、P4(列表渲染/enqueue/并发4)",
+    "设备去重规则：只测API32一台+API35一台；mumu-r(192.168.1.112) ADB不可达→API22如实标注未验证",
+    "构建互斥+设备先declare后用后release；根因在引擎则报告不改引擎",
+    "不提交不推送"
+  ],
+  "acceptance": [
+    "7个场景各有实测min/avg/max(每场景>=3次)，含设备型号/API",
+    "等待来源已区分(a共享引擎/b ExoPlayer/c网络/d UI)，不是只给总数",
+    "若TV侧有改动:文件清单+前后对比+回归测试",
+    "若根因在共享引擎:证据明确指出应由codex修，不自改",
+    "API22如实标注未验证(电视ADB不可达)",
+    "设备已释放；构建占用记录已释放",
+    "报告 .agents/shared/t-opt-tv-first-frame-qoder.md"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-17T12:00:43.450Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ]
+}

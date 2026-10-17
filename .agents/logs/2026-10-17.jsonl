@@ -4,3 +4,10 @@
 {"at":"2026-10-17T05:08:03.457Z","kind":"task-updated","id":"t-v102-mobile-stage2","by":"dsh","status":"failed","note":"DSH 叫停（用户改向：彻底重构 UI）"}
 {"at":"2026-10-17T05:08:11.998Z","kind":"task-updated","id":"t-v102-mobile-compat","by":"dsh","status":"failed","note":"DSH 取消（用户改向：重构取代兼容验证）"}
 {"at":"2026-10-17T05:16:06.315Z","kind":"task-created","id":"t-v102-mobile-redesign","assignee":"workbuddy","title":"T7 手机端 UI 彻底重构（短视频流式，竖屏）"}
+{"at":"2026-10-17T06:19:43.494Z","kind":"task-updated","id":"t-v102-mobile-redesign","by":"workbuddy","status":"claimed","note":"claimed"}
+{"at":"2026-10-17T08:30:54.867Z","kind":"task-updated","id":"t-v102-mobile-redesign","by":"workbuddy","status":"done","note":""}
+{"at":"2026-10-17T11:59:20.100Z","kind":"task-created","id":"t-opt-stream-latency","assignee":"codex","title":"O1 取流首块12秒根治 + stream首块预热"}
+{"at":"2026-10-17T11:59:20.101Z","kind":"task-created","id":"t-opt-recommend-warmup","assignee":"codex","title":"O2 推荐冷启动预热 + 推荐质量测量"}
+{"at":"2026-10-17T12:00:43.450Z","kind":"task-created","id":"t-opt-web-loading","assignee":"antigravity","title":"O3 Web/桌面端加载态与骨架屏（感知性能）"}
+{"at":"2026-10-17T12:00:43.451Z","kind":"task-created","id":"t-opt-tv-first-frame","assignee":"qoder","title":"O4 TV端首帧与切集延迟实测"}
+{"at":"2026-10-17T12:00:43.452Z","kind":"task-created","id":"t-opt-latency-gate","assignee":"opencode","title":"O5 延迟测量与发布门禁（防性能退化）"}

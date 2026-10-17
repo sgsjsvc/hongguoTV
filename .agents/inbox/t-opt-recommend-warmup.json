@@ -1,0 +1,41 @@
+{
+  "id": "t-opt-recommend-warmup",
+  "createdAt": "2026-10-17T11:59:20.100Z",
+  "updatedAt": "2026-10-17T11:59:20.100Z",
+  "assignee": "codex",
+  "title": "O2 推荐冷启动预热 + 推荐质量测量",
+  "brief": ".agents/inbox/t-opt-recommend-warmup.brief.md",
+  "context": [
+    "DSH 实测：新会话推荐首屏 1274-2545ms，同会话重复1ms → 每新会话必然冷启动",
+    "recommend 缓存按 session 隔离(hot:recommend:session:page)，用户重开App/偏好变化即新会话",
+    "append()性能已P95=1.03ms(B7完成,DSH复跑3次)，本任务不做性能优化",
+    "算法只做质量测量：类型分布/题材多样性/重复率/探索比例实测/降权对比/翻页稳定性",
+    "仅测量发现明确问题才调优，且不得破坏既有已验收语义(20%探索/marked优先/完播排除/近期降权/分页稳定/新会话换序)",
+    "两者都改 custom-server/index.mjs，故本任务 blockedBy t-opt-stream-latency 避免双写",
+    "不启停用户在用服务 8788；不提交不推送"
+  ],
+  "acceptance": [
+    "冷启动根因明确(1.3-2.5秒花在哪)",
+    "预热后新会话首屏<=300ms(硬指标)",
+    "预热可关闭(环境变量)，服务启动时间未显著变长(给前后对比)",
+    "推荐质量基线数据完整(类型分布/题材多样性/重复率/探索比例实测/降权对比/翻页稳定性)",
+    "若调优:给出可验证指标且既有语义回归测试全通过",
+    "npm test 通过(基线214/214)",
+    "报告 .agents/shared/t-opt-recommend-warmup-codex.md"
+  ],
+  "blockedBy": [
+    "t-opt-stream-latency"
+  ],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-17T11:59:20.100Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ]
+}

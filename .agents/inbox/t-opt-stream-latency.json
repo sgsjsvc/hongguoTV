@@ -1,0 +1,40 @@
+{
+  "id": "t-opt-stream-latency",
+  "createdAt": "2026-10-17T11:59:20.098Z",
+  "updatedAt": "2026-10-17T11:59:20.099Z",
+  "assignee": "codex",
+  "title": "O1 取流首块12秒根治 + stream首块预热",
+  "brief": ".agents/inbox/t-opt-stream-latency.brief.md",
+  "context": [
+    "DSH 实测：stream首块冷启动 5剧中3剧约12秒(11768/11844/12450ms)，热取24-26ms",
+    "逐集诊断证明同一剧时快时慢(我隐藏身份 首次11768ms 二次334ms)，幅度高度一致→固定超时/回退特征",
+    "根因已定位：shared/content-core/hongguo.js:846-884 remoteRange 顺序回退 primary→backup，等primary失败才用backup",
+    "更正 perf-p1-verdict.md 把11614ms判为瞬时抖动的结论",
+    "P1遗留未决策项「stream首块预热」现依据12秒数据决定实施",
+    "改引擎必须同步 custom-server/vendor/hongguo.cjs 与 server/vendor/hongguo.cjs 并验证 Node/QuickJS",
+    "禁止改 shared/recommendation-core.cjs(属 t-opt-recommend-warmup)",
+    "不启停用户在用服务 8788；不提交不推送"
+  ],
+  "acceptance": [
+    "根因明确：12秒花在哪一步、为何幅度一致、主地址失败原因",
+    "修复后同一脚本复测：冷启动最坏值<=1.5秒(硬指标)，慢样本占比 3/5 -> 0",
+    "三类Range/长度正确性断言保留且测试覆盖",
+    "三副本逐字节一致(给出三个SHA256)",
+    "npm test 通过(基线214/214)并新增并行/回退回归测试",
+    "说明QuickJS侧是否受影响及验证方式",
+    "报告 .agents/shared/t-opt-stream-latency-codex.md"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-17T11:59:20.099Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ]
+}

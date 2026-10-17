@@ -1,0 +1,40 @@
+{
+  "id": "t-opt-web-loading",
+  "createdAt": "2026-10-17T12:00:43.447Z",
+  "updatedAt": "2026-10-17T12:00:43.448Z",
+  "assignee": "antigravity",
+  "title": "O3 Web/桌面端加载态与骨架屏（感知性能）",
+  "brief": ".agents/inbox/t-opt-web-loading.brief.md",
+  "context": [
+    "DSH 实测：apps/web-pc/src 中骨架屏0处、loading文案0处 → 等1.3-12秒期间无任何反馈",
+    "后端延迟由 codex 并行修复(t-opt-stream-latency/t-opt-recommend-warmup)，本任务不改后端",
+    "需覆盖：首页/推荐流、分类、榜单、搜索、详情、追剧收藏、播放器起播、清晰度切换",
+    "播放器起播有明确加载反馈 = 最关键项(首块可能等数秒)",
+    "错误态须可区分「空数据」与「加载失败」且可重试，不得伪装空成功",
+    "禁止改 custom-server/server/shared(引擎)；不动 TV/手机端",
+    "不引入新UI框架或重型动画库；不改已验收的播放/推荐/同步语义",
+    "不提交不推送"
+  ],
+  "acceptance": [
+    "2.1表中每个加载点都有可见加载态(逐项列出并截图取证)",
+    "播放器起播有明确加载反馈(必须有截图)",
+    "错误态可区分且可重试(截图)",
+    "骨架屏尺寸与最终内容一致(无布局跳动)",
+    "npm run typecheck 退出0；npm run build 通过",
+    "行为语义未变(既有交互回归自测通过并列出测试项)",
+    "报告 .agents/shared/t-opt-web-loading-antigravity.md"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-17T12:00:43.448Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ]
+}

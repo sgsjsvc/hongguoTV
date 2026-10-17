@@ -1,0 +1,41 @@
+{
+  "id": "t-opt-latency-gate",
+  "createdAt": "2026-10-17T12:00:43.451Z",
+  "updatedAt": "2026-10-17T12:00:43.451Z",
+  "assignee": "opencode",
+  "title": "O5 延迟测量与发布门禁（防性能退化）",
+  "brief": ".agents/inbox/t-opt-latency-gate.brief.md",
+  "context": [
+    "DSH 实测：现有门禁(release:check)无任何延迟指标 → 取流首块12秒可完全通过门禁",
+    "DSH 已写三个只读测量脚本在 outputs/testing/(被gitignore) → 需移入 scripts/perf/ 才能追溯",
+    "脚本：dsh-optimization-baseline.mjs(全链路冷热) / dsh-stream-cold-probe.mjs(逐剧首块) / dsh-stream-cold-diagnosis.mjs(逐集稳定性)",
+    "建议门禁：stream首块max<=1500ms、慢样本占比=0、新会话推荐<=300ms、热路径不退化",
+    "阈值须实测校准，用P95+慢样本占比而非单次max，并说明如何区分本端缺陷与上游抖动",
+    "不得触碰用户在用服务127.0.0.1:8788(PID 35052)；不得删除DSH原始测量JSON",
+    "脚本须自带服务管理；门禁失败必须非零退出；无法测量时明确失败或告警，不得静默通过",
+    "不提交不推送不发布"
+  ],
+  "acceptance": [
+    "测量脚本位于 scripts/perf/，可独立运行(自带服务管理)，输出JSON+摘要",
+    "门禁非零退出可复现(用故意超标的合成场景证明会失败)",
+    "已接入 release:check 或独立门禁命令，说明默认开关与跳过方式",
+    "给出校准后阈值及依据(含基线实测数据)",
+    "说明如何区分本端缺陷与上游抖动",
+    "npm test 通过(基线214/214)且新增门禁测试全绿",
+    "未触碰用户在用服务与DSH原始测量数据",
+    "报告 .agents/shared/t-opt-latency-gate-opencode.md"
+  ],
+  "blockedBy": [],
+  "priority": "normal",
+  "status": "pending",
+  "claimedBy": null,
+  "claimedAt": null,
+  "result": null,
+  "history": [
+    {
+      "at": "2026-10-17T12:00:43.451Z",
+      "status": "pending",
+      "by": "orchestrator"
+    }
+  ]
+}
